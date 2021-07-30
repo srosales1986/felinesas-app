@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1076819654706",
+    "project_id": "chickendeliverycontrol",
+    "storage_bucket": "chickendeliverycontrol.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1076819654706:android:5ff7626764806b5fbf242b",
+        "android_client_info": {
+          "package_name": "com.example.chicken_sales_control"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1076819654706-7ddgpaekk6drtqq4ok34a59umtvmsps3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDP8o7ZXddvH5Pj_XiXpv0uVf8mHIonJVQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1076819654706-7ddgpaekk6drtqq4ok34a59umtvmsps3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
