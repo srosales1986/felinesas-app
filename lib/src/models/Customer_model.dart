@@ -1,21 +1,26 @@
 class Customer {
+  String id;
   String cuit;
   String name;
   String address;
-  String condIva;
+  String ivaCond;
+  num debt;
 
-  Customer({
-    required this.cuit,
-    required this.name,
-    required this.address,
-    required this.condIva,
-  });
+  Customer(
+      {required this.id,
+      required this.cuit,
+      required this.name,
+      required this.address,
+      required this.ivaCond,
+      required this.debt});
 
-  factory Customer.fromJson(Map<String, dynamic> json) {
+  factory Customer.fromJson(String id, Map<String, dynamic> json) {
     return Customer(
-        cuit: json['id'].toString(),
+        id: id,
+        cuit: json['cuit'].toString(),
         name: json['name'],
-        address: json['address']['street'],
-        condIva: json['address']['zipcode']);
+        address: json['address'],
+        ivaCond: json['iva_cond'],
+        debt: json['debt']);
   }
 }

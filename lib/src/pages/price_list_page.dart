@@ -18,13 +18,16 @@ class PriceListPage extends StatelessWidget {
             Navigator.pop(context);
           },
         ),
-        title: Text('Agregar Productos'),
+        title: Text('Lista de precios'),
       ),
       body: Container(
         margin: EdgeInsets.only(top: 10),
-        child: ListView(
-            children:
-                ProductService.getPriceList(productsProvider.productList)),
+        child: Scrollbar(
+          thickness: 8,
+          child: ListView(
+              children:
+                  ProductService.getPriceList(productsProvider.productList)),
+        ),
       ),
     );
   }

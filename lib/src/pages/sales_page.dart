@@ -1,6 +1,9 @@
 import 'package:chicken_sales_control/src/models/Customer_model.dart';
 import 'package:chicken_sales_control/src/services/CustomerService.dart';
+import 'package:chicken_sales_control/src/services/CustomersProvider.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SalesPage extends StatefulWidget {
   SalesPage({Key? key}) : super(key: key);
@@ -10,11 +13,16 @@ class SalesPage extends StatefulWidget {
 }
 
 class _SalesPageState extends State<SalesPage> {
-  final Future<List<Customer>> futureCustomer = CustomerService.fetchCustomer();
+  // final Future<List<Customer>> futureCustomer = CustomerService.fetchCustomer();
 
   @override
   Widget build(BuildContext context) {
-    // var productsProvider = Provider.of<ProductsProvider>(context, listen: true);
+    var customerProvider = Provider.of<CustomerProvider>(context, listen: true);
+    // var _db = FirebaseFirestore.instance;
+
+    // Future<QuerySnapshot<Map<String, dynamic>>> getAllCustomers =
+    //     _db.collection('custmers').get();
+    // print('buildSalesPage');
 
     return Scaffold(
         appBar: AppBar(
@@ -37,28 +45,51 @@ class _SalesPageState extends State<SalesPage> {
             ),
           ],
         ),
-        body: Column(children: [
-          Expanded(
-              child: Container(
-                  child: FutureBuilder<List<Customer>>(
-                      future: futureCustomer,
-                      builder: (context, snapshot) {
-                        if (snapshot.hasError) {
-                          return Text('Eroor');
-                        }
-                        if (!snapshot.hasData) {
-                          return Center(
-                              child: CircularProgressIndicator.adaptive());
-                        }
-                        return ListView(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 6.0, vertical: 0),
-                          children: snapshot.data!
-                              .map((customer) => listTileOfCustomer(customer))
-                              .toList(),
-                        );
-                      })))
-        ]));
+        body: Scrollbar(
+          thickness: 20,
+          child: Scrollbar(
+            child: ListView(
+              children: CustomerService.getCustomerListTile(
+                  customerProvider.customerList, context),
+            ),
+          ),
+        ));
+    // child: FutureBuilder<QuerySnapshot<Map<String, dynamic>>>(
+    //     future: getAllCustomers,
+    //     builder: (context, snapshot) {
+    //       if (snapshot.hasError) {
+    //         return Text('Eroor');
+    //       }
+    //       if (!snapshot.hasData) {
+    //         return Center(
+    //             child: CircularProgressIndicator.adaptive());
+    //       }
+    //       if (snapshot.hasData &&
+    //           customerProvider.customerList.isEmpty) {
+    //         customerProvider.fillCustomerList(snapshot.data!.docs
+    //             .map((e) => Customer.fromJson(e.data()))
+    //             .toList());
+
+    //         print(customerProvider.customerList.length);
+    //         return ListView(
+    //           children: CustomerService.getCustomerListTile(
+    //               customerProvider.customerList),
+    //         );
+    //       }
+    //       if (customerProvider.customerList.isNotEmpty) {
+    //         return ListView(
+    //           children: CustomerService.getCustomerListTile(
+    //               customerProvider.customerList),
+    //         );
+    //       }
+
+    //       return Container(
+    //         color: Colors.white,
+    //         child: Center(
+    //           child: CircularProgressIndicator(),
+    //         ),
+    //       );
+    //     })))
   }
 
   Widget listTileOfCustomer(Customer customer) {
@@ -74,7 +105,7 @@ class _SalesPageState extends State<SalesPage> {
               size: 50,
             ),
             title: Text(customer.name),
-            subtitle: Text('${customer.address} - ${customer.condIva}'),
+            subtitle: Text('${customer.address} - ${customer.ivaCond}'),
             onTap: () {
               Navigator.pushNamed(context, 'add_products_page');
             },

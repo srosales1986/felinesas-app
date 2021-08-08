@@ -1,4 +1,5 @@
 class Product {
+  String id;
   String initials;
   String name;
   num priceByKg;
@@ -6,14 +7,16 @@ class Product {
   num availabilityInDeposit;
 
   Product(
-      {required this.initials,
+      {required this.id,
+      required this.initials,
       required this.name,
       required this.priceByKg,
       required this.priceByUnit,
       required this.availabilityInDeposit});
 
-  factory Product.fromJson(Map<String, dynamic> json) {
+  factory Product.fromJson(String id, Map<String, dynamic> json) {
     return Product(
+      id: id,
       initials: json['initials'],
       name: json['name'],
       priceByKg: json['price_by_kg'],

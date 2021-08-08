@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class ProductsProvider extends ChangeNotifier {
   List<Product> _productList = [];
 
-  fillProductList(List<Product> products) {
+  void fillProductList(List<Product> products) {
     this._productList.addAll(products);
     // notifyListeners();
   }

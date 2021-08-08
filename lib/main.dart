@@ -1,12 +1,24 @@
 import 'package:chicken_sales_control/src/pages/home_main_page.dart';
+import 'package:chicken_sales_control/src/services/CustomersProvider.dart';
 import 'package:chicken_sales_control/src/services/ProductsProvider.dart';
+import 'package:chicken_sales_control/src/services/SaleProvider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 void main() {
-  runApp(ChangeNotifierProvider(
-    create: (_) => ProductsProvider(),
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(
+        create: (_) => ProductsProvider(),
+      ),
+      ChangeNotifierProvider(
+        create: (_) => CustomerProvider(),
+      ),
+      ChangeNotifierProvider(
+        create: (_) => SaleProvider(),
+      ),
+    ],
     child: MyApp(),
   ));
 }
@@ -37,8 +49,11 @@ class _MyAppState extends State<MyApp> {
           }
 
           // Otherwise, show something whilst waiting for initialization to complete
-          return Center(
-            child: CircularProgressIndicator(),
+          return Container(
+            color: Colors.white,
+            child: Center(
+              child: CircularProgressIndicator(),
+            ),
           );
         });
   }
