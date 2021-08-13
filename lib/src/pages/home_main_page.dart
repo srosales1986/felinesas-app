@@ -5,6 +5,7 @@ import 'package:chicken_sales_control/src/services/CustomersProvider.dart';
 import 'package:chicken_sales_control/src/services/ProductsProvider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
 class HomeMainPage extends StatelessWidget {
@@ -104,6 +105,15 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      localizationsDelegates: [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
+      supportedLocales: [
+        Locale('en', ''), // English, no country code
+        Locale('es', ''), // Spanish, no country code
+      ],
       title: 'Venta de Pollo',
       theme: ThemeData(
         primarySwatch: Colors.blue,

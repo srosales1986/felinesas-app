@@ -34,16 +34,6 @@ class _SalesPageState extends State<SalesPage> {
             icon: Icon(Icons.home),
           ),
           title: Text('Clientes'),
-          actions: [
-            ButtonBar(
-              children: [
-                IconButton(
-                  onPressed: () {},
-                  icon: Icon(Icons.search),
-                )
-              ],
-            ),
-          ],
         ),
         body: Scrollbar(
           thickness: 20,
@@ -54,42 +44,6 @@ class _SalesPageState extends State<SalesPage> {
             ),
           ),
         ));
-    // child: FutureBuilder<QuerySnapshot<Map<String, dynamic>>>(
-    //     future: getAllCustomers,
-    //     builder: (context, snapshot) {
-    //       if (snapshot.hasError) {
-    //         return Text('Eroor');
-    //       }
-    //       if (!snapshot.hasData) {
-    //         return Center(
-    //             child: CircularProgressIndicator.adaptive());
-    //       }
-    //       if (snapshot.hasData &&
-    //           customerProvider.customerList.isEmpty) {
-    //         customerProvider.fillCustomerList(snapshot.data!.docs
-    //             .map((e) => Customer.fromJson(e.data()))
-    //             .toList());
-
-    //         print(customerProvider.customerList.length);
-    //         return ListView(
-    //           children: CustomerService.getCustomerListTile(
-    //               customerProvider.customerList),
-    //         );
-    //       }
-    //       if (customerProvider.customerList.isNotEmpty) {
-    //         return ListView(
-    //           children: CustomerService.getCustomerListTile(
-    //               customerProvider.customerList),
-    //         );
-    //       }
-
-    //       return Container(
-    //         color: Colors.white,
-    //         child: Center(
-    //           child: CircularProgressIndicator(),
-    //         ),
-    //       );
-    //     })))
   }
 
   Widget listTileOfCustomer(Customer customer) {

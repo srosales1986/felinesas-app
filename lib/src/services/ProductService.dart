@@ -1,4 +1,5 @@
-import 'package:animate_do/animate_do.dart';
+import 'package:chicken_sales_control/src/models/Customer_model.dart';
+import 'package:chicken_sales_control/src/models/ProductForSale.dart';
 import 'package:chicken_sales_control/src/models/Product_model.dart';
 import 'package:chicken_sales_control/src/services/SaleProvider.dart';
 import 'package:flutter/material.dart';
@@ -6,22 +7,25 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class ProductService {
-  static getProductsListTile(BuildContext context, List<Product> productList) {
+  static getProductsListTile(BuildContext context, Customer actualCustomer,
+      List<Product> productList) {
     List<Widget> productsListTile = [];
     var saleProvider = Provider.of<SaleProvider>(context, listen: true);
 
-    Widget amount(List<Map<String, int>> saleProductList, Product product) {
+    Widget amount(
+        List<Map<String, ProductForSale>> saleProductList, String key) {
       if (saleProductList.isEmpty ||
-          !saleProductList.any((e) => e.containsKey(product.id))) {
+          !saleProductList.any((e) => e.containsKey(key))) {
         return Text(
           '0',
           style: TextStyle(fontSize: 18),
         );
       }
       var _actualAmount = saleProductList
-          .firstWhere((e) => e.containsKey(product.id))
+          .firstWhere((e) => e.containsKey(key))
           .values
           .first
+          .amount
           .toString();
       return Text(
         '$_actualAmount',
@@ -54,17 +58,17 @@ class ProductService {
                     onPressed: () {
                       HapticFeedback.heavyImpact();
                       saleProvider.subtractAmount(product);
-                      print(saleProvider.saleProductList);
+                      saleProvider.saleProductList.forEach((e) {});
                     },
                     icon: Icon(Icons.remove_circle)),
                 Container(
-                  child: amount(saleProvider.saleProductList, product),
+                  child: amount(saleProvider.saleProductList, product.id),
                 ),
                 IconButton(
                     onPressed: () {
                       HapticFeedback.heavyImpact();
-                      saleProvider.addAmount(product);
-                      print(saleProvider.saleProductList);
+                      saleProvider.addAmount(actualCustomer, product);
+                      saleProvider.saleProductList.forEach((e) {});
                     },
                     icon: Icon(Icons.add_circle)),
               ],
@@ -76,46 +80,6 @@ class ProductService {
       ));
     });
 
-    return productsListTile;
-  }
-
-  static getProductsListTileSimple(List<Product> productList) {
-    List<Widget> productsListTile = [];
-    productList.forEach((product) {
-      productsListTile.add(Column(
-        children: [
-          ListTile(
-            contentPadding: EdgeInsets.symmetric(horizontal: 10),
-            minVerticalPadding: 0.1,
-            title: Text(
-              product.name,
-              style: TextStyle(fontSize: 16),
-            ),
-            trailing: Container(
-              width: 60,
-              height: 20,
-              // padding: EdgeInsets.only(left: 0),
-              child: Text(
-                '\$${product.priceByUnit.toStringAsFixed(2)}',
-                style: TextStyle(
-                  fontSize: 15,
-                  color: Colors.lightBlue,
-                  shadows: [
-                    Shadow(
-                      color: Colors.blue,
-                      blurRadius: 2,
-                      offset: Offset(1, 1),
-                    )
-                  ],
-                ),
-                textAlign: TextAlign.start,
-              ),
-            ),
-          ),
-          Divider(),
-        ],
-      ));
-    });
     return productsListTile;
   }
 

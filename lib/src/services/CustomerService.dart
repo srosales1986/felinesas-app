@@ -1,5 +1,7 @@
 import 'package:chicken_sales_control/src/models/Customer_model.dart';
+import 'package:chicken_sales_control/src/services/SaleProvider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 // import 'package:chicken_sales_control/src/models/Customer_model.dart';
 // import 'package:http/http.dart' as http;
@@ -20,23 +22,23 @@ class CustomerService {
 
   static getCustomerListTile(
       List<Customer> customerList, BuildContext context) {
+    var saleProvider = Provider.of<SaleProvider>(context, listen: true);
     List<Widget> customerListTile = [];
     customerList.forEach((customer) {
       customerListTile.add(Column(
         children: [
           ListTile(
             onTap: () {
-              Navigator.pushNamed(context, 'add_products_page');
+              saleProvider.startDateTime = DateTime.now();
+              Navigator.pushNamed(context, 'add_products_page',
+                  arguments: customer);
             },
             contentPadding: EdgeInsets.symmetric(horizontal: 10),
             minVerticalPadding: 1,
-            leading: CircleAvatar(
-              backgroundColor: Colors.white,
-              radius: 27,
-              child: Icon(
-                Icons.account_circle,
-                size: 55,
-              ),
+            leading: Icon(
+              Icons.account_circle,
+              size: 60,
+              color: Color(0xFFadcbff),
             ),
             title: Text(
               customer.name,
