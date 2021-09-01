@@ -21,41 +21,89 @@ class _AddProductsPageState extends State<AddProductsPage> {
 
     // final Sale sale = Sale();
 
-    return Scaffold(
-      appBar: AppBar(
-        actions: [
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 5),
-            child: Chip(
-              backgroundColor: Colors.amber,
-              label: Text(
-                'TOTAL: \$' + saleProvider.getTotal().toStringAsFixed(2),
-                style: TextStyle(fontSize: 12),
+    return WillPopScope(
+      onWillPop: (saleProvider.saleProductList.isNotEmpty) ? _onWillPop : null,
+      child: Scaffold(
+        appBar: AppBar(
+          actions: [
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 5),
+              child: Chip(
+                backgroundColor: Colors.amber,
+                label: Text(
+                  'TOTAL: \$' + saleProvider.getTotal().toStringAsFixed(2),
+                  style: TextStyle(fontSize: 12),
+                ),
               ),
             ),
-          ),
-        ],
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            saleProvider.saleProductList.clear();
-            Navigator.pop(context);
-          },
+          ],
+          automaticallyImplyLeading: true,
+          title: Text('Nueva venta'),
         ),
-        title: Text('Nueva venta'),
+        body: Scrollbar(
+          child: ListView(
+              physics: BouncingScrollPhysics(),
+              children: ProductService.getProductsListTile(
+                  context, actualCustomer, productsProvider.productList)),
+        ),
+        bottomNavigationBar: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            // CancelSaleButton(saleProvider: saleProvider),
+            ClearButton(saleProvider: saleProvider),
+            DetailButton()
+          ],
+        ),
       ),
-      body: Scrollbar(
-        child: ListView(
-            children: ProductService.getProductsListTile(
-                context, actualCustomer, productsProvider.productList)),
-      ),
-      bottomNavigationBar: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          CancelSaleButton(saleProvider: saleProvider),
-          DetailButton()
-        ],
-      ),
+    );
+  }
+
+  Future<bool> _onWillPop() async {
+    var saleProvider = Provider.of<SaleProvider>(context, listen: false);
+
+    return await showDialog<bool>(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text('Cancelar venta'),
+                content: Text(
+                    'Se perderán los datos cargados. ¿Cancelar de todos modos?'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      saleProvider.saleProductList.clear();
+                      Navigator.of(context).pop(true);
+                    },
+                    child: Text('Si'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop(false);
+                    },
+                    child: Text('No'),
+                  ),
+                ],
+              );
+            }) ??
+        false;
+  }
+}
+
+class ClearButton extends StatelessWidget {
+  final SaleProvider saleProvider;
+  const ClearButton({
+    required this.saleProvider,
+  });
+  @override
+  Widget build(BuildContext context) {
+    return TextButton.icon(
+      onPressed: () {
+        HapticFeedback.heavyImpact();
+        saleProvider.clear();
+        // Navigator.pushNamed(context, 'delivery_boy_home_page');
+      },
+      icon: Icon(Icons.restore),
+      label: Text('Limpiar'),
     );
   }
 }

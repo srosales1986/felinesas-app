@@ -25,6 +25,7 @@ class PriceListPage extends StatelessWidget {
         child: Scrollbar(
           thickness: 8,
           child: ListView(
+              physics: BouncingScrollPhysics(),
               children:
                   ProductService.getPriceList(productsProvider.productList)),
         ),

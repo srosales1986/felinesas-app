@@ -2,6 +2,7 @@ import 'package:chicken_sales_control/src/pages/home_main_page.dart';
 import 'package:chicken_sales_control/src/services/CustomersProvider.dart';
 import 'package:chicken_sales_control/src/services/ProductsProvider.dart';
 import 'package:chicken_sales_control/src/services/SaleProvider.dart';
+import 'package:chicken_sales_control/src/services/UserProvider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -17,6 +18,9 @@ void main() {
       ),
       ChangeNotifierProvider(
         create: (_) => SaleProvider(),
+      ),
+      ChangeNotifierProvider(
+        create: (_) => UserProvider(),
       ),
     ],
     child: MyApp(),
@@ -50,9 +54,11 @@ class _MyAppState extends State<MyApp> {
 
           // Otherwise, show something whilst waiting for initialization to complete
           return Container(
-            color: Colors.white,
+            color: Color.fromARGB(255, 78, 131, 180),
             child: Center(
-              child: CircularProgressIndicator(),
+              child: Image(
+                image: AssetImage('assets/images/init_chicken.gif'),
+              ),
             ),
           );
         });

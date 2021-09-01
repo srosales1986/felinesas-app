@@ -3,14 +3,13 @@ import 'package:chicken_sales_control/src/models/ProductForSale.dart';
 import 'package:chicken_sales_control/src/models/Product_model.dart';
 import 'package:chicken_sales_control/src/services/SaleProvider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class ProductService {
   static getProductsListTile(BuildContext context, Customer actualCustomer,
       List<Product> productList) {
     List<Widget> productsListTile = [];
-    var saleProvider = Provider.of<SaleProvider>(context, listen: true);
+    var saleProvider = Provider.of<SaleProvider>(context, listen: false);
 
     Widget amount(
         List<Map<String, ProductForSale>> saleProductList, String key) {
@@ -56,7 +55,6 @@ class ProductService {
               children: [
                 IconButton(
                     onPressed: () {
-                      HapticFeedback.heavyImpact();
                       saleProvider.subtractAmount(product);
                       saleProvider.saleProductList.forEach((e) {});
                     },
@@ -66,7 +64,6 @@ class ProductService {
                 ),
                 IconButton(
                     onPressed: () {
-                      HapticFeedback.heavyImpact();
                       saleProvider.addAmount(actualCustomer, product);
                       saleProvider.saleProductList.forEach((e) {});
                     },
@@ -93,7 +90,7 @@ class ProductService {
             minVerticalPadding: 1,
             title: Text(
               product.name,
-              style: TextStyle(fontSize: 20),
+              style: TextStyle(fontSize: 18),
             ),
             trailing: Container(
               alignment: Alignment.centerLeft,
@@ -103,7 +100,7 @@ class ProductService {
               child: Text(
                 '\$${product.priceByUnit.toStringAsFixed(2)}',
                 style: TextStyle(
-                  fontSize: 22,
+                  fontSize: 18,
                   color: Colors.blueAccent,
                   shadows: [
                     Shadow(

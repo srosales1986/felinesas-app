@@ -13,6 +13,11 @@ class SaleProvider extends ChangeNotifier {
     this.startDateTime = DateTime.now();
   }
 
+  void clear() {
+    this.saleProductList.clear();
+    notifyListeners();
+  }
+
   void addAmount(Customer actualCustomer, Product product) {
     if (this.saleProductList.any((e) => e.containsKey(product.id))) {
       this

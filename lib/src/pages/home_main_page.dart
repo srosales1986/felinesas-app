@@ -34,7 +34,9 @@ class HomeMainPage extends StatelessWidget {
         }
         if (!snapshot.hasData) {
           Center(
-            child: CircularProgressIndicator(),
+            child: Image(
+              image: AssetImage('assets/images/init_chicken.gif'),
+            ),
           );
         }
         if (snapshot.hasData && productsProvider.productList.isEmpty) {
@@ -52,9 +54,11 @@ class HomeMainPage extends StatelessWidget {
         }
 
         return Container(
-          color: Colors.white,
+          color: Color.fromARGB(255, 78, 131, 180),
           child: Center(
-            child: CircularProgressIndicator(),
+            child: Image(
+              image: AssetImage('assets/images/init_chicken.gif'),
+            ),
           ),
         );
       },
@@ -75,7 +79,9 @@ class HomeMainPage extends StatelessWidget {
           }
           if (!snapshot.hasData) {
             Center(
-              child: CircularProgressIndicator(),
+              child: Image(
+                image: AssetImage('assets/images/init_chicken.gif'),
+              ),
             );
           }
           if (snapshot.hasData && customerProvider.customerList.isEmpty) {
@@ -87,9 +93,11 @@ class HomeMainPage extends StatelessWidget {
             return Home();
           }
           return Container(
-            color: Colors.white,
+            color: Color.fromARGB(255, 78, 131, 180),
             child: Center(
-              child: CircularProgressIndicator(),
+              child: Image(
+                image: AssetImage('assets/images/init_chicken.gif'),
+              ),
             ),
           );
         });
@@ -119,7 +127,8 @@ class Home extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       routes: getApplicationRoutes(),
-      initialRoute: 'delivery_boy_home_page',
+      // initialRoute: 'delivery_boy_home_page',
+      initialRoute: 'login_page',
     );
   }
 }
