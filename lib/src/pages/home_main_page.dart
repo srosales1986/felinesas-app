@@ -2,6 +2,7 @@ import 'package:chicken_sales_control/src/models/Customer_model.dart';
 import 'package:chicken_sales_control/src/models/Product_model.dart';
 import 'package:chicken_sales_control/src/routes/routes.dart';
 import 'package:chicken_sales_control/src/services/CustomersProvider.dart';
+import 'package:chicken_sales_control/src/services/FirebaseProvider.dart';
 import 'package:chicken_sales_control/src/services/ProductsProvider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -13,94 +14,51 @@ class HomeMainPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var _db = FirebaseFirestore.instance;
+    fillPoviders() async {
+      final firebaseProvider =
+          Provider.of<FirebaseProvider>(context, listen: false);
 
-    Future<QuerySnapshot<Map<String, dynamic>>> getAllProducts =
-        _db.collection('products').get();
+      var _db = firebaseProvider.fbInstance;
 
-    Future<QuerySnapshot<Map<String, dynamic>>> getAllCustomers =
-        _db.collection('customers').get();
+      var productsProvider =
+          Provider.of<ProductsProvider>(context, listen: false);
 
-    return FutureBuilder<QuerySnapshot<Map<String, dynamic>>>(
-      future: getAllProducts,
+      var customerProvider =
+          Provider.of<CustomerProvider>(context, listen: false);
+
+      Future<QuerySnapshot<Map<String, dynamic>>> getAllProducts =
+          _db.collection('products').get();
+
+      getAllProducts.then((value) => productsProvider.fillProductList(
+          value.docs.map((e) => Product.fromJson(e.id, e.data())).toList()));
+
+      Future<QuerySnapshot<Map<String, dynamic>>> getAllCustomers =
+          _db.collection('customers').get();
+
+      getAllCustomers.then((value) => customerProvider.fillCustomerList(
+          value.docs.map((e) => Customer.fromJson(e.id, e.data())).toList()));
+      return 'OK';
+    }
+
+    return FutureBuilder(
+      future: fillPoviders(),
       builder: (context, snapshot) {
-        var productsProvider =
-            Provider.of<ProductsProvider>(context, listen: false);
-
         if (snapshot.hasError) {
           return Center(
-            child: Text('Error'),
+            child: Text('ERROR'),
           );
         }
-        if (!snapshot.hasData) {
-          Center(
-            child: Image(
-              image: AssetImage('assets/images/init_chicken.gif'),
-            ),
-          );
-        }
-        if (snapshot.hasData && productsProvider.productList.isEmpty) {
-          productsProvider.fillProductList(snapshot.data!.docs
-              .map((e) => Product.fromJson(e.id, e.data()))
-              .toList());
-
-          print(productsProvider.productList.length);
-
-          return getCustomerFromFirebase(getAllCustomers);
-        }
-
-        if (productsProvider.productList.isNotEmpty) {
+        if (snapshot.hasData) {
           return Home();
         }
-
         return Container(
           color: Color.fromARGB(255, 78, 131, 180),
           child: Center(
-            child: Image(
-              image: AssetImage('assets/images/init_chicken.gif'),
-            ),
+            child: CircularProgressIndicator.adaptive(),
           ),
         );
       },
     );
-  }
-
-  FutureBuilder<QuerySnapshot<Map<String, dynamic>>> getCustomerFromFirebase(
-      Future<QuerySnapshot<Map<String, dynamic>>> getAllCustomers) {
-    return FutureBuilder<QuerySnapshot<Map<String, dynamic>>>(
-        future: getAllCustomers,
-        builder: (context, snapshot) {
-          var customerProvider =
-              Provider.of<CustomerProvider>(context, listen: false);
-          if (snapshot.hasError) {
-            return Center(
-              child: Text('Error'),
-            );
-          }
-          if (!snapshot.hasData) {
-            Center(
-              child: Image(
-                image: AssetImage('assets/images/init_chicken.gif'),
-              ),
-            );
-          }
-          if (snapshot.hasData && customerProvider.customerList.isEmpty) {
-            customerProvider.fillCustomerList(snapshot.data!.docs
-                .map((e) => Customer.fromJson(e.id, e.data()))
-                .toList());
-
-            print(customerProvider.customerList.length);
-            return Home();
-          }
-          return Container(
-            color: Color.fromARGB(255, 78, 131, 180),
-            child: Center(
-              child: Image(
-                image: AssetImage('assets/images/init_chicken.gif'),
-              ),
-            ),
-          );
-        });
   }
 }
 
@@ -128,7 +86,7 @@ class Home extends StatelessWidget {
       ),
       routes: getApplicationRoutes(),
       // initialRoute: 'delivery_boy_home_page',
-      initialRoute: 'login_page',
+      initialRoute: 'delivery_boy_home_page',
     );
   }
 }

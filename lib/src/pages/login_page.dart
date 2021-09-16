@@ -34,6 +34,7 @@ class LoginPage2 extends StatelessWidget {
 
             return _LoginScreen();
           }
+
           return Center(
             child: CircularProgressIndicator.adaptive(),
           );

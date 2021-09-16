@@ -2,7 +2,6 @@ import 'package:chicken_sales_control/src/custom_widgets/MainButtonWidget.dart';
 import 'package:chicken_sales_control/src/services/UserProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'dart:io';
 
@@ -23,6 +22,7 @@ class _DeliveryBoyHomePageState extends State<DeliveryBoyHomePage> {
         appBar: AppBar(
           title: Text('${userProvider.currentUser.userName}'),
         ),
+        drawer: _buildDrawer(),
         body: SafeArea(
           child: Center(
             child: Column(
@@ -90,18 +90,48 @@ class _DeliveryBoyHomePageState extends State<DeliveryBoyHomePage> {
                 content: Text('¿Desea salir de la aplicación?'),
                 actions: [
                   TextButton(
-                    onPressed: () {
-                      SystemNavigator.pop();
-                    },
+                    onPressed: () => exit(0),
                     child: Text('Si'),
                   ),
                   TextButton(
-                    onPressed: () => exit(0),
+                    onPressed: () => Navigator.of(context).pop(false),
                     child: Text('No'),
                   ),
                 ],
               );
             }) ??
         false;
+  }
+
+  Drawer _buildDrawer() {
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          DrawerHeader(
+            child: Container(),
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/images/menu-img.jpg'),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+          ListTile(
+            leading: Icon(Icons.home),
+            title: Text('Home'),
+            onTap: () {},
+          ),
+          ListTile(
+            leading: Icon(Icons.account_box_rounded),
+            title: Text('Clientes'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushNamed(context, 'customer_page');
+            },
+          ),
+        ],
+      ),
+    );
   }
 }

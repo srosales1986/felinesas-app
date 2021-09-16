@@ -23,6 +23,10 @@ class _SalesPageState extends State<SalesPage> {
     // Future<QuerySnapshot<Map<String, dynamic>>> getAllCustomers =
     //     _db.collection('custmers').get();
     // print('buildSalesPage');
+    void onTapFunction(Customer customer) {
+      // saleProvider.startDateTime = DateTime.now();
+      Navigator.pushNamed(context, 'add_products_page', arguments: customer);
+    }
 
     return Scaffold(
         appBar: AppBar(
@@ -39,8 +43,8 @@ class _SalesPageState extends State<SalesPage> {
           thickness: 20,
           child: Scrollbar(
             child: ListView(
-              children: CustomerService.getCustomerListTile(
-                  customerProvider.customerList, context),
+              children:
+                  CustomerService.getCustomerListTile(onTapFunction, context),
             ),
           ),
         ));

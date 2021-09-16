@@ -7,11 +7,20 @@ class SaleProvider extends ChangeNotifier {
   late List<Map<String, ProductForSale>> saleProductList;
   late DateTime startDateTime;
   late DateTime endDateTime;
+  // late AnimationController _amountAnimationController;
 
   SaleProvider() {
     this.saleProductList = [];
     this.startDateTime = DateTime.now();
   }
+
+  // AnimationController get amountAnimationController =>
+  //     this._amountAnimationController;
+
+  // set amountAnimationController(AnimationController controller) {
+  //   this._amountAnimationController = controller;
+  //   // notifyListeners();
+  // }
 
   void clear() {
     this.saleProductList.clear();

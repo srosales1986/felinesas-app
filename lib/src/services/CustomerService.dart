@@ -1,5 +1,4 @@
-import 'package:chicken_sales_control/src/models/Customer_model.dart';
-import 'package:chicken_sales_control/src/services/SaleProvider.dart';
+import 'package:chicken_sales_control/src/services/CustomersProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -7,37 +6,25 @@ import 'package:provider/provider.dart';
 // import 'package:http/http.dart' as http;
 
 class CustomerService {
-  // static Future<List<Customer>> fetchCustomer() async {
-  //   final String url = 'https://jsonplaceholder.typicode.com/users';
-  //   final response = await http.get(Uri.parse(url));
-  //   print('Fetching done');
-  //   if (response.statusCode == 200) {
-  //     return (jsonDecode(response.body) as List)
-  //         .map((customer) => Customer.fromJson(customer))
-  //         .toList();
-  //   } else {
-  //     throw Exception('Error al cargar los clientes');
-  //   }
-  // }
+// TODO: Convertir el ListView de clientes en un widget reutilizable
 
-  static getCustomerListTile(
-      List<Customer> customerList, BuildContext context) {
-    var saleProvider = Provider.of<SaleProvider>(context, listen: true);
+  static getCustomerListTile(Function? onTapFunction, BuildContext context) {
+    final customerProvider =
+        Provider.of<CustomerProvider>(context, listen: true);
+    final customerList = customerProvider.customerList;
+    // var saleProvider = Provider.of<SaleProvider>(context, listen: false);
+
     List<Widget> customerListTile = [];
     customerList.forEach((customer) {
       customerListTile.add(Column(
         children: [
           ListTile(
-            onTap: () {
-              saleProvider.startDateTime = DateTime.now();
-              Navigator.pushNamed(context, 'add_products_page',
-                  arguments: customer);
-            },
+            onTap: () => onTapFunction!(customer),
             contentPadding: EdgeInsets.symmetric(horizontal: 10),
             minVerticalPadding: 1,
             leading: Icon(
               Icons.account_circle,
-              size: 60,
+              size: 50,
               color: Color(0xFFadcbff),
             ),
             title: Text(

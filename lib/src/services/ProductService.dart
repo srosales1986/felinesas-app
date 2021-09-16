@@ -1,36 +1,13 @@
 import 'package:chicken_sales_control/src/models/Customer_model.dart';
-import 'package:chicken_sales_control/src/models/ProductForSale.dart';
 import 'package:chicken_sales_control/src/models/Product_model.dart';
 import 'package:chicken_sales_control/src/services/SaleProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ProductService {
-  static getProductsListTile(BuildContext context, Customer actualCustomer,
+  static getProductsListTile(BuildContext context, Customer currentCustomer,
       List<Product> productList) {
     List<Widget> productsListTile = [];
-    var saleProvider = Provider.of<SaleProvider>(context, listen: false);
-
-    Widget amount(
-        List<Map<String, ProductForSale>> saleProductList, String key) {
-      if (saleProductList.isEmpty ||
-          !saleProductList.any((e) => e.containsKey(key))) {
-        return Text(
-          '0',
-          style: TextStyle(fontSize: 18),
-        );
-      }
-      var _actualAmount = saleProductList
-          .firstWhere((e) => e.containsKey(key))
-          .values
-          .first
-          .amount
-          .toString();
-      return Text(
-        '$_actualAmount',
-        style: TextStyle(fontSize: 18),
-      );
-    }
 
     productList.forEach((product) {
       productsListTile.add(Column(
@@ -50,25 +27,10 @@ class ProductService {
               product.name,
               style: TextStyle(fontSize: 18),
             ),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconButton(
-                    onPressed: () {
-                      saleProvider.subtractAmount(product);
-                      saleProvider.saleProductList.forEach((e) {});
-                    },
-                    icon: Icon(Icons.remove_circle)),
-                Container(
-                  child: amount(saleProvider.saleProductList, product.id),
-                ),
-                IconButton(
-                    onPressed: () {
-                      saleProvider.addAmount(actualCustomer, product);
-                      saleProvider.saleProductList.forEach((e) {});
-                    },
-                    icon: Icon(Icons.add_circle)),
-              ],
+            trailing: Amount(
+              productId: product.id,
+              currentCustomer: currentCustomer,
+              product: product,
             ),
             subtitle: Text('\$${product.priceByUnit.toStringAsFixed(2)}'),
           ),
@@ -127,5 +89,78 @@ class ProductService {
       ));
     });
     return productsListTile;
+  }
+}
+
+class Amount extends StatelessWidget {
+  final String productId;
+  final Customer currentCustomer;
+  final Product product;
+  Amount({
+    Key? key,
+    required this.productId,
+    required this.currentCustomer,
+    required this.product,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    var saleProvider = Provider.of<SaleProvider>(context, listen: true);
+    // final saleProductList = saleProvider.saleProductList;
+    final productId = this.productId;
+    final currentCustomer = this.currentCustomer;
+    final product = this.product;
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        IconButton(
+            onPressed: () {
+              saleProvider.subtractAmount(product);
+            },
+            icon: Icon(Icons.remove_circle)),
+        Container(
+          child: AmountNumber(productId: productId),
+        ),
+        IconButton(
+            onPressed: () {
+              saleProvider.addAmount(currentCustomer, product);
+            },
+            icon: Icon(Icons.add_circle)),
+      ],
+    );
+  }
+}
+
+class AmountNumber extends StatelessWidget {
+  final productId;
+  const AmountNumber({
+    Key? key,
+    required this.productId,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    var saleProvider = Provider.of<SaleProvider>(context, listen: true);
+    var saleProductList = saleProvider.saleProductList;
+
+    if (saleProductList.isEmpty ||
+        !saleProductList.any((e) => e.containsKey(productId))) {
+      return Text(
+        '0',
+        style: TextStyle(fontSize: 18),
+      );
+    }
+    var _actualAmount = saleProductList
+        .firstWhere((e) => e.containsKey(productId))
+        .values
+        .first
+        .amount
+        .toString();
+
+    return Text(
+      '$_actualAmount',
+      style: TextStyle(fontSize: 18),
+    );
   }
 }

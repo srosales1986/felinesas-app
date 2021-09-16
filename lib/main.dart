@@ -1,5 +1,6 @@
 import 'package:chicken_sales_control/src/pages/home_main_page.dart';
 import 'package:chicken_sales_control/src/services/CustomersProvider.dart';
+import 'package:chicken_sales_control/src/services/FirebaseProvider.dart';
 import 'package:chicken_sales_control/src/services/ProductsProvider.dart';
 import 'package:chicken_sales_control/src/services/SaleProvider.dart';
 import 'package:chicken_sales_control/src/services/UserProvider.dart';
@@ -21,6 +22,9 @@ void main() {
       ),
       ChangeNotifierProvider(
         create: (_) => UserProvider(),
+      ),
+      ChangeNotifierProvider(
+        create: (_) => FirebaseProvider(),
       ),
     ],
     child: MyApp(),

@@ -16,13 +16,14 @@ class _AddProductsPageState extends State<AddProductsPage> {
   Widget build(BuildContext context) {
     Customer actualCustomer =
         ModalRoute.of(context)!.settings.arguments as Customer;
-    var productsProvider = Provider.of<ProductsProvider>(context, listen: true);
-    var saleProvider = Provider.of<SaleProvider>(context, listen: true);
+    var productsProvider =
+        Provider.of<ProductsProvider>(context, listen: false);
+    var saleProvider = Provider.of<SaleProvider>(context, listen: false);
 
     // final Sale sale = Sale();
 
     return WillPopScope(
-      onWillPop: (saleProvider.saleProductList.isNotEmpty) ? _onWillPop : null,
+      onWillPop: _onWillPop,
       child: Scaffold(
         appBar: AppBar(
           actions: [
@@ -30,10 +31,7 @@ class _AddProductsPageState extends State<AddProductsPage> {
               padding: EdgeInsets.symmetric(horizontal: 5),
               child: Chip(
                 backgroundColor: Colors.amber,
-                label: Text(
-                  'TOTAL: \$' + saleProvider.getTotal().toStringAsFixed(2),
-                  style: TextStyle(fontSize: 12),
-                ),
+                label: SubTotalChip(),
               ),
             ),
           ],
@@ -86,6 +84,21 @@ class _AddProductsPageState extends State<AddProductsPage> {
               );
             }) ??
         false;
+  }
+}
+
+class SubTotalChip extends StatelessWidget {
+  const SubTotalChip({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    var saleProvider = Provider.of<SaleProvider>(context, listen: true);
+    return Text(
+      'TOTAL: \$' + saleProvider.getTotal().toStringAsFixed(2),
+      style: TextStyle(fontSize: 12),
+    );
   }
 }
 
