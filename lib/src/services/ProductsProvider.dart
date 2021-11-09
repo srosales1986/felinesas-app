@@ -10,4 +10,9 @@ class ProductsProvider extends ChangeNotifier {
   }
 
   List<Product> get productList => this._productList;
+
+  set productList(List<Product> productList) {
+    this._productList = productList;
+    notifyListeners();
+  }
 }

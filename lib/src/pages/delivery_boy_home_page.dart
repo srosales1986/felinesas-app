@@ -37,7 +37,7 @@ class _DeliveryBoyHomePageState extends State<DeliveryBoyHomePage> {
                         width: 150,
                         height: 150,
                         cardText: 'Nueva venta',
-                        route: 'sales_page',
+                        route: 'new_sale_page',
                         icon: Icons.receipt,
                       ),
                     ),
@@ -46,7 +46,8 @@ class _DeliveryBoyHomePageState extends State<DeliveryBoyHomePage> {
                         width: 150,
                         height: 150,
                         cardText: 'Lista de precios',
-                        route: 'price_list_page',
+                        route: 'products_price_list_page',
+                        isAdmin: false,
                         icon: Icons.request_quote,
                       ),
                     ),
@@ -128,6 +129,15 @@ class _DeliveryBoyHomePageState extends State<DeliveryBoyHomePage> {
             onTap: () {
               Navigator.pop(context);
               Navigator.pushNamed(context, 'customer_page');
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.account_box_rounded),
+            title: Text('Productos'),
+            onTap: () {
+              Navigator.pop(context);
+              Navigator.pushNamed(context, 'products_price_list_page',
+                  arguments: true);
             },
           ),
         ],

@@ -1,32 +1,42 @@
-import 'package:chicken_sales_control/src/models/Customer_model.dart';
 import 'package:chicken_sales_control/src/models/Product_model.dart';
 
 class ProductForSale {
+  String productId = '';
   String productName = '';
-  num price = 0;
-  num amount = 0;
-  num subTotal = 0;
-  String customerCuit = '';
-  String customerName = '';
-  String customerAddress = '';
+  num price = 0.0;
+  num amount = 0.0;
+  num subtotal = 0.0;
+  num finalAmount = 0.0;
 
-  ProductForSale(Customer customer, Product product, int amount) {
+  ProductForSale(Product product, num amount) {
+    this.productId = product.id;
     this.productName = product.name;
     this.price = product.priceByUnit;
     this.amount = amount;
-    this.subTotal = this.price * this.amount;
-    this.customerCuit = customer.cuit;
-    this.customerName = customer.name;
-    this.customerAddress = customer.address;
+    this.subtotal = this.price * this.amount;
+    this.finalAmount = product.availabilityInDeposit - 1.0;
   }
 
-  void increaseAmout() {
-    this.amount++;
-    this.subTotal = this.price * this.amount;
+  void increaseAmout(num increment) {
+    this.amount += increment;
+    this.subtotal = this.price * this.amount;
+    this.finalAmount -= increment;
   }
 
-  void decreaseAmout() {
-    this.amount--;
-    this.subTotal = this.price * this.amount;
+  void decreaseAmout(num increment) {
+    this.amount -= increment;
+    this.subtotal = this.price * this.amount;
+    this.finalAmount += increment;
+  }
+
+  Map<String, dynamic> toMap(ProductForSale productForSale) {
+    return {
+      'product_id': productForSale.productId,
+      'product_name': productForSale.productName,
+      'price': productForSale.price,
+      'amount': productForSale.amount,
+      'finalAmount': productForSale.finalAmount,
+      'subtotal': productForSale.subtotal
+    };
   }
 }

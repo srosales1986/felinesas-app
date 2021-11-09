@@ -24,4 +24,14 @@ class Product {
       availabilityInDeposit: json['availability_in_deposit'],
     );
   }
+
+  Map<String, dynamic> toMap(Product newProduct) {
+    return {
+      'initials': newProduct.initials,
+      'name': newProduct.name,
+      'price_by_kg': newProduct.priceByKg,
+      'price_by_unit': newProduct.priceByUnit,
+      'availability_in_deposit': newProduct.availabilityInDeposit,
+    };
+  }
 }

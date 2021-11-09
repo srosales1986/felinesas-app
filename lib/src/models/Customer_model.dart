@@ -5,7 +5,7 @@ class Customer {
   String address;
   String ivaCond;
   String status;
-  num debt;
+  num balance;
 
   Customer(
       {required this.id,
@@ -14,7 +14,7 @@ class Customer {
       required this.address,
       required this.ivaCond,
       required this.status,
-      required this.debt});
+      required this.balance});
 
   factory Customer.fromJson(String id, Map<String, dynamic> json) {
     return Customer(
@@ -24,7 +24,7 @@ class Customer {
         address: json['address'],
         ivaCond: json['iva_cond'],
         status: json['status'],
-        debt: json['debt']);
+        balance: json['balance']);
   }
 
   Map<String, dynamic> toMap(Customer newCustomer) {
@@ -34,7 +34,7 @@ class Customer {
       'address': newCustomer.address,
       'iva_cond': newCustomer.ivaCond,
       'status': 'ACT',
-      'debt': 0
+      'balance': newCustomer.balance
     };
   }
 
@@ -46,6 +46,6 @@ class Customer {
         address: '',
         ivaCond: '',
         status: '',
-        debt: 0);
+        balance: 0);
   }
 }

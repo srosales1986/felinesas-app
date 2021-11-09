@@ -8,6 +8,7 @@ class MainButtonWidget extends StatefulWidget {
   final double height;
   final String cardText, route;
   final IconData icon;
+  final bool? isAdmin;
 
   MainButtonWidget({
     required this.width,
@@ -15,6 +16,7 @@ class MainButtonWidget extends StatefulWidget {
     required this.cardText,
     required this.route,
     required this.icon,
+    this.isAdmin,
   });
 
   @override
@@ -48,7 +50,7 @@ class _MainButtonWidgetState extends State<MainButtonWidget> {
         ),
         onPressed: () {
           HapticFeedback.selectionClick();
-          Navigator.pushNamed(context, widget.route);
+          Navigator.pushNamed(context, widget.route, arguments: widget.isAdmin);
         },
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,

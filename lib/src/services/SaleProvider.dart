@@ -1,17 +1,37 @@
 import 'package:chicken_sales_control/src/models/Customer_model.dart';
 import 'package:chicken_sales_control/src/models/ProductForSale.dart';
 import 'package:chicken_sales_control/src/models/Product_model.dart';
+import 'package:chicken_sales_control/src/models/Sale_model.dart';
 import 'package:flutter/material.dart';
 
 class SaleProvider extends ChangeNotifier {
+  late Customer currentCustomer;
   late List<Map<String, ProductForSale>> saleProductList;
   late DateTime startDateTime;
   late DateTime endDateTime;
+  late num increment;
+  late num calculatedTotal;
+  late num newBalance;
+  late num cashInstallment;
+  late num mpInstallment;
+  late num finalInstallment;
+  late num discount;
+  late num finalTotal;
+
+  final Sale currentSale = Sale();
   // late AnimationController _amountAnimationController;
 
   SaleProvider() {
     this.saleProductList = [];
     this.startDateTime = DateTime.now();
+    this.increment = 1.0;
+    this.calculatedTotal = 0;
+    this.newBalance = 0;
+    this.cashInstallment = 0;
+    this.mpInstallment = 0;
+    this.finalInstallment = 0;
+    this.discount = 0;
+    this.finalTotal = 0;
   }
 
   // AnimationController get amountAnimationController =>
@@ -27,19 +47,19 @@ class SaleProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addAmount(Customer actualCustomer, Product product) {
+  void addAmount(Product product) {
     if (this.saleProductList.any((e) => e.containsKey(product.id))) {
       this
           .saleProductList
           .firstWhere((e) => e.containsKey(product.id))
           .values
           .first
-          .increaseAmout();
+          .increaseAmout(this.increment);
       notifyListeners();
     } else {
       this
           .saleProductList
-          .add({product.id: ProductForSale(actualCustomer, product, 1)});
+          .add({product.id: ProductForSale(product, this.increment)});
       notifyListeners();
     }
   }
@@ -52,14 +72,14 @@ class SaleProvider extends ChangeNotifier {
       return;
     }
 
-    var _actualAmount = this
+    var _currentAmount = this
         .saleProductList
         .firstWhere((e) => e.containsKey(product.id))
         .values
         .first
         .amount;
 
-    if (_isInProductList && _actualAmount == 1) {
+    if (_isInProductList && _currentAmount == 1) {
       var _indexOfProduct = this.saleProductList.indexOf(
           saleProductList.firstWhere((e) => e.containsKey(product.id)));
       this.saleProductList.removeAt(_indexOfProduct);
@@ -67,24 +87,24 @@ class SaleProvider extends ChangeNotifier {
       return notifyListeners();
     }
 
-    if (_isInProductList && _actualAmount != 0) {
+    if (_isInProductList && _currentAmount != 0) {
       this
           .saleProductList
           .firstWhere((e) => e.containsKey(product.id))
           .values
           .first
-          .decreaseAmout();
+          .decreaseAmout(this.increment);
       return notifyListeners();
     }
   }
 
-  num getTotal() {
+  num getSubTotal() {
     if (this.saleProductList.isEmpty) {
       return 0;
     }
     num total = 0;
     this.saleProductList.forEach((map) {
-      total += map.values.first.subTotal;
+      total += map.values.first.subtotal;
     });
     return total;
   }

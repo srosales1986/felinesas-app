@@ -1,19 +1,17 @@
 import 'package:chicken_sales_control/src/custom_widgets/custom_widgets.dart';
 import 'package:chicken_sales_control/src/models/User_model.dart';
+import 'package:chicken_sales_control/src/services/FirebaseProvider.dart';
 import 'package:chicken_sales_control/src/services/UserProvider.dart';
 import 'package:chicken_sales_control/src/services/authService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class LoginPage2 extends StatelessWidget {
+class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var _db = FirebaseFirestore.instance;
-
-    Future<QuerySnapshot<Map<String, dynamic>>> getAllUsers =
-        _db.collection('user').get();
-
+    final _db = Provider.of<FirebaseProvider>(context, listen: false);
+    final getAllUsers = _db.fbUsersCollectionRef.get();
     var userProvider = Provider.of<UserProvider>(context, listen: false);
 
     return FutureBuilder<QuerySnapshot<Map<String, dynamic>>>(
@@ -222,7 +220,9 @@ class __PassTextFormFieldState extends State<_PassTextFormField> {
                   _obscureText = !_obscureText;
                 });
               },
-              icon: Icon(Icons.remove_red_eye)),
+              icon: _obscureText
+                  ? Icon(Icons.visibility_off_outlined)
+                  : Icon(Icons.visibility_outlined)),
         ),
       ),
     );

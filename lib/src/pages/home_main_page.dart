@@ -32,11 +32,24 @@ class HomeMainPage extends StatelessWidget {
       getAllProducts.then((value) => productsProvider.fillProductList(
           value.docs.map((e) => Product.fromJson(e.id, e.data())).toList()));
 
+      List<Product> productList = [];
+
+      getAllProducts.then((value) {
+        productList =
+            value.docs.map((e) => Product.fromJson(e.id, e.data())).toList();
+        productsProvider.productList = productList;
+      });
+
       Future<QuerySnapshot<Map<String, dynamic>>> getAllCustomers =
           _db.collection('customers').get();
 
-      getAllCustomers.then((value) => customerProvider.fillCustomerList(
-          value.docs.map((e) => Customer.fromJson(e.id, e.data())).toList()));
+      List<Customer> customerList = [];
+      getAllCustomers.then((value) {
+        customerList =
+            value.docs.map((e) => Customer.fromJson(e.id, e.data())).toList();
+        customerProvider.customerList = customerList;
+      });
+
       return 'OK';
     }
 
@@ -85,8 +98,8 @@ class Home extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       routes: getApplicationRoutes(),
-      // initialRoute: 'delivery_boy_home_page',
       initialRoute: 'delivery_boy_home_page',
+      // initialRoute: 'pdf_page',
     );
   }
 }

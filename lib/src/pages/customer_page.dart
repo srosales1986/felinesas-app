@@ -14,15 +14,24 @@ class CustomerPage extends StatelessWidget {
     // Provider.of<CustomerProvider>(context, listen: false);
     // final customerList = customerProvider.customerList;
 
+    Widget _bottonAction(IconData icon) {
+      return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: InkWell(
+          child: Icon(
+            icon,
+            size: 30.0,
+          ),
+          onTap: () {
+            Navigator.pop(context);
+          },
+        ),
+      );
+    }
+
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () {
-          Navigator.pushReplacementNamed(context, 'new_customer_page');
-        },
-      ),
       appBar: AppBar(
-        automaticallyImplyLeading: true,
+        automaticallyImplyLeading: false,
         centerTitle: true,
         title: Text('Clientes'),
       ),
@@ -36,11 +45,31 @@ class CustomerPage extends StatelessWidget {
           ),
         ),
       ),
+      bottomNavigationBar: BottomAppBar(
+        notchMargin: 8.0,
+        shape: CircularNotchedRectangle(),
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _bottonAction(Icons.home),
+          ],
+        ),
+        // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        // floatingActionButton:
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () {
+          Navigator.pushReplacementNamed(context, 'new_customer_page');
+        },
+      ),
     );
   }
 }
 
-enum MenuOption { Info, Editar, Eliminar }
+enum MenuOption { INFO, EDIT, DELETE }
 
 class CustomerListView extends StatefulWidget {
   final CollectionReference<Map<String, dynamic>> customerCollection;
@@ -74,11 +103,31 @@ class _CustomerListViewState extends State<CustomerListView> {
 
     final customerList = customerProvider.customerList;
 
+    if (customerList.isEmpty) {
+      return Center(
+          child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            Icons.error,
+            color: Colors.grey,
+          ),
+          Text(
+            '¡No hay clientes registrados!',
+            style: TextStyle(color: Colors.grey),
+          ),
+        ],
+      ));
+    }
+
     return ListView.builder(
+        physics: BouncingScrollPhysics(),
         itemCount: customerList.length,
         itemBuilder: (context, index) {
           if (customerList.isEmpty) {
-            return Center(child: CircularProgressIndicator.adaptive());
+            return Center(
+              child: CircularProgressIndicator(),
+            );
           }
           return Column(
             children: [
@@ -86,62 +135,79 @@ class _CustomerListViewState extends State<CustomerListView> {
                 contentPadding: EdgeInsets.symmetric(horizontal: 10),
                 minVerticalPadding: 1,
                 leading: Icon(
-                  Icons.account_circle,
+                  Icons.store,
                   size: 50,
-                  color: Color(0xFFadcbff),
+                  color: Colors.orange.shade400,
                 ),
                 trailing: PopupMenuButton<MenuOption>(
-                  onSelected: (value) {
-                    if (value == MenuOption.Eliminar) {
-                      showDialog(
-                          barrierDismissible: false,
-                          context: context,
-                          builder: (context) {
-                            return BounceInUp(
-                              duration: Duration(milliseconds: 200),
-                              child: AlertDialog(
-                                title: Text('Eliminar cliente'),
-                                content: Container(
-                                  child: Text(
-                                      '¿Está seguro que desea eliminar el cliente?'),
-                                ),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop(false);
-                                    },
-                                    child: Text('Cancelar'),
-                                  ),
-                                  TextButton(
-                                    onPressed: () {
-                                      widget.customerCollection
-                                          .doc(customerList[index].id)
-                                          .delete();
-                                      Navigator.of(context).pop(false);
-                                    },
-                                    child: Text('Eliminar'),
-                                  ),
-                                ],
-                              ),
-                            );
-                          });
-                    }
-                  },
                   itemBuilder: (context) {
                     return <PopupMenuEntry<MenuOption>>[
                       PopupMenuItem(
                         child: Text('Info'),
-                        value: MenuOption.Info,
+                        value: MenuOption.INFO,
                       ),
                       PopupMenuItem(
                         child: Text('Editar'),
-                        value: MenuOption.Editar,
+                        value: MenuOption.EDIT,
                       ),
                       PopupMenuItem(
                         child: Text('Eliminar'),
-                        value: MenuOption.Eliminar,
+                        value: MenuOption.DELETE,
                       ),
                     ];
+                  },
+                  onSelected: (value) {
+                    if (value == MenuOption.DELETE) {
+                      showDeteleDialog(context, customerList, index);
+                    }
+                    if (value == MenuOption.EDIT) {
+                      Navigator.pushReplacementNamed(
+                          context, 'new_customer_page',
+                          arguments: customerList[index]);
+                    }
+                    if (value == MenuOption.INFO) {
+                      TextStyle cardSubTitleStyle = TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                      );
+                      TextStyle cardTextStyle = TextStyle(
+                          fontSize: 16,
+                          overflow: TextOverflow.ellipsis,
+                          color: Colors.black87);
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return BounceInUp(
+                            duration: Duration(milliseconds: 200),
+                            child: AlertDialog(
+                              actionsAlignment: MainAxisAlignment.center,
+                              title: Center(
+                                child: Text(customerList[index].name),
+                              ),
+                              content: buildCardCustomerInfo(
+                                cardTextStyle,
+                                cardSubTitleStyle,
+                                customerList,
+                                index,
+                              ),
+                              actions: [
+                                TextButton(
+                                  style: ButtonStyle(
+                                    fixedSize: MaterialStateProperty.all(
+                                        Size(300, 60)),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.of(context).pop(false);
+                                  },
+                                  child: Container(child: Text('OK')),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      );
+                    }
                   },
                 ),
                 title: Text(
@@ -161,61 +227,87 @@ class _CustomerListViewState extends State<CustomerListView> {
             ],
           );
         });
+  }
 
-    // List<Widget> customerListTile = [];
+  Card buildCardCustomerInfo(TextStyle cardTextStyle,
+      TextStyle cardSubTitleStyle, List<Customer> customerList, int index) {
+    return Card(
+      elevation: 8,
+      child: Container(
+        margin: EdgeInsets.all(10),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            RichText(
+              text: TextSpan(style: cardTextStyle, children: [
+                TextSpan(style: cardSubTitleStyle, text: 'CUIT: '),
+                TextSpan(text: '${customerList[index].cuit}'),
+              ]),
+            ),
+            Divider(),
+            RichText(
+              text: TextSpan(style: cardTextStyle, children: [
+                TextSpan(style: cardSubTitleStyle, text: 'Dirección: '),
+                TextSpan(text: '${customerList[index].address}'),
+              ]),
+            ),
+            Divider(),
+            RichText(
+              text: TextSpan(style: cardTextStyle, children: [
+                TextSpan(style: cardSubTitleStyle, text: 'Cond. IVA: '),
+                TextSpan(text: '${customerList[index].ivaCond}'),
+              ]),
+            ),
+            Divider(),
+            RichText(
+              text: TextSpan(style: cardTextStyle, children: [
+                TextSpan(style: cardSubTitleStyle, text: 'Saldo: '),
+                TextSpan(text: '\$${customerList[index].balance}'),
+              ]),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
-    // customerList.forEach((customer) {
-    //   customerListTile.add(Column(
-    //     children: [
-    //       ListTile(
-    //         contentPadding: EdgeInsets.symmetric(horizontal: 10),
-    //         minVerticalPadding: 1,
-    //         leading: Icon(
-    //           Icons.account_circle,
-    //           size: 50,
-    //           color: Color(0xFFadcbff),
-    //         ),
-    //         trailing: PopupMenuButton<MenuOption>(
-    //           itemBuilder: (context) {
-    //             return <PopupMenuEntry<MenuOption>>[
-    //               PopupMenuItem(
-    //                 child: Text('Info'),
-    //                 value: MenuOption.Info,
-    //               ),
-    //               PopupMenuItem(
-    //                 child: Text('Editar'),
-    //                 value: MenuOption.Editar,
-    //               ),
-    //               PopupMenuItem(
-    //                 child: Text('Eliminar'),
-    //                 value: MenuOption.Eliminar,
-    //               ),
-    //             ];
-    //           },
-    //         ),
-    //         title: Text(
-    //           customer.name,
-    //           style: TextStyle(fontSize: 18),
-    //         ),
-    //         subtitle: Column(
-    //           mainAxisAlignment: MainAxisAlignment.start,
-    //           crossAxisAlignment: CrossAxisAlignment.start,
-    //           // mainAxisSize: MainAxisSize.min,
-    //           children: [
-    //             Text(customer.address),
-    //           ],
-    //         ),
-    //       ),
-    //       Divider(),
-    //     ],
-    //   ));
-    // });
+  /* -------------------------------------------------------------------------- */
+  /*                                DELETE DIALOG                               */
+  /* -------------------------------------------------------------------------- */
 
-    // return Scrollbar(
-    //   child: ListView(
-    //     physics: BouncingScrollPhysics(),
-    //     children: customerListTile,
-    //   ),
-    // );
+  Future<dynamic> showDeteleDialog(
+      BuildContext context, List<Customer> customerList, int index) {
+    return showDialog(
+        barrierDismissible: false,
+        context: context,
+        builder: (context) {
+          return BounceInUp(
+            duration: Duration(milliseconds: 200),
+            child: AlertDialog(
+              title: Text('Eliminar cliente'),
+              content: Container(
+                child: Text('¿Está seguro que desea eliminar el cliente?'),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop(false);
+                  },
+                  child: Text('Cancelar'),
+                ),
+                TextButton(
+                  onPressed: () {
+                    widget.customerCollection
+                        .doc(customerList[index].id)
+                        .delete();
+                    Navigator.of(context).pop(false);
+                  },
+                  child: Text('Eliminar'),
+                ),
+              ],
+            ),
+          );
+        });
   }
 }
