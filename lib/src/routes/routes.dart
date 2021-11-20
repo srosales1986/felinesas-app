@@ -6,10 +6,12 @@ import 'package:chicken_sales_control/src/pages/delivery_boy_home_page.dart';
 import 'package:chicken_sales_control/src/pages/login_page.dart';
 import 'package:chicken_sales_control/src/pages/new_customer_page.dart';
 import 'package:chicken_sales_control/src/pages/new_product_page.dart';
-import 'package:chicken_sales_control/src/pages/pdf_view.dart';
+import 'package:chicken_sales_control/src/pages/customer_payment_page.dart';
+import 'package:chicken_sales_control/src/pages/payment_page.dart';
 import 'package:chicken_sales_control/src/pages/products_price_list.dart';
 import 'package:chicken_sales_control/src/pages/sale_detail/sale_detail_and_finish_sale_page.dart';
 import 'package:chicken_sales_control/src/pages/new_sale_page.dart';
+import 'package:chicken_sales_control/src/pages/sales_page.dart';
 import 'package:chicken_sales_control/src/pages/unload_truck_page.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -27,6 +29,8 @@ Map<String, WidgetBuilder> getApplicationRoutes() {
     'new_customer_page': (BuildContext context) => NewCustomerPage(),
     'sale_detail_and_finish_sale_page': (BuildContext context) =>
         SaleDetailAndFinishPage(),
-    'pdf_page': (BuildContext context) => PdfView(),
+    'customer_payment_page': (BuildContext context) => CustomerPaymentPage(),
+    'payment_page': (BuildContext context) => PaymentPage(),
+    'sales_page': (BuildContext context) => SalesPage(),
   };
 }

@@ -1,5 +1,5 @@
-import 'package:chicken_sales_control/src/models/Customer_model.dart';
-import 'package:chicken_sales_control/src/services/CustomersProvider.dart';
+import 'package:chicken_sales_control/src/pages/customer/customer_list_view_builder.dart';
+import 'package:chicken_sales_control/src/services/FirebaseProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:animate_do/animate_do.dart';
@@ -9,17 +9,27 @@ class NewSalePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final customerCollection =
+        Provider.of<FirebaseProvider>(context, listen: false)
+            .fbCustomersCollectionRef;
+
     return Scaffold(
+      backgroundColor: Colors.grey.shade200,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         centerTitle: true,
-        title: Text('Nueva Venta'),
+        title: Text('Seleccione el cliente'),
       ),
       body: ElasticInRight(
         from: -200,
         duration: Duration(milliseconds: 300),
         child: Container(
-          child: CustomerListView(),
+          child: CustomerListViewBuilder(
+            customerCollection: customerCollection,
+            isToSaleOrPayment: true,
+            navigateTo: 'add_products_page',
+            trailing: Icon(Icons.chevron_right_rounded),
+          ),
         ),
       ),
       bottomNavigationBar: BottomAppBar(
@@ -37,58 +47,5 @@ class NewSalePage extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-class CustomerListView extends StatelessWidget {
-  const CustomerListView({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final customerProvider =
-        Provider.of<CustomerProvider>(context, listen: true);
-
-    final List<Customer> customerList = customerProvider.customerList;
-
-    return ListView.builder(
-        physics: BouncingScrollPhysics(),
-        itemCount: customerList.length,
-        itemBuilder: (context, index) {
-          if (customerList.isEmpty) {
-            return Center(child: CircularProgressIndicator.adaptive());
-          }
-          return Column(
-            children: [
-              ListTile(
-                onTap: () {
-                  Navigator.pushNamed(context, 'add_products_page',
-                      arguments: customerList[index]);
-                },
-                contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                minVerticalPadding: 1,
-                leading: Icon(
-                  Icons.store,
-                  size: 50,
-                  color: Colors.orange,
-                ),
-                title: Text(
-                  customerList[index].name,
-                  style: TextStyle(fontSize: 18),
-                ),
-                subtitle: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  // mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(customerList[index].address),
-                  ],
-                ),
-              ),
-              Divider(),
-            ],
-          );
-        });
   }
 }

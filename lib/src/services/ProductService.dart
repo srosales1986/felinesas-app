@@ -54,7 +54,9 @@ class _ProductListViewState extends State<ProductListView> {
         }
         return Column(
           children: [
+            SizedBox(height: 10),
             ListTile(
+              enabled: productList[index].availabilityInDeposit != 0,
               visualDensity: VisualDensity.compact,
               contentPadding: EdgeInsets.symmetric(horizontal: 6),
               minVerticalPadding: 1,
@@ -86,13 +88,15 @@ class _ProductListViewState extends State<ProductListView> {
                   style: TextStyle(fontSize: 18),
                 ),
               ),
-              trailing: Amount(
-                productId: productList[index].id,
-                // currentCustomer: currentCustomer,
-                product: productList[index],
-              ),
+              trailing: productList[index].availabilityInDeposit != 0
+                  ? Amount(
+                      productId: productList[index].id,
+                      // currentCustomer: currentCustomer,
+                      product: productList[index],
+                    )
+                  : null,
               subtitle: Text(
-                  '\$${productList[index].priceByUnit.toStringAsFixed(2)}'),
+                  '\$${productList[index].priceByUnit.toStringAsFixed(2)} - Stock: ${productList[index].availabilityInDeposit.toStringAsFixed(0)}'),
             ),
             Divider(),
           ],

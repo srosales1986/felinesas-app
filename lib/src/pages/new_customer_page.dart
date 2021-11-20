@@ -19,6 +19,7 @@ class NewCustomerPage extends StatelessWidget {
     bool isANewCustomer = currentCustomer == null;
 
     return Scaffold(
+      backgroundColor: Colors.grey.shade200,
       appBar: AppBar(
         backgroundColor: Theme.of(context).backgroundColor,
         automaticallyImplyLeading: false,
@@ -184,6 +185,7 @@ class _NewCustomerFormState extends State<NewCustomerForm> {
                 border:
                     OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
               ),
+              onEditingComplete: () {},
             ),
             SizedBox(
               height: _spaceBewtweenTextfield,
@@ -194,10 +196,10 @@ class _NewCustomerFormState extends State<NewCustomerForm> {
                 onChanged: (value) => setState(() {
                       if (widget.isANewCustomer) {
                         dropDownValue = value.toString();
-                        FocusScope.of(context).nextFocus();
+                        // FocusScope.of(context).nextFocus();
                       } else {
                         widget.editingCustomer!.ivaCond = value.toString();
-                        FocusScope.of(context).nextFocus();
+                        // FocusScope.of(context).nextFocus();
                       }
                     })),
             SizedBox(

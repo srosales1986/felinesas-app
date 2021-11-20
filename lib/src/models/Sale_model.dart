@@ -4,6 +4,7 @@ import 'package:chicken_sales_control/src/models/User_model.dart';
 
 class Sale {
   String _customerId = '';
+  String _customerName = '';
   DateTime _dateCreated = DateTime.now();
   DateTime _dateModified = DateTime.now();
   List<ProductForSale> _productsList = [];
@@ -21,6 +22,7 @@ class Sale {
 
   factory Sale.newSale(
     String customerId,
+    String customerName,
     List<ProductForSale> productsList,
     UserModel userSeller,
     num subtotal,
@@ -33,6 +35,7 @@ class Sale {
     final _newSale = Sale();
 
     _newSale._customerId = customerId;
+    _newSale._customerName = customerName;
     _newSale._dateCreated = DateTime.now();
     _newSale._discount = discount;
     _newSale._cashInstallment = cashInstallment;
@@ -49,6 +52,7 @@ class Sale {
   Map<String, dynamic> toMap(Sale sale) {
     return {
       'customer_id': sale._customerId,
+      'customer_name': sale._customerName,
       'user_seller': sale._userSeller.toJson(sale._userSeller),
       'date_created': sale._dateCreated,
       'date_modified': sale._dateModified,
@@ -95,13 +99,16 @@ class Sale {
   set customerId(String customerId) => this._customerId = customerId;
   String get customerId => this._customerId;
 
+  set customerName(String customerName) => this._customerName = customerName;
+  String get customerName => this._customerName;
+
   set balanceBeforeSale(num balanceBeforeSale) =>
       this._balanceBeforeSale = balanceBeforeSale;
   num get balanceBeforeSale => this._balanceBeforeSale;
 
   set balanceAfterSale(num balanceAfterSale) =>
       this._balanceAfterSale = balanceAfterSale;
-  num get balanceAfterSale => this.balanceAfterSale;
+  num get balanceAfterSale => this._balanceAfterSale;
 
   set productsList(List<ProductForSale> productsList) =>
       this._productsList = productsList;

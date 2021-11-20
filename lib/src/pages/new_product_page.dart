@@ -18,6 +18,7 @@ class NewProductPage extends StatelessWidget {
     bool isANewProduct = currentProductId == null;
 
     return Scaffold(
+      backgroundColor: Colors.grey.shade200,
       appBar: AppBar(
         backgroundColor: Theme.of(context).backgroundColor,
         automaticallyImplyLeading: false,

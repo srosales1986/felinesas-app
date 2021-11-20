@@ -1,8 +1,11 @@
 import 'package:chicken_sales_control/src/custom_widgets/confirmation_dialog.dart';
 import 'package:chicken_sales_control/src/models/Customer_model.dart';
 import 'package:chicken_sales_control/src/models/ProductForSale.dart';
+import 'package:chicken_sales_control/src/models/invoice_model.dart';
 import 'package:chicken_sales_control/src/pages/sale_detail/sale_details_widgets/SaleDetailDataTable.dart';
 import 'package:chicken_sales_control/src/pages/sale_detail/sale_details_widgets/SubtotalAndTotalCalculate.dart';
+import 'package:chicken_sales_control/src/pdf/pdf_api.dart';
+import 'package:chicken_sales_control/src/pdf/pdf_invoice_api.dart';
 import 'package:chicken_sales_control/src/services/FirebaseProvider.dart';
 import 'package:chicken_sales_control/src/services/SaleProvider.dart';
 import 'package:chicken_sales_control/src/services/UserProvider.dart';
@@ -43,9 +46,10 @@ class _SaleDetailAndFinishPageState extends State<SaleDetailAndFinishPage> {
     var _calculatedTotal = saleProvider.calculatedTotal;
 
     return Scaffold(
+      backgroundColor: Colors.grey.shade200,
       appBar: AppBar(
         centerTitle: true,
-        title: Text('Detalle de la venta V2'),
+        title: Text('Detalle de la venta'),
       ),
       body: SingleChildScrollView(
         physics: BouncingScrollPhysics(),
@@ -70,6 +74,7 @@ class _SaleDetailAndFinishPageState extends State<SaleDetailAndFinishPage> {
                     style: TextStyle(color: Colors.white),
                   ),
                   onPressed: () => showDialog(
+                    barrierDismissible: false,
                     context: context,
                     builder: (context) => ConfirmationDialog(
                       title: 'Finalizar venta',
@@ -97,7 +102,7 @@ class _SaleDetailAndFinishPageState extends State<SaleDetailAndFinishPage> {
       List<ProductForSale> productList,
       num _finalTotal) {
     return showDialog(
-      barrierDismissible: true,
+      barrierDismissible: false,
       context: context,
       builder: (context) {
         return ElasticIn(
@@ -106,57 +111,121 @@ class _SaleDetailAndFinishPageState extends State<SaleDetailAndFinishPage> {
             child: AlertDialog(
               actionsAlignment: MainAxisAlignment.center,
               title: Center(
-                child: Text('Guardando cambios...'),
+                child: Text('Finalizar venta'),
               ),
               content: FutureBuilder(
                 future: closeSale(currentCustomer, productList),
                 builder: (context, snapshot) {
-                  if (snapshot.hasError) {
-                    return Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Center(
-                          child: Text(snapshot.error.toString()),
-                        ),
-                      ],
-                    );
-                  }
-                  if (snapshot.hasData) {
-                    return Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        ElasticIn(
-                          child: Icon(
-                            Icons.check,
-                            color: Colors.green,
-                            size: 30,
+                  final saleProvider =
+                      Provider.of<SaleProvider>(context, listen: false);
+                  final userProvider =
+                      Provider.of<UserProvider>(context, listen: false);
+
+                  switch (snapshot.connectionState) {
+                    case ConnectionState.none:
+                    case ConnectionState.waiting:
+                      return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Center(
+                            child: CircularProgressIndicator.adaptive(),
                           ),
-                        ),
-                        Container(
-                          child: TextButton(
-                            style: ButtonStyle(
-                              fixedSize:
-                                  MaterialStateProperty.all(Size(300, 60)),
+                          SizedBox(height: 10.0),
+                          Text('Esperando concexión...'),
+                        ],
+                      );
+                    case ConnectionState.active:
+                      return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Center(
+                            child: CircularProgressIndicator.adaptive(),
+                          ),
+                          SizedBox(height: 10.0),
+                          Text('Guardando...'),
+                        ],
+                      );
+                    case ConnectionState.done:
+                      if (snapshot.hasError) {
+                        return Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Center(
+                              child: Text(snapshot.error.toString()),
                             ),
-                            onPressed: () {
-                              Navigator.pushReplacementNamed(
-                                  context, 'pdf_page');
-                              // Navigator.of(context).pop(false);
-                            },
-                            child: Container(child: Text('OK')),
-                          ),
-                        ),
-                      ],
-                    );
+                          ],
+                        );
+                      }
+                      if (snapshot.hasData) {
+                        return Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            ElasticIn(
+                              child: Icon(
+                                Icons.check,
+                                color: Colors.green,
+                                size: 30,
+                              ),
+                            ),
+                            Container(
+                              child: TextButton(
+                                style: ButtonStyle(
+                                  fixedSize:
+                                      MaterialStateProperty.all(Size(300, 60)),
+                                ),
+                                onPressed: () async {
+                                  Navigator.pushReplacementNamed(
+                                      context, 'delivery_boy_home_page');
+
+                                  final invoice = Invoice(
+                                    info: InvoiceInfo(
+                                      date:
+                                          saleProvider.currentSale.dateCreated,
+                                      customerName:
+                                          saleProvider.currentCustomer.name,
+                                      sellerName:
+                                          userProvider.currentUser.userName,
+                                      subtotal:
+                                          saleProvider.currentSale.subtotal,
+                                      beforeBalance:
+                                          saleProvider.currentCustomer.balance,
+                                      finalBalance: saleProvider.newBalance,
+                                      total: saleProvider.finalTotal,
+                                      cashIstallment:
+                                          saleProvider.cashInstallment,
+                                      mpInstallment: saleProvider.mpInstallment,
+                                      discount: saleProvider.discount,
+                                    ),
+                                    items: saleProvider.saleProductList
+                                        .map((e) => InvoiceItem(
+                                            productName:
+                                                e.values.first.productName,
+                                            quantity: e.values.first.amount,
+                                            unitPrice: e.values.first.price,
+                                            total: e.values.first.subtotal))
+                                        .toList(),
+                                  );
+
+                                  final pdfFile =
+                                      await PdfInvoiceApi.generate(invoice);
+                                  PdfApi.openFile(pdfFile);
+                                  saleProvider.clear();
+
+                                  // Navigator.of(context).pop(false);
+                                },
+                                child: Container(child: Text('OK')),
+                              ),
+                            ),
+                          ],
+                        );
+                      }
                   }
                   return Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Center(
-                        child: CircularProgressIndicator.adaptive(),
+                        child: Text(snapshot.error.toString()),
                       ),
-                      SizedBox(height: 10.0),
-                      Text('Guardando...'),
                     ],
                   );
                 },
@@ -173,48 +242,54 @@ class _SaleDetailAndFinishPageState extends State<SaleDetailAndFinishPage> {
     final saleProvider = Provider.of<SaleProvider>(context, listen: false);
     final fbInstance = Provider.of<FirebaseProvider>(context, listen: false);
 
-    saleProvider.currentSale.customerId = currentCustomer.id;
+    try {
+      saleProvider.currentSale.customerId = currentCustomer.id;
 
-    saleProvider.currentSale.productsList = productList;
+      saleProvider.currentSale.customerName = currentCustomer.name;
 
-    saleProvider.currentSale.discount = saleProvider.discount;
+      saleProvider.currentSale.productsList = productList;
 
-    saleProvider.currentSale.cashInstallment = saleProvider.cashInstallment;
+      saleProvider.currentSale.discount = saleProvider.discount;
 
-    saleProvider.currentSale.mpInstallment = saleProvider.mpInstallment;
+      saleProvider.currentSale.cashInstallment = saleProvider.cashInstallment;
 
-    saleProvider.currentSale.total = saleProvider.finalTotal;
+      saleProvider.currentSale.mpInstallment = saleProvider.mpInstallment;
 
-    saleProvider.currentSale.balanceBeforeSale = currentCustomer.balance;
+      saleProvider.currentSale.total = saleProvider.finalTotal;
 
-    saleProvider.currentSale.balanceAfterSale = saleProvider.newBalance;
+      saleProvider.currentSale.balanceBeforeSale = currentCustomer.balance;
 
-    saleProvider.currentSale.dateCreated = DateTime.now();
+      saleProvider.currentSale.balanceAfterSale = saleProvider.newBalance;
 
-    // saleProvider.currentSale.total = saleProvider.calculatedTotal;
+      saleProvider.currentSale.dateCreated = DateTime.now();
 
-    await fbInstance.fbSalesCollectionRef
-        .doc()
-        .set(saleProvider.currentSale.toMap(saleProvider.currentSale));
+      // saleProvider.currentSale.total = saleProvider.calculatedTotal;
 
-    await fbInstance.fbCustomersCollectionRef
-        .doc(currentCustomer.id)
-        .update({'balance': saleProvider.newBalance});
+      await fbInstance.fbSalesCollectionRef
+          .doc()
+          .set(saleProvider.currentSale.toMap(saleProvider.currentSale));
 
-    updateProductsAmoun() async {
-      productList.forEach((productForSale) {
-        fbInstance.fbProductsCollectionRef
-            .doc(productForSale.productId)
-            .update({'availability_in_deposit': productForSale.finalAmount});
-        print('${productForSale.productId} ${productForSale.finalAmount}');
-      });
+      await fbInstance.fbCustomersCollectionRef
+          .doc(currentCustomer.id)
+          .update({'balance': saleProvider.newBalance});
+
+      updateProductsAmoun() async {
+        productList.forEach((productForSale) {
+          fbInstance.fbProductsCollectionRef
+              .doc(productForSale.productId)
+              .update({'availability_in_deposit': productForSale.finalAmount});
+          print('${productForSale.productId} ${productForSale.finalAmount}');
+        });
+      }
+
+      await updateProductsAmoun();
+
+      // print(saleProvider.currentSale.toMap(saleProvider.currentSale));
+      // print(saleProvider.currentSale.userSeller.userName);
+      // saleProvider.clear();
+      return 'saved';
+    } catch (e) {
+      return 'error';
     }
-
-    await updateProductsAmoun();
-
-    // print(saleProvider.currentSale.toMap(saleProvider.currentSale));
-    // print(saleProvider.currentSale.userSeller.userName);
-
-    return 'saved';
   }
 }

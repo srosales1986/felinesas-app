@@ -32,6 +32,15 @@ class _MainButtonWidgetState extends State<MainButtonWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      decoration: BoxDecoration(
+        boxShadow: [
+          BoxShadow(
+            blurRadius: 5,
+            color: Colors.black26,
+            offset: Offset(2, 2),
+          ),
+        ],
+      ),
       margin: EdgeInsets.all(10),
       width: width,
       height: height,
@@ -40,13 +49,15 @@ class _MainButtonWidgetState extends State<MainButtonWidget> {
         style: ButtonStyle(
           padding: MaterialStateProperty.all(EdgeInsets.symmetric(vertical: 1)),
           enableFeedback: true,
-          elevation: MaterialStateProperty.all(10),
+          animationDuration: Duration(milliseconds: 400),
+          // elevation: MaterialStateProperty.all(5),
           backgroundColor:
               MaterialStateColor.resolveWith((states) => Colors.white),
           foregroundColor:
               MaterialStateColor.resolveWith((states) => Colors.white),
           overlayColor:
-              MaterialStateColor.resolveWith((states) => Colors.white),
+              MaterialStateColor.resolveWith((states) => Colors.blue.shade200),
+          // shadowColor: MaterialStateProperty.all(Colors.white),
         ),
         onPressed: () {
           HapticFeedback.selectionClick();
@@ -58,7 +69,8 @@ class _MainButtonWidgetState extends State<MainButtonWidget> {
             Container(
               padding: EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: Color(0XFF4893b5),
+                color: Colors.blue,
+                // color: Color(0XFF4893b5),
                 // gradient: LinearGradient(
                 //   colors: [Color(0XFF4893b5), Colors.white],
                 //   begin: Alignment.bottomRight,
@@ -69,14 +81,14 @@ class _MainButtonWidgetState extends State<MainButtonWidget> {
                   BoxShadow(
                     color: Colors.black38,
                     blurRadius: 6,
-                    offset: Offset(3, 3),
+                    offset: Offset(0, 3),
                   ),
                 ],
               ),
               alignment: Alignment.center,
               child: Icon(
                 widget.icon,
-                size: 40,
+                size: 30,
                 color: Colors.white,
               ),
             ),
@@ -96,7 +108,7 @@ class _MainButtonWidgetState extends State<MainButtonWidget> {
                 style: TextStyle(
                   fontWeight: FontWeight.normal,
                   fontSize: 18,
-                  color: Colors.black54,
+                  color: Colors.black87,
                 ),
               ),
             ),

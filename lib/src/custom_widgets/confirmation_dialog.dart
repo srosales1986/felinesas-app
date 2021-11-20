@@ -36,6 +36,7 @@ class ConfirmationDialog extends StatelessWidget {
         TextButton(
           onPressed: () {
             HapticFeedback.heavyImpact();
+            Navigator.of(context).pop(false);
             yesFunction();
             if (navigateTo != null) {
               Navigator.pushReplacementNamed(context, navigateTo!);

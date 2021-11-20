@@ -25,49 +25,81 @@ class _AddProductsPageState extends State<AddProductsPage> {
     saleProvider.currentCustomer =
         ModalRoute.of(context)!.settings.arguments as Customer;
 
-    Customer currentCustomer = saleProvider.currentCustomer;
+    // Customer currentCustomer = saleProvider.currentCustomer;
 
     // final Sale sale = Sale();
 
     return Scaffold(
+      backgroundColor: Colors.grey.shade200,
       appBar: AppBar(
         actions: [
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 5),
+            padding: const EdgeInsets.all(2.0),
             child: Chip(
-              backgroundColor: Colors.amber,
-              label: SubTotalChip(),
+              padding: EdgeInsets.symmetric(horizontal: 4, vertical: 0),
+              label: increment == 0.5 ? Text('+0.5') : Text('+1'),
+              backgroundColor: Colors.green,
             ),
           ),
+          Switch(
+              activeColor: Colors.green,
+              inactiveThumbColor: Colors.grey,
+              value: swithValue,
+              onChanged: (value) => setState(() {
+                    if (value) {
+                      saleProvider.increment = 0.5;
+                      swithValue = !swithValue;
+                    } else {
+                      saleProvider.increment = 1.0;
+                      swithValue = !swithValue;
+                    }
+                  })),
         ],
+        // actions: [
+        //   Padding(
+        //     padding: EdgeInsets.symmetric(horizontal: 5),
+        //     child: Chip(
+        //       backgroundColor: Colors.amber,
+        //       label: SubTotalChip(),
+        //     ),
+        //   ),
+        // ],
         automaticallyImplyLeading: false,
-        title: Text('Cliente: ${currentCustomer.name}'),
+        title: Text('Agregar productos'),
+        // title: Text('Cliente: ${currentCustomer.name}'),
         bottom: PreferredSize(
             child: Container(
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(2.0),
+                    padding: EdgeInsets.symmetric(horizontal: 30),
                     child: Chip(
-                      padding: EdgeInsets.symmetric(horizontal: 4, vertical: 0),
-                      label: increment == 0.5 ? Text('+0.5') : Text('+1'),
-                      backgroundColor: Colors.green,
+                      backgroundColor: Colors.blue.shade300,
+                      label: SubTotalChip(),
                     ),
                   ),
-                  Switch(
-                      activeColor: Colors.green,
-                      inactiveThumbColor: Colors.grey,
-                      value: swithValue,
-                      onChanged: (value) => setState(() {
-                            if (value) {
-                              saleProvider.increment = 0.5;
-                              swithValue = !swithValue;
-                            } else {
-                              saleProvider.increment = 1.0;
-                              swithValue = !swithValue;
-                            }
-                          })),
+                  // Padding(
+                  //   padding: const EdgeInsets.all(2.0),
+                  //   child: Chip(
+                  //     padding: EdgeInsets.symmetric(horizontal: 4, vertical: 0),
+                  //     label: increment == 0.5 ? Text('+0.5') : Text('+1'),
+                  //     backgroundColor: Colors.green,
+                  //   ),
+                  // ),
+                  // Switch(
+                  //     activeColor: Colors.green,
+                  //     inactiveThumbColor: Colors.grey,
+                  //     value: swithValue,
+                  //     onChanged: (value) => setState(() {
+                  //           if (value) {
+                  //             saleProvider.increment = 0.5;
+                  //             swithValue = !swithValue;
+                  //           } else {
+                  //             saleProvider.increment = 1.0;
+                  //             swithValue = !swithValue;
+                  //           }
+                  //         })),
                 ],
               ),
             ),
@@ -81,7 +113,7 @@ class _AddProductsPageState extends State<AddProductsPage> {
       ),
       bottomNavigationBar: BottomAppBar(
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             CancelSaleButton(saleProvider: saleProvider),
             ClearButton(saleProvider: saleProvider),
@@ -105,9 +137,18 @@ class SubTotalChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var saleProvider = Provider.of<SaleProvider>(context, listen: true);
-    return Text(
-      'TOTAL: \$' + saleProvider.getSubTotal().toStringAsFixed(2),
-      style: TextStyle(fontSize: 12),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 30),
+      child: Text(
+        'TOTAL: \$' + saleProvider.getSubTotal().toStringAsFixed(2),
+        style: TextStyle(color: Colors.black38, fontSize: 18, shadows: [
+          Shadow(
+            blurRadius: 10,
+            color: Colors.grey,
+            offset: Offset(1, 1),
+          ),
+        ]),
+      ),
     );
   }
 }
@@ -123,14 +164,23 @@ class ClearButton extends StatelessWidget {
   });
   @override
   Widget build(BuildContext context) {
-    return TextButton.icon(
-      onPressed: () {
-        HapticFeedback.heavyImpact();
-        saleProvider.clear();
-        // Navigator.pushNamed(context, 'delivery_boy_home_page');
-      },
-      icon: Icon(Icons.restore),
-      label: Text('Limpiar'),
+    return Container(
+      margin: EdgeInsets.only(left: 20),
+      child: TextButton.icon(
+        onPressed: () {
+          HapticFeedback.heavyImpact();
+          saleProvider.clear();
+          // Navigator.pushNamed(context, 'delivery_boy_home_page');
+        },
+        icon: Icon(
+          Icons.restore,
+          color: Colors.green,
+        ),
+        label: Text(
+          'Limpiar',
+          style: TextStyle(color: Colors.green),
+        ),
+      ),
     );
   }
 }
@@ -145,14 +195,34 @@ class DetailButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextButton(
-      onPressed: () {
-        HapticFeedback.heavyImpact();
-        Navigator.pushNamed(context, 'sale_detail_and_finish_sale_page');
-      },
-      child: Text(
-        'Detalle',
-        style: TextStyle(fontSize: 18),
+    final saleProvider = Provider.of<SaleProvider>(context, listen: true);
+    return Container(
+      margin: EdgeInsets.only(right: 10),
+      child: TextButton(
+        style: ButtonStyle(
+          backgroundColor: saleProvider.saleProductList.isEmpty
+              ? null
+              : MaterialStateProperty.all(Colors.green),
+        ),
+        onPressed: () {
+          if (saleProvider.saleProductList.isEmpty) {
+            HapticFeedback.heavyImpact();
+            return;
+          }
+          Navigator.pushNamed(context, 'sale_detail_and_finish_sale_page');
+        },
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+          child: Text(
+            'Detalle',
+            style: TextStyle(
+              fontSize: 18,
+              color: saleProvider.saleProductList.isEmpty
+                  ? Colors.grey
+                  : Colors.white,
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -172,26 +242,29 @@ class CancelSaleButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-        onPressed: () {
-          showDialog(
-              barrierDismissible: false,
-              context: context,
-              builder: (context) {
-                return BounceInUp(
-                  duration: Duration(milliseconds: 200),
-                  child: ConfirmationDialog(
-                    title: 'Cancelar venta',
-                    contentText: '¿Está seguro que desea cancelar la venta?',
-                    navigateTo: 'new_sale_page',
-                    yesFunction: saleProvider.saleProductList.clear,
-                  ),
-                );
-              });
-        },
-        icon: Icon(
-          Icons.delete,
-          color: Colors.red,
-        ));
+    return Container(
+      margin: EdgeInsets.only(left: 20),
+      child: IconButton(
+          onPressed: () {
+            showDialog(
+                barrierDismissible: false,
+                context: context,
+                builder: (context) {
+                  return BounceInUp(
+                    duration: Duration(milliseconds: 200),
+                    child: ConfirmationDialog(
+                      title: 'Cancelar venta',
+                      contentText: '¿Está seguro que desea cancelar la venta?',
+                      navigateTo: 'new_sale_page',
+                      yesFunction: saleProvider.saleProductList.clear,
+                    ),
+                  );
+                });
+          },
+          icon: Icon(
+            Icons.delete,
+            color: Colors.red,
+          )),
+    );
   }
 }

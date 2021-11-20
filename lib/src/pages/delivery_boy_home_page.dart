@@ -16,9 +16,12 @@ class _DeliveryBoyHomePageState extends State<DeliveryBoyHomePage> {
   @override
   Widget build(BuildContext context) {
     var userProvider = Provider.of<UserProvider>(context, listen: false);
+    // bool _isAdmin = userProvider.currentUser.rol == 'ADMIN';
+
     return WillPopScope(
       onWillPop: _onWillPopAction,
       child: Scaffold(
+        backgroundColor: Colors.grey.shade200,
         appBar: AppBar(
           title: Text('${userProvider.currentUser.userName}'),
         ),
@@ -60,17 +63,17 @@ class _DeliveryBoyHomePageState extends State<DeliveryBoyHomePage> {
                       child: MainButtonWidget(
                           width: 150,
                           height: 150,
-                          cardText: 'Carga',
-                          route: 'load_page',
-                          icon: Icons.local_shipping),
+                          cardText: 'Registrar Pago',
+                          route: 'customer_payment_page',
+                          icon: Icons.paid_sharp),
                     ),
                     ElasticInUp(
                       child: MainButtonWidget(
                           width: 150,
                           height: 150,
-                          cardText: 'Descarga',
-                          route: 'unload_truck_page',
-                          icon: Icons.assignment_return),
+                          cardText: 'Ventas',
+                          route: 'sales_page',
+                          icon: Icons.list),
                     ),
                   ],
                 ),

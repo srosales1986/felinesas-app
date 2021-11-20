@@ -30,10 +30,15 @@ class ProductPriceList extends StatelessWidget {
     }
 
     return Scaffold(
+      backgroundColor: Colors.grey.shade200,
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
       floatingActionButton: _isAdmin
           ? FloatingActionButton(
-              child: Icon(Icons.add),
+              backgroundColor: Colors.blue,
+              child: Icon(
+                Icons.add,
+                color: Colors.white,
+              ),
               onPressed: () {
                 Navigator.pushReplacementNamed(context, 'new_product_page');
               },
@@ -107,14 +112,29 @@ class _ProductsListViewBuilderState extends State<ProductsListViewBuilder> {
             return Column(
               children: [
                 ListTile(
+                  enabled: docs[index].get('availability_in_deposit') != 0,
                   contentPadding: EdgeInsets.symmetric(horizontal: 10),
                   minVerticalPadding: 1,
-                  leading: CircleAvatar(
-                    backgroundColor: Color(0xFFadcbff),
-                    radius: 27,
-                    child: Text(
-                      docs[index].get('initials'),
-                      style: TextStyle(color: Colors.white),
+                  leading: ClipRRect(
+                    borderRadius: BorderRadius.circular(5),
+                    child: Container(
+                      // color: Colors.white60,
+                      height: 55.0,
+                      width: 55.0,
+                      alignment: Alignment.center,
+                      child: Text(
+                        docs[index].get('initials'),
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.black45,
+                          shadows: [
+                            Shadow(
+                                blurRadius: 5,
+                                color: Colors.black38,
+                                offset: Offset(0, 2)),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                   title: Text(
@@ -185,9 +205,11 @@ class _ProductsListViewBuilderState extends State<ProductsListViewBuilder> {
                                       color: Colors.black87,
                                     );
                                     TextStyle cardTextStyle = TextStyle(
-                                        fontSize: 16,
-                                        overflow: TextOverflow.ellipsis,
-                                        color: Colors.black87);
+                                      fontSize: 16,
+                                      overflow: TextOverflow.ellipsis,
+                                      color: Colors.black87,
+                                    );
+                                    // color: Colors.black87);
                                     showDialog(
                                       context: context,
                                       builder: (context) {

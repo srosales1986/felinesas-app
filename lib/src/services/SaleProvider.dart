@@ -44,11 +44,28 @@ class SaleProvider extends ChangeNotifier {
 
   void clear() {
     this.saleProductList.clear();
+    this.increment = 1.0;
+    this.calculatedTotal = 0;
+    this.newBalance = 0;
+    this.cashInstallment = 0;
+    this.mpInstallment = 0;
+    this.finalInstallment = 0;
+    this.discount = 0;
+    this.finalTotal = 0;
     notifyListeners();
   }
 
   void addAmount(Product product) {
     if (this.saleProductList.any((e) => e.containsKey(product.id))) {
+      if (product.availabilityInDeposit ==
+          this
+              .saleProductList
+              .firstWhere((e) => e.containsKey(product.id))
+              .values
+              .first
+              .amount) {
+        return;
+      }
       this
           .saleProductList
           .firstWhere((e) => e.containsKey(product.id))

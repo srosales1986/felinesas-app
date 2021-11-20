@@ -7,6 +7,7 @@ import 'package:chicken_sales_control/src/services/ProductsProvider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class HomeMainPage extends StatelessWidget {
@@ -95,7 +96,9 @@ class Home extends StatelessWidget {
       ],
       title: 'Venta de Pollo',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        textTheme: GoogleFonts.latoTextTheme(
+          Theme.of(context).textTheme,
+        ),
       ),
       routes: getApplicationRoutes(),
       initialRoute: 'delivery_boy_home_page',
