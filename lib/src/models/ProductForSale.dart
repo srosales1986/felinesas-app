@@ -3,6 +3,7 @@ import 'package:chicken_sales_control/src/models/Product_model.dart';
 class ProductForSale {
   String productId = '';
   String productName = '';
+  String productInitials = '';
   num price = 0.0;
   num amount = 0.0;
   num subtotal = 0.0;
@@ -11,6 +12,7 @@ class ProductForSale {
   ProductForSale(Product product, num amount) {
     this.productId = product.id;
     this.productName = product.name;
+    this.productInitials = product.initials;
     this.price = product.priceByUnit;
     this.amount = amount;
     this.subtotal = this.price * this.amount;
@@ -33,6 +35,7 @@ class ProductForSale {
     return {
       'product_id': productForSale.productId,
       'product_name': productForSale.productName,
+      'product_initials': productForSale.productInitials,
       'price': productForSale.price,
       'amount': productForSale.amount,
       'finalAmount': productForSale.finalAmount,

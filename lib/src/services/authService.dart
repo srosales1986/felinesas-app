@@ -8,6 +8,7 @@ class AuthService {
   Future<String> login(String email, String pass) async {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: pass);
+
       return 'Logged In';
     } catch (e) {
       return 'Error: ${e.toString()}';

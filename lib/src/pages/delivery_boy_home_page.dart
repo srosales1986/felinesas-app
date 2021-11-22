@@ -1,5 +1,7 @@
 import 'package:chicken_sales_control/src/custom_widgets/MainButtonWidget.dart';
+import 'package:chicken_sales_control/src/models/User_model.dart';
 import 'package:chicken_sales_control/src/services/UserProvider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:provider/provider.dart';
@@ -16,16 +18,19 @@ class _DeliveryBoyHomePageState extends State<DeliveryBoyHomePage> {
   @override
   Widget build(BuildContext context) {
     var userProvider = Provider.of<UserProvider>(context, listen: false);
-    // bool _isAdmin = userProvider.currentUser.rol == 'ADMIN';
 
+    bool _isAdmin = userProvider.currentUser.rol == 'ADMIN';
+
+    // SalesSheetsApi.init(userProvider.currentUser.userName);
     return WillPopScope(
       onWillPop: _onWillPopAction,
       child: Scaffold(
         backgroundColor: Colors.grey.shade200,
         appBar: AppBar(
+          automaticallyImplyLeading: true,
           title: Text('${userProvider.currentUser.userName}'),
         ),
-        drawer: _buildDrawer(),
+        drawer: _isAdmin ? _buildDrawer() : null,
         body: SafeArea(
           child: Center(
             child: Column(
@@ -86,6 +91,7 @@ class _DeliveryBoyHomePageState extends State<DeliveryBoyHomePage> {
   }
 
   Future<bool> _onWillPopAction() async {
+    final authService = FirebaseAuth.instance;
     return await showDialog<bool>(
             context: context,
             builder: (context) {
@@ -94,12 +100,17 @@ class _DeliveryBoyHomePageState extends State<DeliveryBoyHomePage> {
                 content: Text('¿Desea salir de la aplicación?'),
                 actions: [
                   TextButton(
-                    onPressed: () => exit(0),
-                    child: Text('Si'),
-                  ),
-                  TextButton(
                     onPressed: () => Navigator.of(context).pop(false),
                     child: Text('No'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      authService.signOut();
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, 'login_page', (route) => false);
+                    },
+                    // onPressed: () => exit(0),
+                    child: Text('Si'),
                   ),
                 ],
               );

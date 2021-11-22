@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 
 class UserProvider extends ChangeNotifier {
   List<UserModel> _userList = [];
-  UserModel _currentUser = UserModel(email: '', userName: '', password: '');
+  UserModel _currentUser = UserModel(
+      id: '', externalId: '', email: '', userName: '', rol: '', password: '');
   bool _isLoading = false;
 
   bool get isLoading => _isLoading;

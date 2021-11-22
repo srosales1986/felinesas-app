@@ -101,8 +101,9 @@ class Home extends StatelessWidget {
         ),
       ),
       routes: getApplicationRoutes(),
-      initialRoute: 'delivery_boy_home_page',
+      // initialRoute: 'delivery_boy_home_page',
       // initialRoute: 'pdf_page',
+      initialRoute: 'login_page',
     );
   }
 }

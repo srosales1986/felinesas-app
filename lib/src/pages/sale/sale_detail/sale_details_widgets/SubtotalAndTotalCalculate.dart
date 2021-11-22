@@ -30,7 +30,7 @@ class _SubtotalAndTotalCalculateState extends State<SubtotalAndTotalCalculate> {
 
   @override
   Widget build(BuildContext context) {
-    var saleProvider = Provider.of<SaleProvider>(context, listen: true);
+    var saleProvider = Provider.of<SaleProvider>(context, listen: false);
 
     final num _total =
         saleProvider.getSubTotal() + saleProvider.currentCustomer.balance;

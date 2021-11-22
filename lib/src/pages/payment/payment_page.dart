@@ -1,10 +1,11 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:chicken_sales_control/src/custom_widgets/confirmation_dialog.dart';
 import 'package:chicken_sales_control/src/models/Customer_model.dart';
-import 'package:chicken_sales_control/src/models/User_model.dart';
 import 'package:chicken_sales_control/src/models/payment_model.dart';
 import 'package:chicken_sales_control/src/services/FirebaseProvider.dart';
+import 'package:chicken_sales_control/src/services/UserProvider.dart';
 import 'package:chicken_sales_control/src/services/payment_provider.dart';
+import 'package:chicken_sales_control/src/util/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -23,14 +24,9 @@ class PaymentPage extends StatelessWidget {
 
     final paymentProvider =
         Provider.of<PaymentProvider>(context, listen: false);
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
 
-    paymentProvider.createPayment(
-        currentCustomer,
-        UserModel(
-          id: '321316',
-          email: 'prueba@mail.com',
-          userName: 'User deprueba',
-        ));
+    paymentProvider.createPayment(currentCustomer, userProvider.currentUser);
 
     final Payment currentPayment = paymentProvider.getCurrentPayment;
 

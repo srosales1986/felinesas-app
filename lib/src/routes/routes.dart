@@ -1,17 +1,17 @@
-import 'package:chicken_sales_control/src/pages/customer_page.dart';
+import 'package:chicken_sales_control/src/pages/customer/customer_page.dart';
 import 'package:chicken_sales_control/src/pages/load_page.dart';
-import 'package:chicken_sales_control/src/pages/add_products_page.dart';
+import 'package:chicken_sales_control/src/pages/sale/add_products_page.dart';
 import 'package:chicken_sales_control/src/pages/delivery_boy_home_page.dart';
 // import 'package:chicken_sales_control/src/pages/login_page.dart';
 import 'package:chicken_sales_control/src/pages/login_page.dart';
-import 'package:chicken_sales_control/src/pages/new_customer_page.dart';
-import 'package:chicken_sales_control/src/pages/new_product_page.dart';
-import 'package:chicken_sales_control/src/pages/customer_payment_page.dart';
-import 'package:chicken_sales_control/src/pages/payment_page.dart';
-import 'package:chicken_sales_control/src/pages/products_price_list.dart';
-import 'package:chicken_sales_control/src/pages/sale_detail/sale_detail_and_finish_sale_page.dart';
-import 'package:chicken_sales_control/src/pages/new_sale_page.dart';
-import 'package:chicken_sales_control/src/pages/sales_page.dart';
+import 'package:chicken_sales_control/src/pages/customer/new_customer_page.dart';
+import 'package:chicken_sales_control/src/pages/product/new_product_page.dart';
+import 'package:chicken_sales_control/src/pages/payment/customer_payment_page.dart';
+import 'package:chicken_sales_control/src/pages/payment/payment_page.dart';
+import 'package:chicken_sales_control/src/pages/product/products_price_list.dart';
+import 'package:chicken_sales_control/src/pages/sale/new_sale_page.dart';
+import 'package:chicken_sales_control/src/pages/sale/sale_detail/sale_detail_and_finish_sale_page.dart';
+import 'package:chicken_sales_control/src/pages/sale/customer_sales_page.dart';
 import 'package:chicken_sales_control/src/pages/unload_truck_page.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -31,6 +31,6 @@ Map<String, WidgetBuilder> getApplicationRoutes() {
         SaleDetailAndFinishPage(),
     'customer_payment_page': (BuildContext context) => CustomerPaymentPage(),
     'payment_page': (BuildContext context) => PaymentPage(),
-    'sales_page': (BuildContext context) => SalesPage(),
+    'sales_page': (BuildContext context) => CustomerSalesPage(),
   };
 }

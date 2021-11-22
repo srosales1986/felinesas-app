@@ -17,7 +17,7 @@ class _AddProductsPageState extends State<AddProductsPage> {
   bool swithValue = false;
   @override
   Widget build(BuildContext context) {
-    final saleProvider = Provider.of<SaleProvider>(context, listen: false);
+    final saleProvider = Provider.of<SaleProvider>(context, listen: true);
     final _db = Provider.of<FirebaseProvider>(context, listen: false);
     final _firebaseInstance = _db.fbInstance;
     num increment = saleProvider.increment;
@@ -29,100 +29,110 @@ class _AddProductsPageState extends State<AddProductsPage> {
 
     // final Sale sale = Sale();
 
-    return Scaffold(
-      backgroundColor: Colors.grey.shade200,
-      appBar: AppBar(
-        actions: [
-          Padding(
-            padding: const EdgeInsets.all(2.0),
-            child: Chip(
-              padding: EdgeInsets.symmetric(horizontal: 4, vertical: 0),
-              label: increment == 0.5 ? Text('+0.5') : Text('+1'),
-              backgroundColor: Colors.green,
-            ),
-          ),
-          Switch(
-              activeColor: Colors.green,
-              inactiveThumbColor: Colors.grey,
-              value: swithValue,
-              onChanged: (value) => setState(() {
-                    if (value) {
-                      saleProvider.increment = 0.5;
-                      swithValue = !swithValue;
-                    } else {
-                      saleProvider.increment = 1.0;
-                      swithValue = !swithValue;
-                    }
-                  })),
-        ],
-        // actions: [
-        //   Padding(
-        //     padding: EdgeInsets.symmetric(horizontal: 5),
-        //     child: Chip(
-        //       backgroundColor: Colors.amber,
-        //       label: SubTotalChip(),
-        //     ),
-        //   ),
-        // ],
-        automaticallyImplyLeading: false,
-        title: Text('Agregar productos'),
-        // title: Text('Cliente: ${currentCustomer.name}'),
-        bottom: PreferredSize(
-            child: Container(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 30),
-                    child: Chip(
-                      backgroundColor: Colors.blue.shade300,
-                      label: SubTotalChip(),
-                    ),
-                  ),
-                  // Padding(
-                  //   padding: const EdgeInsets.all(2.0),
-                  //   child: Chip(
-                  //     padding: EdgeInsets.symmetric(horizontal: 4, vertical: 0),
-                  //     label: increment == 0.5 ? Text('+0.5') : Text('+1'),
-                  //     backgroundColor: Colors.green,
-                  //   ),
-                  // ),
-                  // Switch(
-                  //     activeColor: Colors.green,
-                  //     inactiveThumbColor: Colors.grey,
-                  //     value: swithValue,
-                  //     onChanged: (value) => setState(() {
-                  //           if (value) {
-                  //             saleProvider.increment = 0.5;
-                  //             swithValue = !swithValue;
-                  //           } else {
-                  //             saleProvider.increment = 1.0;
-                  //             swithValue = !swithValue;
-                  //           }
-                  //         })),
-                ],
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        backgroundColor: Colors.grey.shade200,
+        appBar: AppBar(
+          actions: [
+            Padding(
+              padding: const EdgeInsets.all(2.0),
+              child: Chip(
+                padding: EdgeInsets.symmetric(horizontal: 4, vertical: 0),
+                label: increment == 0.5 ? Text('+0.5') : Text('+1'),
+                backgroundColor: Colors.green,
               ),
             ),
-            preferredSize: Size(10, 40)),
-      ),
-      body: Scrollbar(
-        child: ProductListView(
-          // currentCustomer: currentCustomer,
-          productsCollection: _firebaseInstance.collection('products'),
-        ),
-      ),
-      bottomNavigationBar: BottomAppBar(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            CancelSaleButton(saleProvider: saleProvider),
-            ClearButton(saleProvider: saleProvider),
-            DetailButton(),
+            Switch(
+                activeColor: Colors.green,
+                inactiveThumbColor: Colors.grey,
+                value: swithValue,
+                onChanged: (value) => setState(() {
+                      if (value) {
+                        saleProvider.increment = 0.5;
+                        swithValue = !swithValue;
+                      } else {
+                        saleProvider.increment = 1.0;
+                        swithValue = !swithValue;
+                      }
+                    })),
           ],
+          // actions: [
+          //   Padding(
+          //     padding: EdgeInsets.symmetric(horizontal: 5),
+          //     child: Chip(
+          //       backgroundColor: Colors.amber,
+          //       label: SubTotalChip(),
+          //     ),
+          //   ),
+          // ],
+          automaticallyImplyLeading: false,
+          title: Text('Agregar productos'),
+          // title: Text('Cliente: ${currentCustomer.name}'),
+          bottom: PreferredSize(
+              child: Container(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 30),
+                      child: Chip(
+                        backgroundColor: Colors.blue.shade300,
+                        label: SubTotalChip(),
+                      ),
+                    ),
+                    // Padding(
+                    //   padding: const EdgeInsets.all(2.0),
+                    //   child: Chip(
+                    //     padding: EdgeInsets.symmetric(horizontal: 4, vertical: 0),
+                    //     label: increment == 0.5 ? Text('+0.5') : Text('+1'),
+                    //     backgroundColor: Colors.green,
+                    //   ),
+                    // ),
+                    // Switch(
+                    //     activeColor: Colors.green,
+                    //     inactiveThumbColor: Colors.grey,
+                    //     value: swithValue,
+                    //     onChanged: (value) => setState(() {
+                    //           if (value) {
+                    //             saleProvider.increment = 0.5;
+                    //             swithValue = !swithValue;
+                    //           } else {
+                    //             saleProvider.increment = 1.0;
+                    //             swithValue = !swithValue;
+                    //           }
+                    //         })),
+                  ],
+                ),
+              ),
+              preferredSize: Size(10, 40)),
+        ),
+        body: Scrollbar(
+          child: ProductListView(
+            // currentCustomer: currentCustomer,
+            productsCollection: _firebaseInstance.collection('products'),
+          ),
+        ),
+        bottomNavigationBar: BottomAppBar(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              CancelSaleButton(saleProvider: saleProvider),
+              ClearButton(saleProvider: saleProvider),
+              DetailButton(),
+            ],
+          ),
         ),
       ),
     );
   }
+
+  // Future<bool> _onWillPopFunction() {
+  //   final saleProvider = Provider.of<SaleProvider>(context, listen: false);
+  //   saleProvider.clear();
+  //   Navigator.pushNamedAndRemoveUntil(context, '', (route) => false);
+  //   Future resp = Future
+  // }
 }
 
 /* -------------------------------------------------------------------------- */

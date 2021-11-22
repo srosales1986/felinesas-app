@@ -4,6 +4,7 @@ import 'package:chicken_sales_control/src/services/FirebaseProvider.dart';
 import 'package:chicken_sales_control/src/services/UserProvider.dart';
 import 'package:chicken_sales_control/src/services/authService.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -24,18 +25,22 @@ class LoginPage extends StatelessWidget {
             return Center(
               child: CircularProgressIndicator.adaptive(),
             );
-          }
-          if (snapshot.hasData && userProvider.userList.isEmpty) {
-            userProvider.fillUserList(snapshot.data!.docs
-                .map((e) => UserModel.fromJson(e.id, e.data()))
-                .toList());
+          } else {
+            if (snapshot.hasData && userProvider.userList.isEmpty) {
+              userProvider.fillUserList(snapshot.data!.docs
+                  .map((e) => UserModel.fromJson(e.id, e.data()))
+                  .toList());
 
-            return _LoginScreen();
+              return _LoginScreen();
+            } else {
+              if (userProvider.userList.isNotEmpty) {
+                return _LoginScreen();
+              }
+              return Center(
+                child: CircularProgressIndicator.adaptive(),
+              );
+            }
           }
-
-          return Center(
-            child: CircularProgressIndicator.adaptive(),
-          );
         });
   }
 }
@@ -84,6 +89,7 @@ class _LoginFrom extends StatelessWidget {
   Widget build(BuildContext context) {
     final authService = AuthService();
     var userPovider = Provider.of<UserProvider>(context, listen: false);
+
     return Container(
       child: Form(
         child: Column(
@@ -106,9 +112,23 @@ class _LoginFrom extends StatelessWidget {
                   )
                       .then((value) {
                     if (value == 'Logged In') {
+                      try {
+                        final authService = FirebaseAuth.instance;
+                        final uId = authService.currentUser!.uid;
+
+                        userPovider.currentUser.externalId = uId;
+                        final indexOfCurrentUser = userPovider.userList
+                            .indexWhere((user) => user.externalId == uId);
+                        userPovider.currentUser.rol =
+                            userPovider.userList[indexOfCurrentUser].rol;
+                      } on Exception catch (e) {
+                        print(e);
+                      }
+
                       FocusScope.of(context).unfocus();
                       Navigator.pushReplacementNamed(
                           context, 'delivery_boy_home_page');
+                      userPovider.setIsLoading(false);
                     } else {
                       final snackBar = SnackBar(
                         content: const Text('¡Contraseña incorrecta!'),
@@ -197,7 +217,7 @@ class __PassTextFormFieldState extends State<_PassTextFormField> {
       onChanged: (String? value) {
         userPovider.currentUser.password = value.toString().trim();
       },
-      initialValue: userPovider.currentUser.password ?? null,
+      // initialValue: userPovider.currentUser.password ?? null,
       // controller: userPasswordController,
       obscureText: _obscureText,
       autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -221,8 +241,8 @@ class __PassTextFormFieldState extends State<_PassTextFormField> {
                 });
               },
               icon: _obscureText
-                  ? Icon(Icons.visibility_off_outlined)
-                  : Icon(Icons.visibility_outlined)),
+                  ? Icon(Icons.visibility_outlined)
+                  : Icon(Icons.visibility_off_outlined)),
         ),
       ),
     );

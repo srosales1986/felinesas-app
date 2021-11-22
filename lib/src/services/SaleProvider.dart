@@ -18,7 +18,20 @@ class SaleProvider extends ChangeNotifier {
   late num discount;
   late num finalTotal;
 
-  final Sale currentSale = Sale();
+  Sale currentSale = Sale();
+
+  void clearCurrenSale() {
+    this.currentSale.balanceAfterSale = 0;
+    this.currentSale.balanceBeforeSale = 0;
+    this.currentSale.customerId = '';
+    this.currentSale.cashInstallment = 0;
+    this.currentSale.customerName = '';
+    this.currentSale.discount = 0;
+    this.currentSale.mpInstallment = 0;
+    this.currentSale.productsList = [];
+    this.currentSale.subtotal = 0;
+    this.currentSale.total = 0;
+  }
   // late AnimationController _amountAnimationController;
 
   SaleProvider() {
