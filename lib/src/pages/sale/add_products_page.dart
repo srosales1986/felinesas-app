@@ -34,74 +34,57 @@ class _AddProductsPageState extends State<AddProductsPage> {
       child: Scaffold(
         backgroundColor: Colors.grey.shade200,
         appBar: AppBar(
-          actions: [
-            Padding(
-              padding: const EdgeInsets.all(2.0),
-              child: Chip(
-                padding: EdgeInsets.symmetric(horizontal: 4, vertical: 0),
-                label: increment == 0.5 ? Text('+0.5') : Text('+1'),
-                backgroundColor: Colors.green,
-              ),
-            ),
-            Switch(
-                activeColor: Colors.green,
-                inactiveThumbColor: Colors.grey,
-                value: swithValue,
-                onChanged: (value) => setState(() {
-                      if (value) {
-                        saleProvider.increment = 0.5;
-                        swithValue = !swithValue;
-                      } else {
-                        saleProvider.increment = 1.0;
-                        swithValue = !swithValue;
-                      }
-                    })),
-          ],
-          // actions: [
-          //   Padding(
-          //     padding: EdgeInsets.symmetric(horizontal: 5),
-          //     child: Chip(
-          //       backgroundColor: Colors.amber,
-          //       label: SubTotalChip(),
-          //     ),
-          //   ),
-          // ],
+          centerTitle: true,
           automaticallyImplyLeading: false,
           title: Text('Agregar productos'),
           // title: Text('Cliente: ${currentCustomer.name}'),
           bottom: PreferredSize(
               child: Container(
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 30),
-                      child: Chip(
-                        backgroundColor: Colors.blue.shade300,
-                        label: SubTotalChip(),
+                      padding: const EdgeInsets.only(left: 5),
+                      child: SizedBox(
+                        width: 200,
+                        child: Chip(
+                          backgroundColor: Colors.blue.shade300,
+                          label: SizedBox(
+                            width: 200,
+                            child: SubTotalChip(),
+                          ),
+                        ),
                       ),
                     ),
-                    // Padding(
-                    //   padding: const EdgeInsets.all(2.0),
-                    //   child: Chip(
-                    //     padding: EdgeInsets.symmetric(horizontal: 4, vertical: 0),
-                    //     label: increment == 0.5 ? Text('+0.5') : Text('+1'),
-                    //     backgroundColor: Colors.green,
-                    //   ),
-                    // ),
-                    // Switch(
-                    //     activeColor: Colors.green,
-                    //     inactiveThumbColor: Colors.grey,
-                    //     value: swithValue,
-                    //     onChanged: (value) => setState(() {
-                    //           if (value) {
-                    //             saleProvider.increment = 0.5;
-                    //             swithValue = !swithValue;
-                    //           } else {
-                    //             saleProvider.increment = 1.0;
-                    //             swithValue = !swithValue;
-                    //           }
-                    //         })),
+                    Padding(
+                      padding: const EdgeInsets.all(2.0),
+                      child: Chip(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 4, vertical: 0),
+                        label: increment == 0.5
+                            ? Text('Sumar de a 0.5',
+                                style: TextStyle(color: Colors.black54))
+                            : Text('Sumar de a 1.0',
+                                style: TextStyle(color: Colors.black54)),
+                        backgroundColor: Colors.blue.shade300,
+                      ),
+                    ),
+                    Switch(
+                      activeColor: Colors.grey.shade400,
+                      inactiveThumbColor: Colors.grey,
+                      value: swithValue,
+                      onChanged: (value) => setState(
+                        () {
+                          if (value) {
+                            saleProvider.increment = 0.5;
+                            swithValue = !swithValue;
+                          } else {
+                            saleProvider.increment = 1.0;
+                            swithValue = !swithValue;
+                          }
+                        },
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -126,13 +109,6 @@ class _AddProductsPageState extends State<AddProductsPage> {
       ),
     );
   }
-
-  // Future<bool> _onWillPopFunction() {
-  //   final saleProvider = Provider.of<SaleProvider>(context, listen: false);
-  //   saleProvider.clear();
-  //   Navigator.pushNamedAndRemoveUntil(context, '', (route) => false);
-  //   Future resp = Future
-  // }
 }
 
 /* -------------------------------------------------------------------------- */
@@ -147,11 +123,10 @@ class SubTotalChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var saleProvider = Provider.of<SaleProvider>(context, listen: true);
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30),
+    return Center(
       child: Text(
         'TOTAL: \$' + saleProvider.getSubTotal().toStringAsFixed(2),
-        style: TextStyle(color: Colors.black38, fontSize: 18, shadows: [
+        style: TextStyle(color: Colors.black54, fontSize: 18, shadows: [
           Shadow(
             blurRadius: 10,
             color: Colors.grey,

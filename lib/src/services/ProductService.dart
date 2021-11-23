@@ -72,12 +72,6 @@ class _ProductListViewState extends State<ProductListView> {
                     style: TextStyle(
                       fontSize: 16,
                       color: Colors.black54,
-                      shadows: [
-                        Shadow(
-                            blurRadius: 5,
-                            color: Colors.black38,
-                            offset: Offset(0, 2)),
-                      ],
                     ),
                   ),
                 ),
@@ -125,30 +119,39 @@ class Amount extends StatelessWidget {
     // final currentCustomer = this.currentCustomer;
     final product = this.product;
 
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        IconButton(
-            onPressed: () {
-              saleProvider.subtractAmount(product);
-            },
-            icon: Icon(
-              Icons.remove_circle,
-              color: Colors.blue,
-            )),
-        Container(
-          child: AmountNumber(productId: productId),
-        ),
-        IconButton(
-            onPressed: () {
-              saleProvider.addAmount(product);
-            },
-            icon: Icon(
-              Icons.add_circle,
-              color: Colors.blue,
-            )),
-      ],
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.grey.shade300,
+        shape: BoxShape.rectangle,
+        borderRadius: BorderRadius.circular(30),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          IconButton(
+              onPressed: () {
+                saleProvider.subtractAmount(product);
+              },
+              icon: Icon(
+                Icons.remove_circle,
+                color: Colors.grey,
+                size: 30,
+              )),
+          Container(
+            child: AmountNumber(productId: productId),
+          ),
+          IconButton(
+              onPressed: () {
+                saleProvider.addAmount(product);
+              },
+              icon: Icon(
+                Icons.add_circle,
+                color: Colors.blue.shade400,
+                size: 30,
+              )),
+        ],
+      ),
     );
   }
 }
@@ -167,9 +170,13 @@ class AmountNumber extends StatelessWidget {
 
     if (saleProductList.isEmpty ||
         !saleProductList.any((e) => e.containsKey(productId))) {
-      return Text(
-        '0',
-        style: TextStyle(fontSize: 18),
+      return Container(
+        padding: EdgeInsets.symmetric(horizontal: 0),
+        margin: EdgeInsets.symmetric(horizontal: 17),
+        child: Text(
+          '0',
+          style: TextStyle(fontSize: 18),
+        ),
       );
     }
     var _actualAmount = saleProductList
@@ -179,9 +186,13 @@ class AmountNumber extends StatelessWidget {
         .amount
         .toString();
 
-    return Text(
-      '$_actualAmount',
-      style: TextStyle(fontSize: 18),
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 0),
+      margin: EdgeInsets.symmetric(horizontal: 10),
+      child: Text(
+        '$_actualAmount',
+        style: TextStyle(fontSize: 18),
+      ),
     );
   }
 }
