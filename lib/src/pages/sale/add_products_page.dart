@@ -46,11 +46,11 @@ class _AddProductsPageState extends State<AddProductsPage> {
                     Padding(
                       padding: const EdgeInsets.only(left: 5),
                       child: SizedBox(
-                        width: 200,
+                        width: 170,
                         child: Chip(
                           backgroundColor: Colors.blue.shade300,
                           label: SizedBox(
-                            width: 200,
+                            width: 170,
                             child: SubTotalChip(),
                           ),
                         ),

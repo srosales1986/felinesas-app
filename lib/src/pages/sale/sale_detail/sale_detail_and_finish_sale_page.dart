@@ -236,13 +236,13 @@ class _SaleDetailAndFinishPageState extends State<SaleDetailAndFinishPage> {
                                         .toList(),
                                   );
 
-                                  final pdfFile =
-                                      await PdfInvoiceApi.generate(invoice);
-                                  PdfApi.openFile(pdfFile);
                                   saleProvider.clear();
                                   saleProvider.clearCurrenSale();
                                   saleProvider.saleProductList = [];
                                   saleProvider.finalTotal = 0;
+                                  final pdfFile =
+                                      await PdfInvoiceApi.generate(invoice);
+                                  PdfApi.openFile(pdfFile);
 
                                   // Navigator.of(context).pop(false);
                                 },
