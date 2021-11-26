@@ -1,11 +1,9 @@
 import 'package:chicken_sales_control/src/custom_widgets/MainButtonWidget.dart';
-import 'package:chicken_sales_control/src/models/User_model.dart';
 import 'package:chicken_sales_control/src/services/UserProvider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:provider/provider.dart';
-import 'dart:io';
 
 class DeliveryBoyHomePage extends StatefulWidget {
   const DeliveryBoyHomePage({Key? key}) : super(key: key);

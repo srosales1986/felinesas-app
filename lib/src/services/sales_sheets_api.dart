@@ -2,7 +2,10 @@ import 'package:chicken_sales_control/src/models/gsheet/sale_fields.dart';
 import 'package:gsheets/gsheets.dart';
 
 class SalesSheetsApi {
-  static final _spreadsheetId = '1_9w7xm6i7NG5ZXiPqDuWQ_m8POm82Vbpwq-hefWiXdY';
+  // static final _spreadsheetId = '1_9w7xm6i7NG5ZXiPqDuWQ_m8POm82Vbpwq-hefWiXdY';
+  static String _spreadsheetId = '';
+  static set spreadsheetId(String spreadsheetId) =>
+      _spreadsheetId = spreadsheetId;
 
   static Worksheet? _customerSheet;
 

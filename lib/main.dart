@@ -1,17 +1,19 @@
 import 'package:chicken_sales_control/src/pages/home_main_page.dart';
+import 'package:chicken_sales_control/src/services/ConfigProvider.dart';
 import 'package:chicken_sales_control/src/services/CustomersProvider.dart';
 import 'package:chicken_sales_control/src/services/FirebaseProvider.dart';
 import 'package:chicken_sales_control/src/services/ProductsProvider.dart';
 import 'package:chicken_sales_control/src/services/SaleProvider.dart';
 import 'package:chicken_sales_control/src/services/UserProvider.dart';
 import 'package:chicken_sales_control/src/services/payment_provider.dart';
+import 'package:chicken_sales_control/src/services/sales_sheets_api.dart';
 // import 'package:chicken_sales_control/src/services/sales_sheets_api.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  // WidgetsFlutterBinding.ensureInitialized();
 
   runApp(MultiProvider(
     providers: [
@@ -33,6 +35,9 @@ void main() async {
       ChangeNotifierProvider(
         create: (_) => PaymentProvider(),
       ),
+      ChangeNotifierProvider(
+        create: (_) => ConfigProvider(),
+      ),
     ],
     child: MyApp(),
   ));
@@ -45,7 +50,6 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
-
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
@@ -60,6 +64,7 @@ class _MyAppState extends State<MyApp> {
           // Once complete, show your application
           if (snapshot.connectionState == ConnectionState.done) {
             print('ConnectionState.done');
+
             return HomeMainPage();
           }
 

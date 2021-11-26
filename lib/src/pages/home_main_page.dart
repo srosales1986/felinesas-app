@@ -1,9 +1,11 @@
 import 'package:chicken_sales_control/src/models/Customer_model.dart';
 import 'package:chicken_sales_control/src/models/Product_model.dart';
 import 'package:chicken_sales_control/src/routes/routes.dart';
+import 'package:chicken_sales_control/src/services/ConfigProvider.dart';
 import 'package:chicken_sales_control/src/services/CustomersProvider.dart';
 import 'package:chicken_sales_control/src/services/FirebaseProvider.dart';
 import 'package:chicken_sales_control/src/services/ProductsProvider.dart';
+import 'package:chicken_sales_control/src/services/sales_sheets_api.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -18,6 +20,13 @@ class HomeMainPage extends StatelessWidget {
     fillPoviders() async {
       final firebaseProvider =
           Provider.of<FirebaseProvider>(context, listen: false);
+
+      final configProvider =
+          Provider.of<ConfigProvider>(context, listen: false);
+
+      await configProvider
+          .getSpreadSheetId()
+          .then((value) => SalesSheetsApi.spreadsheetId = value);
 
       var _db = firebaseProvider.fbInstance;
 
