@@ -9,7 +9,8 @@ class SalesSheetsApi {
 
   static Worksheet? _customerSheet;
 
-  static Future init(String customerName, Map credentials) async {
+  static Future init(
+      String customerName, Map<String, dynamic> credentials) async {
     final _gsheets = GSheets(credentials);
     try {
       final spreadsheet = await _gsheets.spreadsheet(_spreadsheetId);

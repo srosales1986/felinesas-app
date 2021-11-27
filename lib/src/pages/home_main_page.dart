@@ -30,6 +30,12 @@ class HomeMainPage extends StatelessWidget {
 
       var _db = firebaseProvider.fbInstance;
 
+      firebaseProvider.fbConfigCollectionRef.get().then((value) {
+        value.docs.forEach((element) {
+          configProvider.setCurrentConfig(element.data());
+        });
+      });
+
       var productsProvider =
           Provider.of<ProductsProvider>(context, listen: false);
 

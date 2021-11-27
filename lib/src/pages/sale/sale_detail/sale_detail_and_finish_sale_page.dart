@@ -7,6 +7,7 @@ import 'package:chicken_sales_control/src/models/invoice_model.dart';
 import 'package:chicken_sales_control/src/pages/sale/sale_detail/sale_details_widgets/SaleDetailDataTable.dart';
 import 'package:chicken_sales_control/src/pdf/pdf_api.dart';
 import 'package:chicken_sales_control/src/pdf/pdf_invoice_api.dart';
+import 'package:chicken_sales_control/src/services/ConfigProvider.dart';
 import 'package:chicken_sales_control/src/services/FirebaseProvider.dart';
 import 'package:chicken_sales_control/src/services/SaleProvider.dart';
 import 'package:chicken_sales_control/src/services/UserProvider.dart';
@@ -274,6 +275,7 @@ class _SaleDetailAndFinishPageState extends State<SaleDetailAndFinishPage> {
       Customer currentCustomer, List<ProductForSale> productList) async {
     final saleProvider = Provider.of<SaleProvider>(context, listen: false);
     final fbInstance = Provider.of<FirebaseProvider>(context, listen: false);
+    // final configProvider = Provider.of<ConfigProvider>(context, listen: false);
     List<String> dataToSheet = [];
 
     Future<String> getJson() {
@@ -281,8 +283,11 @@ class _SaleDetailAndFinishPageState extends State<SaleDetailAndFinishPage> {
     }
 
     try {
-      final Map _credentials = json.decode(await getJson());
-      await SalesSheetsApi.init(currentCustomer.name, _credentials);
+      final Map<String, dynamic> _credentials = json.decode(await getJson());
+      // Map<String, dynamic> _credentials = configProvider.currentConfig.toJson();
+      print(_credentials);
+
+      SalesSheetsApi.init(currentCustomer.name, _credentials);
 
       saleProvider.currentSale.customerId = currentCustomer.id;
 
