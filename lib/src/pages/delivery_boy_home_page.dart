@@ -70,14 +70,23 @@ class _DeliveryBoyHomePageState extends State<DeliveryBoyHomePage> {
                           route: 'customer_payment_page',
                           icon: Icons.paid_sharp),
                     ),
-                    ElasticInUp(
-                      child: MainButtonWidget(
-                          width: 150,
-                          height: 150,
-                          cardText: 'Ventas',
-                          route: 'sales_page',
-                          icon: Icons.list),
-                    ),
+                    _isAdmin
+                        ? ElasticInUp(
+                            child: MainButtonWidget(
+                                width: 150,
+                                height: 150,
+                                cardText: 'Ventas',
+                                route: 'user_sales_page',
+                                icon: Icons.list),
+                          )
+                        : ElasticInUp(
+                            child: MainButtonWidget(
+                                width: 150,
+                                height: 150,
+                                cardText: 'Nuevo cliente',
+                                route: 'new_customer_page',
+                                icon: Icons.add_business),
+                          ),
                   ],
                 ),
               ],

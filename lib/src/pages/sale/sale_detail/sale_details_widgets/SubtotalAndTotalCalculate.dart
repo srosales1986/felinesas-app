@@ -167,7 +167,14 @@ class _SubtotalAndTotalCalculateState extends State<SubtotalAndTotalCalculate> {
                           if (value == '.' || value == '0') {
                             _cashInstallmentController.clear();
                           } else {
-                            setState(() {});
+                            setState(() {
+                              if (value != '') {
+                                saleProvider.cashInstallment =
+                                    double.parse(value);
+                              } else {
+                                saleProvider.cashInstallment = 0;
+                              }
+                            });
                           }
                         },
                         decoration: InputDecoration(
@@ -206,7 +213,14 @@ class _SubtotalAndTotalCalculateState extends State<SubtotalAndTotalCalculate> {
                           if (value == '.' || value == '0') {
                             _mpInstallmentController.clear();
                           } else {
-                            setState(() {});
+                            setState(() {
+                              if (value != '') {
+                                saleProvider.mpInstallment =
+                                    double.parse(value);
+                              } else {
+                                saleProvider.mpInstallment = 0;
+                              }
+                            });
                           }
                         },
                         decoration: InputDecoration(
@@ -244,7 +258,13 @@ class _SubtotalAndTotalCalculateState extends State<SubtotalAndTotalCalculate> {
                           if (value == '.' || value == '0') {
                             _discountController.clear();
                           } else {
-                            setState(() {});
+                            setState(() {
+                              if (value != '') {
+                                saleProvider.discount = double.parse(value);
+                              } else {
+                                saleProvider.discount = 0;
+                              }
+                            });
                           }
                         },
                         textAlign: TextAlign.center,

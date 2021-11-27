@@ -7,7 +7,6 @@ import 'package:chicken_sales_control/src/models/invoice_model.dart';
 import 'package:chicken_sales_control/src/pages/sale/sale_detail/sale_details_widgets/SaleDetailDataTable.dart';
 import 'package:chicken_sales_control/src/pdf/pdf_api.dart';
 import 'package:chicken_sales_control/src/pdf/pdf_invoice_api.dart';
-import 'package:chicken_sales_control/src/services/ConfigProvider.dart';
 import 'package:chicken_sales_control/src/services/FirebaseProvider.dart';
 import 'package:chicken_sales_control/src/services/SaleProvider.dart';
 import 'package:chicken_sales_control/src/services/UserProvider.dart';
@@ -53,12 +52,22 @@ class _SaleDetailAndFinishPageState extends State<SaleDetailAndFinishPage> {
     var _calculatedTotal = saleProvider.calculatedTotal;
 
     return WillPopScope(
-      onWillPop: () async => true,
+      onWillPop: () async => false,
       child: Scaffold(
         backgroundColor: Colors.grey.shade200,
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           centerTitle: true,
           title: Text('Detalle de la venta'),
+          leading: IconButton(
+            onPressed: () {
+              saleProvider.clearSaleValues();
+              Navigator.pushNamedAndRemoveUntil(
+                  context, 'add_products_page', (route) => false,
+                  arguments: currentCustomer);
+            },
+            icon: Icon(Icons.chevron_left_rounded),
+          ),
         ),
         body: SingleChildScrollView(
           physics: BouncingScrollPhysics(),
@@ -287,7 +296,7 @@ class _SaleDetailAndFinishPageState extends State<SaleDetailAndFinishPage> {
       // Map<String, dynamic> _credentials = configProvider.currentConfig.toJson();
       print(_credentials);
 
-      SalesSheetsApi.init(currentCustomer.name, _credentials);
+      await SalesSheetsApi.init(currentCustomer.name, _credentials);
 
       saleProvider.currentSale.customerId = currentCustomer.id;
 
@@ -310,6 +319,7 @@ class _SaleDetailAndFinishPageState extends State<SaleDetailAndFinishPage> {
       saleProvider.currentSale.dateCreated = DateTime.now();
 
       // saleProvider.currentSale.total = saleProvider.calculatedTotal;
+      dataToSheet.add('Venta');
       dataToSheet.add(saleProvider.currentSale.userSeller.userName);
       dataToSheet.add(Utils.formatDate(saleProvider.currentSale.dateCreated));
       // String products = '';

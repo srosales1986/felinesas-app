@@ -219,7 +219,7 @@ class _NewCustomerFormState extends State<NewCustomerForm> {
                       ),
                     ),
                     onPressed: () {
-                      Navigator.pushReplacementNamed(context, 'customer_page');
+                      Navigator.pop(context);
                     },
                     child: Text(
                       'Cancelar',

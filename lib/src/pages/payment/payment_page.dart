@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:animate_do/animate_do.dart';
 import 'package:chicken_sales_control/src/custom_widgets/confirmation_dialog.dart';
 import 'package:chicken_sales_control/src/models/Customer_model.dart';
@@ -5,6 +7,7 @@ import 'package:chicken_sales_control/src/models/payment_model.dart';
 import 'package:chicken_sales_control/src/services/FirebaseProvider.dart';
 import 'package:chicken_sales_control/src/services/UserProvider.dart';
 import 'package:chicken_sales_control/src/services/payment_provider.dart';
+import 'package:chicken_sales_control/src/services/sales_sheets_api.dart';
 import 'package:chicken_sales_control/src/util/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -248,7 +251,16 @@ Future<dynamic> saveNewBalance(
   FirebaseProvider fbProvider,
 ) {
   Future<String> saveNewBalance() async {
+    Future<String> getJson() {
+      return rootBundle.loadString('android/gsheets-332502-a250b4fa3976.json');
+    }
+
     try {
+      final Map<String, dynamic> _credentials = json.decode(await getJson());
+      // Map<String, dynamic> _credentials = configProvider.currentConfig.toJson();
+      print(_credentials);
+
+      await SalesSheetsApi.init(currentPayment.customerName, _credentials);
       currentPayment.newBalance =
           (currentPayment.previousBalance - currentPayment.paymentAmount);
 
@@ -258,6 +270,28 @@ Future<dynamic> saveNewBalance(
 
       final data = currentPayment.toJson(currentPayment);
       await FirebaseFirestore.instance.collection('payments').add(data);
+
+      List<String> dataToSheet = [];
+      dataToSheet.add('Pago');
+      dataToSheet.add(currentPayment.userName);
+      dataToSheet.add(Utils.formatDate(currentPayment.dateCreated));
+      dataToSheet.add('-');
+      dataToSheet.add('-');
+      dataToSheet.add(currentPayment.previousBalance.toStringAsFixed(2));
+      dataToSheet.add('-');
+      if (currentPayment.methodOfPayment == 'Efectivo') {
+        dataToSheet.add(currentPayment.paymentAmount.toStringAsFixed(2));
+      } else {
+        dataToSheet.add('-');
+      }
+      if (currentPayment.methodOfPayment == 'MercadoPago') {
+        dataToSheet.add(currentPayment.paymentAmount.toStringAsFixed(2));
+      } else {
+        dataToSheet.add('-');
+      }
+      dataToSheet.add('-');
+      dataToSheet.add(currentPayment.newBalance.toStringAsFixed(2));
+      SalesSheetsApi.newRow(dataToSheet);
       return 'OK';
     } catch (e) {
       return e.toString();

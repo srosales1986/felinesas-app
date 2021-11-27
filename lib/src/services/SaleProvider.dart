@@ -68,6 +68,16 @@ class SaleProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void clearSaleValues() {
+    this.calculatedTotal = 0;
+    this.newBalance = 0;
+    this.cashInstallment = 0;
+    this.mpInstallment = 0;
+    this.finalInstallment = 0;
+    this.discount = 0;
+    this.finalTotal = 0;
+  }
+
   void addAmount(Product product) {
     if (this.saleProductList.any((e) => e.containsKey(product.id))) {
       if (product.availabilityInDeposit ==

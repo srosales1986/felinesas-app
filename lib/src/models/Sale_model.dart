@@ -49,6 +49,16 @@ class Sale {
     return _newSale;
   }
 
+  void clear() {
+    this._cashInstallment = 0.0;
+    this._mpInstallment = 0.0;
+    this._subtotal = 0.0;
+    this._discount = 0.0;
+    this._total = 0.0;
+    this._balanceBeforeSale = 0.0;
+    this._balanceAfterSale = 0.0;
+  }
+
   Map<String, dynamic> toMap(Sale sale) {
     return {
       'customer_id': sale._customerId,

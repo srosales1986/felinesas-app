@@ -1,4 +1,5 @@
 class SaleFields {
+  static final String type = 'Tipo de transacción';
   static final String seller = 'Vendedor';
   static final String date = 'Fecha';
   static final String product = 'Productos';
@@ -11,6 +12,7 @@ class SaleFields {
   static final String newBalance = 'Saldo actual';
 
   static List<String> getFields() => [
+        type,
         seller,
         date,
         product,

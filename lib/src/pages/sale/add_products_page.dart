@@ -39,26 +39,20 @@ class _AddProductsPageState extends State<AddProductsPage> {
           title: Text('Agregar productos'),
           // title: Text('Cliente: ${currentCustomer.name}'),
           bottom: PreferredSize(
-              child: Container(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 5),
-                      child: SizedBox(
-                        width: 170,
+              child: Flexible(
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      SizedBox(
+                        height: 30,
                         child: Chip(
                           backgroundColor: Colors.blue.shade300,
-                          label: SizedBox(
-                            width: 170,
-                            child: SubTotalChip(),
-                          ),
+                          label: SubTotalChip(),
                         ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(2.0),
-                      child: Chip(
+                      Chip(
                         padding:
                             EdgeInsets.symmetric(horizontal: 4, vertical: 0),
                         label: increment == 0.5
@@ -68,27 +62,27 @@ class _AddProductsPageState extends State<AddProductsPage> {
                                 style: TextStyle(color: Colors.black54)),
                         backgroundColor: Colors.blue.shade300,
                       ),
-                    ),
-                    Switch(
-                      activeColor: Colors.grey.shade400,
-                      inactiveThumbColor: Colors.grey,
-                      value: swithValue,
-                      onChanged: (value) => setState(
-                        () {
-                          if (value) {
-                            saleProvider.increment = 0.5;
-                            swithValue = !swithValue;
-                          } else {
-                            saleProvider.increment = 1.0;
-                            swithValue = !swithValue;
-                          }
-                        },
+                      Switch(
+                        activeColor: Colors.grey.shade400,
+                        inactiveThumbColor: Colors.grey,
+                        value: swithValue,
+                        onChanged: (value) => setState(
+                          () {
+                            if (value) {
+                              saleProvider.increment = 0.5;
+                              swithValue = !swithValue;
+                            } else {
+                              saleProvider.increment = 1.0;
+                              swithValue = !swithValue;
+                            }
+                          },
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-              preferredSize: Size(10, 40)),
+              preferredSize: Size(10, 30)),
         ),
         body: Scrollbar(
           child: ProductListView(
@@ -123,17 +117,15 @@ class SubTotalChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var saleProvider = Provider.of<SaleProvider>(context, listen: true);
-    return Center(
-      child: Text(
-        'TOTAL: \$' + saleProvider.getSubTotal().toStringAsFixed(2),
-        style: TextStyle(color: Colors.black54, fontSize: 18, shadows: [
-          Shadow(
-            blurRadius: 10,
-            color: Colors.grey,
-            offset: Offset(1, 1),
-          ),
-        ]),
-      ),
+    return Text(
+      'TOTAL: \$' + saleProvider.getSubTotal().toStringAsFixed(2),
+      style: TextStyle(color: Colors.black54, fontSize: 18, shadows: [
+        Shadow(
+          blurRadius: 10,
+          color: Colors.grey,
+          offset: Offset(1, 1),
+        ),
+      ]),
     );
   }
 }
