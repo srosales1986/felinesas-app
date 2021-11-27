@@ -1,6 +1,5 @@
 import 'package:chicken_sales_control/src/models/ProductForSale.dart';
 import 'package:chicken_sales_control/src/models/User_model.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
 
 class Sale {
   String _customerId = '';

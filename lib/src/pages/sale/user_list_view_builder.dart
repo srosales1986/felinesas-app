@@ -63,7 +63,8 @@ class _UserListViewBuilderState extends State<UserListViewBuilder> {
                 contentPadding: EdgeInsets.symmetric(horizontal: 10),
                 minVerticalPadding: 1,
                 onTap: () {
-                  // TODO: navegar a pantalla con lista de ventas de este usuario.
+                  Navigator.pushReplacementNamed(context, 'sales_by_user_page',
+                      arguments: userList[index].externalId);
                 },
                 leading: Icon(
                   Icons.account_circle,

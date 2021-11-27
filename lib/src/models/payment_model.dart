@@ -34,4 +34,18 @@ class Payment {
       'method_of_payment': payment.methodOfPayment,
     };
   }
+
+  factory Payment.fromJson(Map<String, dynamic> map) {
+    return Payment(
+      customerId: map['customerId'],
+      customerName: map['customerName'],
+      userId: map['userId'],
+      userName: map['userName'],
+      methodOfPayment: map['methodOfPayment'],
+      dateCreated: DateTime.fromMillisecondsSinceEpoch(map['dateCreated']),
+      previousBalance: map['previousBalance'],
+      newBalance: map['newBalance'],
+      paymentAmount: map['paymentAmount'],
+    );
+  }
 }

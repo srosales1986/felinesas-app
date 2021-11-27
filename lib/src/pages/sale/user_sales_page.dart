@@ -17,9 +17,7 @@ class _UserSalesPageState extends State<UserSalesPage> {
         title: Text('Ventas'),
       ),
       body: Container(
-        child: Center(
-          child: UserListViewBuilder(),
-        ),
+        child: UserListViewBuilder(),
       ),
     );
   }

@@ -23,7 +23,7 @@ class UserModel {
       externalId: json['external_id'],
       userName: json['user_name'],
       email: json['email'],
-      status: json['status'],
+      status: json['status'] ?? '',
       rol: json['rol'],
     );
   }
