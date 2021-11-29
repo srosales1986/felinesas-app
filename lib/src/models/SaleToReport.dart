@@ -3,7 +3,7 @@ import 'package:chicken_sales_control/src/models/User_model.dart';
 class SaleToReport {
   late String customerId;
   late String customerName;
-  late String dateCreated;
+  late DateTime dateCreated;
   late String discount;
   late String cashInstallment;
   late String mpInstallment;
@@ -29,13 +29,17 @@ class SaleToReport {
     return SaleToReport(
       customerId: map['customer_id'],
       customerName: map['customer_name'],
-      dateCreated: map['date_created'].toString(),
+      // dateCreated: Utils.formatDate(DateTime.fromMillisecondsSinceEpoch(
+      //     map['date_created'].millisecondsSinceEpoch)),
+      dateCreated: DateTime.fromMillisecondsSinceEpoch(
+          map['date_created'].millisecondsSinceEpoch),
       discount: map['discount'].toString(),
       cashInstallment: map['cash_installment'].toString(),
       mpInstallment: map['mp_installment'].toString(),
       subtotal: map['subtotal'].toString(),
       userSeller: UserModel.fromJson(
           map['user_seller']['external_id'], map['user_seller']),
+
       // balanceBeforeSale: map['balance_beforeSale'].toString(),
       // balanceAfterSale: map['balance_afterSale'].toString(),
     );

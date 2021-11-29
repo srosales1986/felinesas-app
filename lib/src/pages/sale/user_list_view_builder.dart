@@ -63,8 +63,11 @@ class _UserListViewBuilderState extends State<UserListViewBuilder> {
                 contentPadding: EdgeInsets.symmetric(horizontal: 10),
                 minVerticalPadding: 1,
                 onTap: () {
-                  Navigator.pushReplacementNamed(context, 'sales_by_user_page',
-                      arguments: userList[index].externalId);
+                  Navigator.pushNamed(context, 'sales_by_user_page',
+                      arguments: {
+                        'userId': userList[index].externalId,
+                        'userName': userList[index].userName,
+                      });
                 },
                 leading: Icon(
                   Icons.account_circle,

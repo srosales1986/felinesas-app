@@ -75,7 +75,7 @@ class _DeliveryBoyHomePageState extends State<DeliveryBoyHomePage> {
                             child: MainButtonWidget(
                                 width: 150,
                                 height: 150,
-                                cardText: 'Ventas',
+                                cardText: 'Ventas del día',
                                 route: 'user_sales_page',
                                 icon: Icons.list),
                           )
