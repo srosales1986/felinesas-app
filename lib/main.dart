@@ -7,13 +7,12 @@ import 'package:chicken_sales_control/src/services/ReportProvider.dart';
 import 'package:chicken_sales_control/src/services/SaleProvider.dart';
 import 'package:chicken_sales_control/src/services/UserProvider.dart';
 import 'package:chicken_sales_control/src/services/payment_provider.dart';
-// import 'package:chicken_sales_control/src/services/sales_sheets_api.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
-  // WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
 
   runApp(MultiProvider(
     providers: [
@@ -73,11 +72,9 @@ class _MyAppState extends State<MyApp> {
 
           // Otherwise, show something whilst waiting for initialization to complete
           return Container(
-            color: Color.fromARGB(255, 78, 131, 180),
+            color: Colors.blue,
             child: Center(
-              child: Image(
-                image: AssetImage('assets/images/init_chicken.gif'),
-              ),
+              child: CircularProgressIndicator.adaptive(),
             ),
           );
         });

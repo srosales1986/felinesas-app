@@ -27,7 +27,7 @@ class AuthBackground extends StatelessWidget {
     return BoxDecoration(
         gradient: LinearGradient(
       colors: [
-        Colors.indigo,
+        Colors.blue.shade900,
         Colors.grey.shade300,
       ],
       begin: Alignment.topCenter,

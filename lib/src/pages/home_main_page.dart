@@ -1,12 +1,7 @@
-import 'package:chicken_sales_control/src/models/Customer_model.dart';
-import 'package:chicken_sales_control/src/models/Product_model.dart';
 import 'package:chicken_sales_control/src/routes/routes.dart';
 import 'package:chicken_sales_control/src/services/ConfigProvider.dart';
-import 'package:chicken_sales_control/src/services/CustomersProvider.dart';
 import 'package:chicken_sales_control/src/services/FirebaseProvider.dart';
-import 'package:chicken_sales_control/src/services/ProductsProvider.dart';
 import 'package:chicken_sales_control/src/services/sales_sheets_api.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -28,43 +23,41 @@ class HomeMainPage extends StatelessWidget {
           .getSpreadSheetId()
           .then((value) => SalesSheetsApi.spreadsheetId = value);
 
-      var _db = firebaseProvider.fbInstance;
-
       firebaseProvider.fbConfigCollectionRef.get().then((value) {
         value.docs.forEach((element) {
           configProvider.setCurrentConfig(element.data());
         });
       });
 
-      var productsProvider =
-          Provider.of<ProductsProvider>(context, listen: false);
+      // var productsProvider =
+      //     Provider.of<ProductsProvider>(context, listen: false);
 
-      var customerProvider =
-          Provider.of<CustomerProvider>(context, listen: false);
+      // var customerProvider =
+      //     Provider.of<CustomerProvider>(context, listen: false);
 
-      Future<QuerySnapshot<Map<String, dynamic>>> getAllProducts =
-          _db.collection('products').get();
+      // Future<QuerySnapshot<Map<String, dynamic>>> getAllProducts =
+      //     firebaseProvider.fbProductsCollectionRef.get();
 
-      getAllProducts.then((value) => productsProvider.fillProductList(
-          value.docs.map((e) => Product.fromJson(e.id, e.data())).toList()));
+      // getAllProducts.then((value) => productsProvider.fillProductList(
+      //     value.docs.map((e) => Product.fromJson(e.id, e.data())).toList()));
 
-      List<Product> productList = [];
+      // List<Product> productList = [];
 
-      getAllProducts.then((value) {
-        productList =
-            value.docs.map((e) => Product.fromJson(e.id, e.data())).toList();
-        productsProvider.productList = productList;
-      });
+      // getAllProducts.then((value) {
+      //   productList =
+      //       value.docs.map((e) => Product.fromJson(e.id, e.data())).toList();
+      //   productsProvider.productList = productList;
+      // });
 
-      Future<QuerySnapshot<Map<String, dynamic>>> getAllCustomers =
-          _db.collection('customers').get();
+      // Future<QuerySnapshot<Map<String, dynamic>>> getAllCustomers =
+      //     firebaseProvider.fbCustomersCollectionRef.get();
 
-      List<Customer> customerList = [];
-      getAllCustomers.then((value) {
-        customerList =
-            value.docs.map((e) => Customer.fromJson(e.id, e.data())).toList();
-        customerProvider.customerList = customerList;
-      });
+      // List<Customer> customerList = [];
+      // getAllCustomers.then((value) {
+      //   customerList =
+      //       value.docs.map((e) => Customer.fromJson(e.id, e.data())).toList();
+      //   customerProvider.customerList = customerList;
+      // });
 
       return 'OK';
     }
@@ -81,7 +74,7 @@ class HomeMainPage extends StatelessWidget {
           return Home();
         }
         return Container(
-          color: Color.fromARGB(255, 78, 131, 180),
+          color: Colors.blue,
           child: Center(
             child: CircularProgressIndicator.adaptive(),
           ),

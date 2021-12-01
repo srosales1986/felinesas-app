@@ -76,7 +76,7 @@ class _DeliveryBoyHomePageState extends State<DeliveryBoyHomePage> {
                                 width: 150,
                                 height: 150,
                                 cardText: 'Ventas del día',
-                                route: 'user_sales_page',
+                                route: 'sales_user_list_page',
                                 icon: Icons.list),
                           )
                         : ElasticInUp(

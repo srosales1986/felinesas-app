@@ -45,7 +45,7 @@ class _CustomerListViewBuilderState extends State<CustomerListViewBuilder> {
   @override
   Widget build(BuildContext context) {
     final customerProvider =
-        Provider.of<CustomerProvider>(context, listen: true);
+        Provider.of<CustomerProvider>(context, listen: false);
 
     final customerList = customerProvider.customerList;
 

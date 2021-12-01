@@ -14,7 +14,11 @@ class FirebaseProvider extends ChangeNotifier {
   final CollectionReference<Map<String, dynamic>> _fbConfigCollectionRef =
       FirebaseFirestore.instance.collection('config');
 
+  final Stream<QuerySnapshot<Map<String, dynamic>>> _salesStream =
+      FirebaseFirestore.instance.collection('sales').snapshots();
+
   FirebaseFirestore get fbInstance => this._fbInstance;
+
   CollectionReference<Map<String, dynamic>> get fbCustomersCollectionRef =>
       this._fbCustomersCollectionRef;
   CollectionReference<Map<String, dynamic>> get fbProductsCollectionRef =>
@@ -25,4 +29,6 @@ class FirebaseProvider extends ChangeNotifier {
       this._fbSalesCollectionRef;
   CollectionReference<Map<String, dynamic>> get fbConfigCollectionRef =>
       this._fbConfigCollectionRef;
+  Stream<QuerySnapshot<Map<String, dynamic>>> get salesStream =>
+      this._salesStream;
 }

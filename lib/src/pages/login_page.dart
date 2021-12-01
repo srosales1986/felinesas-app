@@ -36,8 +36,11 @@ class LoginPage extends StatelessWidget {
               if (userProvider.userList.isNotEmpty) {
                 return _LoginScreen();
               }
-              return Center(
-                child: CircularProgressIndicator.adaptive(),
+              return Container(
+                color: Colors.blue,
+                child: Center(
+                  child: CircularProgressIndicator.adaptive(),
+                ),
               );
             }
           }
@@ -100,7 +103,7 @@ class _LoginFrom extends StatelessWidget {
             ),
             _PassTextFormField(),
             SizedBox(
-              height: 30,
+              height: 10,
             ),
             TextButton(
                 onPressed: () {
@@ -149,7 +152,11 @@ class _LoginFrom extends StatelessWidget {
                 },
                 child: userPovider.isLoading
                     ? Text('ESPERE...')
-                    : Text('INGRESAR')),
+                    : Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 50, vertical: 20),
+                        child: Text('INGRESAR'),
+                      )),
           ],
         ),
       ),
