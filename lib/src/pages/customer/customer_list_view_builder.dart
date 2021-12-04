@@ -1,6 +1,7 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:chicken_sales_control/src/models/Customer_model.dart';
 import 'package:chicken_sales_control/src/services/CustomersProvider.dart';
+import 'package:chicken_sales_control/src/services/SaleProvider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -44,6 +45,7 @@ class _CustomerListViewBuilderState extends State<CustomerListViewBuilder> {
 
   @override
   Widget build(BuildContext context) {
+    final saleProvider = Provider.of<SaleProvider>(context, listen: false);
     final customerProvider =
         Provider.of<CustomerProvider>(context, listen: false);
 
@@ -84,8 +86,8 @@ class _CustomerListViewBuilderState extends State<CustomerListViewBuilder> {
                       widget.navigateTo != null) {
                     switch (widget.navigateTo) {
                       case 'add_products_page':
-                        Navigator.pushNamed(context, 'add_products_page',
-                            arguments: customerList[index]);
+                        saleProvider.currentCustomer = customerList[index];
+                        Navigator.pushNamed(context, 'add_products_page');
                         break;
                       case 'payment_page':
                         Navigator.pushNamed(context, 'payment_page',

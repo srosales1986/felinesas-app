@@ -7,9 +7,10 @@ import 'package:flutter/material.dart';
 class SaleProvider extends ChangeNotifier {
   late Customer currentCustomer;
   late List<Map<String, ProductForSale>> saleProductList;
+
   late DateTime startDateTime;
   late DateTime endDateTime;
-  late num increment;
+  num increment = 1;
   late num calculatedTotal;
   late num newBalance;
   late num cashInstallment;
@@ -20,7 +21,7 @@ class SaleProvider extends ChangeNotifier {
 
   Sale currentSale = Sale();
 
-  void clearCurrenSale() {
+  void clearCurrentSale() {
     this.currentSale.balanceAfterSale = 0;
     this.currentSale.balanceBeforeSale = 0;
     this.currentSale.customerId = '';
@@ -54,6 +55,21 @@ class SaleProvider extends ChangeNotifier {
   //   this._amountAnimationController = controller;
   //   // notifyListeners();
   // }
+  void changeIncrement() {
+    if (this.increment == 0.5) {
+      this.increment = 1;
+      notifyListeners();
+    } else {
+      this.increment = 0.5;
+      notifyListeners();
+    }
+  }
+
+  void clearInstallments() {
+    this.cashInstallment = 0;
+    this.mpInstallment = 0;
+    this.discount = 0;
+  }
 
   void clear() {
     this.saleProductList.clear();
@@ -147,5 +163,25 @@ class SaleProvider extends ChangeNotifier {
       total += map.values.first.subtotal;
     });
     return total;
+  }
+
+  void updateCashInstallment(num cash) {
+    this.cashInstallment = cash;
+    notifyListeners();
+  }
+
+  void updateMpInstallment(num mpInstallment) {
+    this.mpInstallment = mpInstallment;
+    notifyListeners();
+  }
+
+  void updateDicount(num discount) {
+    this.discount = discount;
+    notifyListeners();
+  }
+
+  void updateNewBalance() {
+    this.newBalance = (this.getSubTotal() + this.currentCustomer.balance) -
+        (this.cashInstallment + this.mpInstallment + this.discount);
   }
 }

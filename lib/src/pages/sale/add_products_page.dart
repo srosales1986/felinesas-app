@@ -39,56 +39,53 @@ class _AddProductsPageState extends State<AddProductsPage> {
           title: Text('Agregar productos'),
           // title: Text('Cliente: ${currentCustomer.name}'),
           bottom: PreferredSize(
-              child: Flexible(
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      SizedBox(
-                        height: 30,
-                        child: Chip(
-                          backgroundColor: Colors.blue.shade300,
-                          label: SubTotalChip(),
-                        ),
-                      ),
-                      Chip(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 4, vertical: 0),
-                        label: increment == 0.5
-                            ? Text('Sumar de a 0.5',
-                                style: TextStyle(color: Colors.black54))
-                            : Text('Sumar de a 1.0',
-                                style: TextStyle(color: Colors.black54)),
+            child: Flexible(
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    SizedBox(
+                      height: 30,
+                      child: Chip(
                         backgroundColor: Colors.blue.shade300,
+                        label: SubTotalChip(),
                       ),
-                      Switch(
-                        activeColor: Colors.grey.shade400,
-                        inactiveThumbColor: Colors.grey,
-                        value: swithValue,
-                        onChanged: (value) => setState(
-                          () {
-                            if (value) {
-                              saleProvider.increment = 0.5;
-                              swithValue = !swithValue;
-                            } else {
-                              saleProvider.increment = 1.0;
-                              swithValue = !swithValue;
-                            }
-                          },
-                        ),
+                    ),
+                    Chip(
+                      padding: EdgeInsets.symmetric(horizontal: 4, vertical: 0),
+                      label: increment == 0.5
+                          ? Text('Sumar de a 0.5',
+                              style: TextStyle(color: Colors.black54))
+                          : Text('Sumar de a 1.0',
+                              style: TextStyle(color: Colors.black54)),
+                      backgroundColor: Colors.blue.shade300,
+                    ),
+                    Switch(
+                      activeColor: Colors.grey.shade400,
+                      inactiveThumbColor: Colors.grey,
+                      value: swithValue,
+                      onChanged: (value) => setState(
+                        () {
+                          if (value) {
+                            saleProvider.increment = 0.5;
+                            swithValue = !swithValue;
+                          } else {
+                            saleProvider.increment = 1.0;
+                            swithValue = !swithValue;
+                          }
+                        },
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
-              preferredSize: Size(10, 30)),
+            ),
+            preferredSize: Size(10, 30),
+          ),
         ),
         body: Scrollbar(
-          child: ProductListView(
-            // currentCustomer: currentCustomer,
-            productsCollection: _firebaseInstance.collection('products'),
-          ),
+          child: ProductListView(),
         ),
         bottomNavigationBar: BottomAppBar(
           child: Row(
@@ -186,7 +183,8 @@ class DetailButton extends StatelessWidget {
             HapticFeedback.heavyImpact();
             return;
           }
-          Navigator.pushNamed(context, 'sale_detail_and_finish_sale_page');
+          Navigator.pushReplacementNamed(
+              context, 'sale_detail_and_finish_sale_page');
         },
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),

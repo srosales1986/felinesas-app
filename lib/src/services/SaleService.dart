@@ -1,122 +1,23 @@
 import 'dart:convert';
 
-import 'package:chicken_sales_control/src/custom_widgets/confirmation_dialog.dart';
+import 'package:animate_do/animate_do.dart';
 import 'package:chicken_sales_control/src/models/Customer_model.dart';
 import 'package:chicken_sales_control/src/models/ProductForSale.dart';
 import 'package:chicken_sales_control/src/models/invoice_model.dart';
-import 'package:chicken_sales_control/src/pages/sale/sale_detail/sale_details_widgets/SaleDetailDataTable.dart';
 import 'package:chicken_sales_control/src/pdf/pdf_api.dart';
 import 'package:chicken_sales_control/src/pdf/pdf_invoice_api.dart';
 import 'package:chicken_sales_control/src/services/FirebaseProvider.dart';
-import 'package:chicken_sales_control/src/services/SaleProvider.dart';
-import 'package:chicken_sales_control/src/services/UserProvider.dart';
 import 'package:chicken_sales_control/src/services/sales_sheets_api.dart';
 import 'package:chicken_sales_control/src/util/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:animate_do/animate_do.dart';
 
-import 'sale_details_widgets/SubtotalAndTotalCalculate.dart';
+import 'SaleProvider.dart';
+import 'UserProvider.dart';
 
-class SaleDetailAndFinishPage extends StatefulWidget {
-  @override
-  State<SaleDetailAndFinishPage> createState() =>
-      _SaleDetailAndFinishPageState();
-}
-
-class _SaleDetailAndFinishPageState extends State<SaleDetailAndFinishPage> {
-  final _installmentController = TextEditingController(text: '0');
-  final _discountController = TextEditingController(text: '0');
-  @override
-  void dispose() {
-    this._installmentController.dispose();
-    this._discountController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    var saleProvider = Provider.of<SaleProvider>(context, listen: true);
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
-
-    List<ProductForSale> productList = [];
-
-    saleProvider.saleProductList.forEach((e) {
-      productList.add(e.values.first);
-    });
-    final Customer currentCustomer = saleProvider.currentCustomer;
-
-    saleProvider.currentSale.subtotal = saleProvider.getSubTotal();
-    saleProvider.currentSale.userSeller = userProvider.currentUser;
-
-    var _calculatedTotal = saleProvider.calculatedTotal;
-
-    return WillPopScope(
-      onWillPop: () async => false,
-      child: Scaffold(
-        backgroundColor: Colors.grey.shade200,
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          centerTitle: true,
-          title: Text('Detalle de la venta'),
-          leading: IconButton(
-            onPressed: () {
-              saleProvider.clearSaleValues();
-              Navigator.pushNamedAndRemoveUntil(
-                  context, 'add_products_page', (route) => false,
-                  arguments: currentCustomer);
-            },
-            icon: Icon(Icons.chevron_left_rounded),
-          ),
-        ),
-        body: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
-          child: Column(
-            children: [
-              SaleDetailDataTable(),
-              Divider(),
-              SubtotalAndTotalCalculate(currentCustomer: currentCustomer),
-            ],
-          ),
-        ),
-        bottomNavigationBar: BottomAppBar(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Expanded(
-                child: Container(
-                  color: Colors.green.shade500,
-                  child: TextButton(
-                    child: Text(
-                      'Finalizar venta',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    onPressed: () => showDialog(
-                      barrierDismissible: false,
-                      context: context,
-                      builder: (context) => ConfirmationDialog(
-                        title: 'Finalizar venta',
-                        contentText: '¿Cerrar la venta definitivamente?',
-                        yesFunction: () => showCloseSaleDialog(
-                          context,
-                          currentCustomer,
-                          productList,
-                          _calculatedTotal,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Future<dynamic> showCloseSaleDialog(
+class SaleService {
+  static Future<dynamic> showCloseSaleDialog(
       BuildContext context,
       Customer currentCustomer,
       List<ProductForSale> productList,
@@ -134,7 +35,7 @@ class _SaleDetailAndFinishPageState extends State<SaleDetailAndFinishPage> {
                 child: Text('Finalizar venta'),
               ),
               content: FutureBuilder(
-                future: closeSale(currentCustomer, productList),
+                future: closeSale(currentCustomer, productList, context),
                 builder: (context, snapshot) {
                   final saleProvider =
                       Provider.of<SaleProvider>(context, listen: false);
@@ -177,7 +78,7 @@ class _SaleDetailAndFinishPageState extends State<SaleDetailAndFinishPage> {
                                 size: 30,
                               ),
                             ),
-                            Text('Ocurrió un error. Intente en unos minutos.'),
+                            Text(snapshot.data.toString()),
                             Container(
                               child: TextButton(
                                 style: ButtonStyle(
@@ -242,10 +143,9 @@ class _SaleDetailAndFinishPageState extends State<SaleDetailAndFinishPage> {
                                             total: e.values.first.subtotal))
                                         .toList(),
                                   );
-
-                                  saleProvider.clear();
+                                  saleProvider.clearInstallments();
                                   saleProvider.clearCurrentSale();
-                                  saleProvider.clearSaleValues();
+                                  saleProvider.clear();
 
                                   Navigator.pushReplacementNamed(
                                       context, 'delivery_boy_home_page');
@@ -280,8 +180,8 @@ class _SaleDetailAndFinishPageState extends State<SaleDetailAndFinishPage> {
     );
   }
 
-  Future<String> closeSale(
-      Customer currentCustomer, List<ProductForSale> productList) async {
+  static Future<String> closeSale(Customer currentCustomer,
+      List<ProductForSale> productList, BuildContext context) async {
     final saleProvider = Provider.of<SaleProvider>(context, listen: false);
     final fbInstance = Provider.of<FirebaseProvider>(context, listen: false);
     // final configProvider = Provider.of<ConfigProvider>(context, listen: false);
@@ -371,6 +271,7 @@ class _SaleDetailAndFinishPageState extends State<SaleDetailAndFinishPage> {
       // saleProvider.clear();
       return 'saved';
     } catch (e) {
+      print(e);
       return 'error';
     }
   }

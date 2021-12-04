@@ -1,16 +1,23 @@
 import 'package:chicken_sales_control/src/models/ProductForSale.dart';
+import 'package:chicken_sales_control/src/services/SaleProvider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SaleDetailDataTable extends StatelessWidget {
-  final List<ProductForSale> productList;
-
   const SaleDetailDataTable({
     Key? key,
-    required this.productList,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final saleProvider = Provider.of<SaleProvider>(context, listen: false);
+
+    List<ProductForSale> productList = [];
+
+    saleProvider.saleProductList.forEach((e) {
+      productList.add(e.values.first);
+    });
+
     return Container(
       child: DataTable(
         columnSpacing: 15,

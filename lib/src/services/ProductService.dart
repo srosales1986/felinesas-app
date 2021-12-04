@@ -1,19 +1,19 @@
 // import 'package:chicken_sales_control/src/models/Customer_model.dart';
 import 'package:chicken_sales_control/src/models/Product_model.dart';
+import 'package:chicken_sales_control/src/services/FirebaseProvider.dart';
 import 'package:chicken_sales_control/src/services/SaleProvider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'ProductsProvider.dart';
 
 // PRODUCT LISTVIEW
 class ProductListView extends StatefulWidget {
-  final CollectionReference<Map<String, dynamic>> productsCollection;
+  // final CollectionReference<Map<String, dynamic>> productsCollection;
   // final currentCustomer;
   ProductListView({
     Key? key,
     // required this.currentCustomer,
-    required this.productsCollection,
+    // required this.productsCollection,
   }) : super(key: key);
 
   @override
@@ -26,7 +26,9 @@ class _ProductListViewState extends State<ProductListView> {
     final productsProvider =
         Provider.of<ProductsProvider>(context, listen: false);
 
-    final productsCollection = widget.productsCollection;
+    final _db = Provider.of<FirebaseProvider>(context, listen: false);
+
+    final productsCollection = _db.fbProductsCollectionRef;
 
     productsCollection.snapshots().listen((event) {
       List<Product> productList =
@@ -41,6 +43,7 @@ class _ProductListViewState extends State<ProductListView> {
   Widget build(BuildContext context) {
     final productsProvider =
         Provider.of<ProductsProvider>(context, listen: true);
+
     List<Product> productList = productsProvider.productList;
     // Customer currentCustomer = widget.currentCustomer;
     return ListView.builder(
@@ -179,7 +182,7 @@ class AmountNumber extends StatelessWidget {
         ),
       );
     }
-    var _actualAmount = saleProductList
+    var _currentAmount = saleProductList
         .firstWhere((e) => e.containsKey(productId))
         .values
         .first
@@ -190,7 +193,7 @@ class AmountNumber extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 0),
       margin: EdgeInsets.symmetric(horizontal: 10),
       child: Text(
-        '$_actualAmount',
+        '$_currentAmount',
         style: TextStyle(fontSize: 18),
       ),
     );
