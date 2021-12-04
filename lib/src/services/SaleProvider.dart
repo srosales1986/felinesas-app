@@ -167,21 +167,25 @@ class SaleProvider extends ChangeNotifier {
 
   void updateCashInstallment(num cash) {
     this.cashInstallment = cash;
+    this.currentSale.cashInstallment = this.cashInstallment;
     notifyListeners();
   }
 
   void updateMpInstallment(num mpInstallment) {
     this.mpInstallment = mpInstallment;
+    this.currentSale.mpInstallment = this.mpInstallment;
     notifyListeners();
   }
 
   void updateDicount(num discount) {
     this.discount = discount;
+    this.currentSale.discount = this.discount;
     notifyListeners();
   }
 
   void updateNewBalance() {
     this.newBalance = (this.getSubTotal() + this.currentCustomer.balance) -
         (this.cashInstallment + this.mpInstallment + this.discount);
+    this.currentSale.balanceAfterSale = this.newBalance;
   }
 }

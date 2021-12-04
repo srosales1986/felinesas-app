@@ -198,23 +198,23 @@ class SaleService {
 
       await SalesSheetsApi.init(currentCustomer.name, _credentials);
 
-      saleProvider.currentSale.customerId = currentCustomer.id;
+      // saleProvider.currentSale.customerId = currentCustomer.id;
 
-      saleProvider.currentSale.customerName = currentCustomer.name;
+      // saleProvider.currentSale.customerName = currentCustomer.name;
 
-      saleProvider.currentSale.productsList = productList;
+      // saleProvider.currentSale.productsList = productList;
 
-      saleProvider.currentSale.discount = saleProvider.discount;
+      // saleProvider.currentSale.discount = saleProvider.discount;
 
-      saleProvider.currentSale.cashInstallment = saleProvider.cashInstallment;
+      // saleProvider.currentSale.cashInstallment = saleProvider.cashInstallment;
 
-      saleProvider.currentSale.mpInstallment = saleProvider.mpInstallment;
+      // saleProvider.currentSale.mpInstallment = saleProvider.mpInstallment;
 
-      saleProvider.currentSale.total = saleProvider.finalTotal;
+      // saleProvider.currentSale.total = saleProvider.finalTotal;
 
-      saleProvider.currentSale.balanceBeforeSale = currentCustomer.balance;
+      // saleProvider.currentSale.balanceBeforeSale = currentCustomer.balance;
 
-      saleProvider.currentSale.balanceAfterSale = saleProvider.newBalance;
+      // saleProvider.currentSale.balanceAfterSale = saleProvider.newBalance;
 
       saleProvider.currentSale.dateCreated = DateTime.now();
 

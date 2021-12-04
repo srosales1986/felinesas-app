@@ -17,6 +17,10 @@ class SaleDetails extends StatelessWidget {
 
     final saleProvider = Provider.of<SaleProvider>(context, listen: false);
     saleProvider.currentSale.userSeller = userProvider.currentUser;
+    saleProvider.currentSale.customerId = saleProvider.currentCustomer.id;
+    saleProvider.currentSale.customerName = saleProvider.currentCustomer.name;
+    saleProvider.currentSale.balanceBeforeSale =
+        saleProvider.currentCustomer.balance;
 
     return Scaffold(
       appBar: AppBar(

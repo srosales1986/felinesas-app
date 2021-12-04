@@ -12,6 +12,7 @@ class SummaryOfTotals extends StatelessWidget {
         saleProvider.getSubTotal() + saleProvider.currentCustomer.balance;
     saleProvider.finalTotal = _total;
     saleProvider.currentSale.subtotal = saleProvider.getSubTotal();
+    saleProvider.currentSale.total = saleProvider.finalTotal;
 
     return Column(
       children: [

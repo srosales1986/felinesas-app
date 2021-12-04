@@ -17,6 +17,7 @@ class SaleDetailDataTable extends StatelessWidget {
     saleProvider.saleProductList.forEach((e) {
       productList.add(e.values.first);
     });
+    saleProvider.currentSale.productsList = productList;
 
     return Container(
       child: DataTable(
