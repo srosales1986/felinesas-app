@@ -50,6 +50,7 @@ class _CustomerListViewBuilderState extends State<CustomerListViewBuilder> {
         Provider.of<CustomerProvider>(context, listen: false);
 
     final customerList = customerProvider.customerList;
+    customerList.sort((a, b) => a.name.compareTo(b.name));
 
     if (customerList.isEmpty) {
       return Center(
