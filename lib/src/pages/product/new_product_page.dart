@@ -248,8 +248,9 @@ class _NewProductFormState extends State<NewProductForm> {
                         initials:
                             _initialsTextController.text.trim().toUpperCase(),
                         name: _nameTextController.text.trim(),
-                        priceByKg:
-                            double.parse(_priceByKgTextController.text.trim()),
+                        priceByKg: _priceByKgTextController.text != ''
+                            ? double.parse(_priceByKgTextController.text.trim())
+                            : 0,
                         priceByUnit:
                             double.parse(_priceByUnitController.text.trim()),
                         availabilityInDeposit:

@@ -22,7 +22,7 @@ class PdfInvoiceApi {
       // footer: (context) => buildFooter(invoice),
     ));
 
-    return PdfApi.saveDocument(name: 'my_invoice.pdf', pdf: pdf);
+    return PdfApi.saveDocument(name: 'Resumen_de_venta.pdf', pdf: pdf);
   }
 
   // static Widget buildHeader(Invoice invoice) => Column(

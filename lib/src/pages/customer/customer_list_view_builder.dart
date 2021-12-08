@@ -47,7 +47,7 @@ class _CustomerListViewBuilderState extends State<CustomerListViewBuilder> {
   Widget build(BuildContext context) {
     final saleProvider = Provider.of<SaleProvider>(context, listen: false);
     final customerProvider =
-        Provider.of<CustomerProvider>(context, listen: false);
+        Provider.of<CustomerProvider>(context, listen: true);
 
     final customerList = customerProvider.customerList;
     customerList.sort((a, b) => a.name.compareTo(b.name));
