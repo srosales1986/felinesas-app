@@ -10,7 +10,6 @@ import 'package:chicken_sales_control/src/pages/payment/payment_page.dart';
 import 'package:chicken_sales_control/src/pages/product/products_price_list.dart';
 import 'package:chicken_sales_control/src/pages/sale/new_sale_page.dart';
 import 'package:chicken_sales_control/src/pages/sale/sale_detail/SaleDetails.dart';
-import 'package:chicken_sales_control/src/pages/sale/sale_detail/sale_detail_and_finish_sale_page.dart';
 import 'package:chicken_sales_control/src/pages/sale/sales_by_user_page.dart';
 import 'package:chicken_sales_control/src/pages/sale/sales_user_list.dart';
 import 'package:chicken_sales_control/src/pages/unload_truck_page.dart';
@@ -28,8 +27,6 @@ Map<String, WidgetBuilder> getApplicationRoutes() {
     'unload_truck_page': (BuildContext context) => UnloadTruckPage(),
     'customer_page': (BuildContext context) => CustomerPage(),
     'new_customer_page': (BuildContext context) => NewCustomerPage(),
-    'sale_detail_and_finish_sale_page': (BuildContext context) =>
-        SaleDetailAndFinishPage(),
     'sale_details': (BuildContext context) => SaleDetails(),
     'customer_payment_page': (BuildContext context) => CustomerPaymentPage(),
     'payment_page': (BuildContext context) => PaymentPage(),

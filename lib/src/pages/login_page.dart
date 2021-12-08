@@ -22,8 +22,11 @@ class LoginPage extends StatelessWidget {
             Center(child: Text('Error'));
           }
           if (!snapshot.hasData) {
-            return Center(
-              child: CircularProgressIndicator.adaptive(),
+            return Container(
+              color: Colors.blue,
+              child: Center(
+                child: CircularProgressIndicator.adaptive(),
+              ),
             );
           } else {
             if (snapshot.hasData && userProvider.userList.isEmpty) {
