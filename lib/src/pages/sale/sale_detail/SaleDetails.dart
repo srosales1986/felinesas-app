@@ -31,6 +31,7 @@ class SaleDetails extends StatelessWidget {
           onPressed: () {
             Navigator.pushReplacementNamed(context, 'add_products_page');
             saleProvider.clearInstallments();
+            saleProvider.updateWeightProductSubtotal(0);
           },
           icon: Icon(Icons.chevron_left_rounded),
         ),

@@ -5,14 +5,17 @@ class Product {
   num priceByKg;
   num priceByUnit;
   num availabilityInDeposit;
+  bool isWeighed;
 
-  Product(
-      {required this.id,
-      required this.initials,
-      required this.name,
-      required this.priceByKg,
-      required this.priceByUnit,
-      required this.availabilityInDeposit});
+  Product({
+    required this.id,
+    required this.initials,
+    required this.name,
+    required this.priceByKg,
+    required this.priceByUnit,
+    required this.availabilityInDeposit,
+    required this.isWeighed,
+  });
 
   factory Product.fromJson(String id, Map<String, dynamic> json) {
     return Product(
@@ -22,6 +25,7 @@ class Product {
       priceByKg: json['price_by_kg'],
       priceByUnit: json['price_by_unit'],
       availabilityInDeposit: json['availability_in_deposit'],
+      isWeighed: json['is_weighed'],
     );
   }
 
@@ -32,6 +36,7 @@ class Product {
       'price_by_kg': newProduct.priceByKg,
       'price_by_unit': newProduct.priceByUnit,
       'availability_in_deposit': newProduct.availabilityInDeposit,
+      'is_weighed': newProduct.isWeighed,
     };
   }
 }

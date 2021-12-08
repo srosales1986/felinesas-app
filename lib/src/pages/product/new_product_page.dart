@@ -1,5 +1,7 @@
 import 'package:chicken_sales_control/src/models/Product_model.dart';
+import 'package:chicken_sales_control/src/pages/product/widgets/IsWighedChip.dart';
 import 'package:chicken_sales_control/src/services/FirebaseProvider.dart';
+import 'package:chicken_sales_control/src/services/ProductsProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
 import 'package:flutter/services.dart';
@@ -90,9 +92,11 @@ class _NewProductFormState extends State<NewProductForm> {
   Widget build(BuildContext context) {
     final firebaseProvider =
         Provider.of<FirebaseProvider>(context, listen: false);
-    // final productsProvider =
-    //     Provider.of<ProductsProvider>(context, listen: false);
+    final productProvider =
+        Provider.of<ProductsProvider>(context, listen: false);
     final TextStyle _textStyle = TextStyle(fontSize: 15);
+
+    // bool _isWeighed = false;
 
     if (!widget.isANewProduct) {
       Map<String, dynamic>? docRef;
@@ -103,7 +107,18 @@ class _NewProductFormState extends State<NewProductForm> {
         docRef = value.data();
         _initialsTextController.text = docRef!['initials'];
         _nameTextController.text = docRef!['name'];
-        _priceByKgTextController.text = docRef!['price_by_kg'].toString();
+        if (docRef!['is_weighed']) {
+          _priceByKgTextController.text = docRef!['price_by_kg'].toString();
+          if (productProvider.isWeighed != docRef!['is_weighed']) {
+            productProvider.changeIsWeighed();
+          }
+        } else {
+          _priceByKgTextController.text = '';
+          if (productProvider.isWeighed != docRef!['is_weighed']) {
+            productProvider.changeIsWeighed();
+          }
+        }
+
         _priceByUnitController.text = docRef!['price_by_unit'].toString();
         _availabilityController.text =
             docRef!['availability_in_deposit'].toString();
@@ -162,21 +177,13 @@ class _NewProductFormState extends State<NewProductForm> {
             SizedBox(
               height: 20,
             ),
-            TextFormField(
-              enableSuggestions: false,
-              keyboardType: TextInputType.number,
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'^(\d+)?\.?\d{0,2}')),
-              ],
-              style: _textStyle,
-              controller: _priceByKgTextController,
-              autocorrect: false,
-              decoration: InputDecoration(
-                labelText: 'Precio por kg.',
-                border:
-                    OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-              ),
+            IsWeighedChip(),
+            SizedBox(
+              height: 20,
             ),
+            PriceByKgTextField(
+                textStyle: _textStyle,
+                priceByKgTextController: _priceByKgTextController),
             SizedBox(
               height: 20,
             ),
@@ -212,6 +219,9 @@ class _NewProductFormState extends State<NewProductForm> {
                       ),
                     ),
                     onPressed: () {
+                      // if (productProvider.isWeighed) {
+                      //   productProvider.isWeighed = _isWeighed;
+                      // }
                       Navigator.pushReplacementNamed(
                           context, 'products_price_list_page',
                           arguments: true);
@@ -244,6 +254,7 @@ class _NewProductFormState extends State<NewProductForm> {
                             double.parse(_priceByUnitController.text.trim()),
                         availabilityInDeposit:
                             double.parse(_availabilityController.text.trim()),
+                        isWeighed: productProvider.isWeighed,
                       );
                       if (widget.isANewProduct) {
                         firebaseProvider.fbProductsCollectionRef
@@ -267,6 +278,44 @@ class _NewProductFormState extends State<NewProductForm> {
               ],
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class PriceByKgTextField extends StatelessWidget {
+  const PriceByKgTextField({
+    Key? key,
+    required TextStyle textStyle,
+    required TextEditingController priceByKgTextController,
+  })  : _textStyle = textStyle,
+        _priceByKgTextController = priceByKgTextController,
+        super(key: key);
+
+  final TextStyle _textStyle;
+  final TextEditingController _priceByKgTextController;
+
+  @override
+  Widget build(BuildContext context) {
+    final productProvider =
+        Provider.of<ProductsProvider>(context, listen: true);
+    return Visibility(
+      visible: productProvider.isWeighed,
+      child: TextFormField(
+        enableSuggestions: false,
+        keyboardType: TextInputType.number,
+        inputFormatters: [
+          FilteringTextInputFormatter.allow(RegExp(r'^(\d+)?\.?\d{0,2}')),
+        ],
+        style: _textStyle,
+        controller: _priceByKgTextController,
+        autocorrect: false,
+        decoration: InputDecoration(
+          enabled: productProvider.isWeighed,
+          isCollapsed: !productProvider.isWeighed,
+          labelText: 'Precio por kg.',
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
         ),
       ),
     );

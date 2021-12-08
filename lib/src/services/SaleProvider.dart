@@ -18,6 +18,7 @@ class SaleProvider extends ChangeNotifier {
   late num finalInstallment;
   late num discount;
   late num finalTotal;
+  num weightProductSubtotal = 0;
 
   Sale currentSale = Sale();
 
@@ -55,6 +56,11 @@ class SaleProvider extends ChangeNotifier {
   //   this._amountAnimationController = controller;
   //   // notifyListeners();
   // }
+  void updateWeightProductSubtotal(num subtotal) {
+    this.weightProductSubtotal = subtotal;
+    notifyListeners();
+  }
+
   void changeIncrement() {
     if (this.increment == 0.5) {
       this.increment = 1;
@@ -120,6 +126,36 @@ class SaleProvider extends ChangeNotifier {
     }
   }
 
+  void updateWeight(Product product, num weight) {
+    if (this.saleProductList.any((e) => e.containsKey(product.id))) {
+      this
+          .saleProductList
+          .firstWhere((e) => e.containsKey(product.id))
+          .values
+          .first
+          .increaseWeight(weight);
+      notifyListeners();
+    } else {
+      this.saleProductList.add({product.id: ProductForSale(product, weight)});
+      notifyListeners();
+    }
+  }
+
+  void updateWeighedAmount(Product product, num weight) {
+    if (this.saleProductList.any((e) => e.containsKey(product.id))) {
+      this
+          .saleProductList
+          .firstWhere((e) => e.containsKey(product.id))
+          .values
+          .first
+          .updateWeighedAmount(weight, product.availabilityInDeposit);
+      notifyListeners();
+    } else {
+      this.saleProductList.add({product.id: ProductForSale(product, weight)});
+      notifyListeners();
+    }
+  }
+
   void subtractAmount(Product product) {
     var _isInProductList =
         this.saleProductList.any((e) => e.containsKey(product.id));
@@ -152,6 +188,21 @@ class SaleProvider extends ChangeNotifier {
           .decreaseAmout(this.increment);
       return notifyListeners();
     }
+  }
+
+  void deleteWeighedProduct(Product product) {
+    var _isInProductList =
+        this.saleProductList.any((e) => e.containsKey(product.id));
+
+    if (!_isInProductList) {
+      return;
+    }
+    var _indexOfProduct = this
+        .saleProductList
+        .indexOf(saleProductList.firstWhere((e) => e.containsKey(product.id)));
+    this.saleProductList.removeAt(_indexOfProduct);
+
+    return notifyListeners();
   }
 
   num getSubTotal() {

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 class ProductsProvider extends ChangeNotifier {
   List<Product> _productList = [];
+  bool isWeighed = false;
 
   void fillProductList(List<Product> products) {
     this._productList.addAll(products);
@@ -13,6 +14,11 @@ class ProductsProvider extends ChangeNotifier {
 
   set productList(List<Product> productList) {
     this._productList = productList;
+    notifyListeners();
+  }
+
+  void changeIsWeighed() {
+    this.isWeighed = !this.isWeighed;
     notifyListeners();
   }
 }

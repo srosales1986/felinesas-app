@@ -1,8 +1,11 @@
 // import 'package:chicken_sales_control/src/models/Customer_model.dart';
 import 'package:chicken_sales_control/src/models/Product_model.dart';
+import 'package:chicken_sales_control/src/pages/sale/add_products/AddWeightDialog.dart';
+import 'package:chicken_sales_control/src/pages/sale/add_products/BuildTrailing.dart';
 import 'package:chicken_sales_control/src/services/FirebaseProvider.dart';
 import 'package:chicken_sales_control/src/services/SaleProvider.dart';
 import 'package:flutter/material.dart';
+// import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'ProductsProvider.dart';
 
@@ -40,6 +43,11 @@ class _ProductListViewState extends State<ProductListView> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final productsProvider =
         Provider.of<ProductsProvider>(context, listen: true);
@@ -59,48 +67,88 @@ class _ProductListViewState extends State<ProductListView> {
           children: [
             SizedBox(height: 10),
             ListTile(
-              enabled: productList[index].availabilityInDeposit != 0,
-              visualDensity: VisualDensity.compact,
-              contentPadding: EdgeInsets.symmetric(horizontal: 6),
-              minVerticalPadding: 1,
-              leading: ClipRRect(
-                borderRadius: BorderRadius.circular(5),
-                child: Container(
-                  // color: Colors.white60,
-                  height: 55.0,
-                  width: 55.0,
-                  alignment: Alignment.center,
-                  child: Text(
-                    productList[index].initials,
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.black54,
+                enabled: productList[index].availabilityInDeposit != 0,
+                visualDensity: VisualDensity.compact,
+                contentPadding: EdgeInsets.symmetric(horizontal: 6),
+                minVerticalPadding: 1,
+                leading: ClipRRect(
+                  borderRadius: BorderRadius.circular(5),
+                  child: Container(
+                    // color: Colors.white60,
+                    height: 55.0,
+                    width: 55.0,
+                    alignment: Alignment.center,
+                    child: Text(
+                      productList[index].initials,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.black54,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              title: Container(
-                child: Text(
-                  productList[index].name,
-                  style: TextStyle(fontSize: 18),
+                title: Container(
+                  child: Text(
+                    productList[index].name,
+                    style: TextStyle(fontSize: 18),
+                  ),
                 ),
-              ),
-              trailing: productList[index].availabilityInDeposit != 0
-                  ? Amount(
-                      productId: productList[index].id,
-                      // currentCustomer: currentCustomer,
-                      product: productList[index],
-                    )
-                  : null,
-              subtitle: Text(
-                  '\$${productList[index].priceByUnit.toStringAsFixed(2)} - Stock: ${productList[index].availabilityInDeposit.toStringAsFixed(0)}'),
-            ),
+                trailing: productList[index].availabilityInDeposit != 0
+                    ? BuildTrailing(product: productList[index])
+                    : null,
+                subtitle: productList[index].isWeighed
+                    ? Text(
+                        '\$/Kg: ${productList[index].priceByKg.toStringAsFixed(2)} - Stock: ${productList[index].availabilityInDeposit.toStringAsFixed(2)}Kg')
+                    : Text(
+                        '\$${productList[index].priceByUnit.toStringAsFixed(2)} - Stock: ${productList[index].availabilityInDeposit.toStringAsFixed(0)}')),
             Divider(),
           ],
         );
       },
     );
   }
+
+  // Widget builTrailing(Product product) {
+  //   if (!product.isWeighed) {
+  //     return Amount(
+  //       productId: product.id,
+  //       product: product,
+  //     );
+  //   }
+  //   return Container(
+  //     decoration: BoxDecoration(
+  //       color: Colors.grey.shade300,
+  //       shape: BoxShape.rectangle,
+  //       borderRadius: BorderRadius.circular(30),
+  //     ),
+  //     child: Row(
+  //       mainAxisSize: MainAxisSize.min,
+  //       mainAxisAlignment: MainAxisAlignment.center,
+  //       children: [
+  //         Container(
+  //           padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+  //           child: TextField(
+  //             controller: _controller,
+  //             textAlign: TextAlign.end,
+  //             keyboardType: TextInputType.number,
+  //             inputFormatters: [
+  //               FilteringTextInputFormatter.allow(RegExp(r'^(\d+)?\.?\d{0,2}')),
+  //               LengthLimitingTextInputFormatter(11),
+  //             ],
+  //             decoration: InputDecoration(
+  //               constraints: BoxConstraints(maxHeight: 40, maxWidth: 90),
+  //               border: InputBorder.none,
+  //             ),
+  //           ),
+  //         ),
+  //         Container(
+  //           padding: EdgeInsets.symmetric(horizontal: 10),
+  //           child: Center(child: Text('Kg')),
+  //         )
+  //       ],
+  //     ),
+  //   );
+  // }
 }
 
 class Amount extends StatelessWidget {

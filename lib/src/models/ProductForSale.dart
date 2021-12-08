@@ -13,16 +13,28 @@ class ProductForSale {
     this.productId = product.id;
     this.productName = product.name;
     this.productInitials = product.initials;
-    this.price = product.priceByUnit;
+    this.price = product.isWeighed ? product.priceByKg : product.priceByUnit;
     this.amount = amount;
     this.subtotal = this.price * this.amount;
-    this.finalAmount = product.availabilityInDeposit - 1.0;
+    this.finalAmount = product.isWeighed
+        ? product.availabilityInDeposit - amount
+        : product.availabilityInDeposit - 1.0;
   }
 
   void increaseAmout(num increment) {
     this.amount += increment;
     this.subtotal = this.price * this.amount;
     this.finalAmount -= increment;
+  }
+
+  void increaseWeight(num weight) {
+    this.subtotal = this.price * this.amount;
+  }
+
+  void updateWeighedAmount(num weight, num stock) {
+    this.amount = weight;
+    this.increaseWeight(weight);
+    this.finalAmount = stock - weight;
   }
 
   void decreaseAmout(num increment) {
