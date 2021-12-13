@@ -1,5 +1,4 @@
 import 'package:chicken_sales_control/src/models/Customer_model.dart';
-// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class CustomerProvider extends ChangeNotifier {

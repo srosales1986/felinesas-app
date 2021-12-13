@@ -6,9 +6,10 @@ import 'package:provider/provider.dart';
 
 class CustomerSearchDelegate extends SearchDelegate {
   final CustomerProvider customerProvider;
+  final String navigateTo;
   List<Customer> _filterCustomer = [];
 
-  CustomerSearchDelegate(this.customerProvider);
+  CustomerSearchDelegate(this.customerProvider, this.navigateTo);
 
   @override
   String? get searchFieldLabel => 'Buscar cliente';
@@ -36,6 +37,7 @@ class CustomerSearchDelegate extends SearchDelegate {
     return CustomerListViwBuilder(
       query: query,
       filterCustomer: _filterCustomer,
+      navigateTo: navigateTo,
     );
   }
 
@@ -58,6 +60,7 @@ class CustomerSearchDelegate extends SearchDelegate {
     return CustomerListViwBuilder(
       query: query,
       filterCustomer: _filterCustomer,
+      navigateTo: navigateTo,
     );
   }
 }
@@ -67,10 +70,12 @@ class CustomerListViwBuilder extends StatelessWidget {
     Key? key,
     required this.query,
     required this.filterCustomer,
+    required this.navigateTo,
   }) : super(key: key);
 
   final String query;
   final List<Customer> filterCustomer;
+  final String navigateTo;
 
   @override
   Widget build(BuildContext context) {
@@ -85,8 +90,13 @@ class CustomerListViwBuilder extends StatelessWidget {
               contentPadding: EdgeInsets.symmetric(horizontal: 10),
               minVerticalPadding: 1,
               onTap: () {
-                saleProvider.currentCustomer = filterCustomer[index];
-                Navigator.pushNamed(context, 'add_products_page');
+                if (navigateTo == 'add_products_page') {
+                  saleProvider.currentCustomer = filterCustomer[index];
+                  Navigator.pushNamed(context, navigateTo);
+                } else {
+                  Navigator.pushNamed(context, 'payment_page',
+                      arguments: filterCustomer[index]);
+                }
               },
               leading: Icon(
                 Icons.store_rounded,

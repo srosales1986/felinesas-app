@@ -1,11 +1,8 @@
-// import 'package:chicken_sales_control/src/models/Customer_model.dart';
 import 'package:chicken_sales_control/src/models/Product_model.dart';
-import 'package:chicken_sales_control/src/pages/sale/add_products/AddWeightDialog.dart';
 import 'package:chicken_sales_control/src/pages/sale/add_products/BuildTrailing.dart';
 import 'package:chicken_sales_control/src/services/FirebaseProvider.dart';
 import 'package:chicken_sales_control/src/services/SaleProvider.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'ProductsProvider.dart';
 

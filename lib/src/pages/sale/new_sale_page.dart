@@ -27,7 +27,8 @@ class NewSalePage extends StatelessWidget {
           IconButton(
             onPressed: () => showSearch(
                 context: context,
-                delegate: CustomerSearchDelegate(customerProvider)),
+                delegate: CustomerSearchDelegate(
+                    customerProvider, 'add_products_page')),
             icon: Icon(Icons.search),
           ),
         ],
