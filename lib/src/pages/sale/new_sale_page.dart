@@ -1,4 +1,6 @@
 import 'package:chicken_sales_control/src/pages/customer/customer_list_view_builder.dart';
+import 'package:chicken_sales_control/src/pages/customer/search/CustomerSearchDelegate.dart';
+import 'package:chicken_sales_control/src/services/CustomersProvider.dart';
 import 'package:chicken_sales_control/src/services/FirebaseProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -12,6 +14,8 @@ class NewSalePage extends StatelessWidget {
     final customerCollection =
         Provider.of<FirebaseProvider>(context, listen: false)
             .fbCustomersCollectionRef;
+    final customerProvider =
+        Provider.of<CustomerProvider>(context, listen: false);
 
     return Scaffold(
       backgroundColor: Colors.grey.shade200,
@@ -19,6 +23,14 @@ class NewSalePage extends StatelessWidget {
         automaticallyImplyLeading: false,
         centerTitle: true,
         title: Text('Seleccione el cliente'),
+        actions: [
+          IconButton(
+            onPressed: () => showSearch(
+                context: context,
+                delegate: CustomerSearchDelegate(customerProvider)),
+            icon: Icon(Icons.search),
+          ),
+        ],
       ),
       body: ElasticInRight(
         from: -200,

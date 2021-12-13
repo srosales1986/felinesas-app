@@ -28,5 +28,12 @@ class CustomerProvider extends ChangeNotifier {
     // notifyListeners();
   }
 
+  // Future<List<Customer>> searchCustomer(String query) async {
+  //   return this
+  //       ._customerList
+  //       .where((customer) => customer.name.contains(query))
+  //       .toList();
+  // }
+
   List<Customer> get customerList => this._customerList;
 }
