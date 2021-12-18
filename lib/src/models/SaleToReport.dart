@@ -39,9 +39,6 @@ class SaleToReport {
       subtotal: map['subtotal'].toString(),
       userSeller: UserModel.fromJson(
           map['user_seller']['external_id'], map['user_seller']),
-
-      // balanceBeforeSale: map['balance_beforeSale'].toString(),
-      // balanceAfterSale: map['balance_afterSale'].toString(),
     );
   }
 }
