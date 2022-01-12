@@ -1,6 +1,9 @@
+import 'dart:core';
+
 import 'package:chicken_sales_control/src/models/SaleToReport.dart';
 import 'package:chicken_sales_control/src/models/User_model.dart';
 import 'package:chicken_sales_control/src/services/FirebaseProvider.dart';
+import 'package:chicken_sales_control/src/util/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -74,16 +77,23 @@ class _SalesByUserListBuilderState extends State<SalesByUserListBuilder> {
               return Center(child: CircularProgressIndicator());
             } else {
               final docs = snapshot.data!.docs;
+              print(docs.length);
               if (_salesList.isNotEmpty) {
                 _salesList.clear();
               }
               docs.forEach((sale) {
+                // print(Utils.formatDateWithoutHms(
+                //     DateTime.fromMillisecondsSinceEpoch(
+                //         sale.get('date_created').millisecondsSinceEpoch)));
+                // print(Utils.formatDateWithoutHms(DateTime.now()));
+
                 if (sale.get('user_seller')['external_id'].toString() ==
                         widget.currentUser.externalId &&
-                    DateTime.fromMillisecondsSinceEpoch(
-                                sale.get('date_created').millisecondsSinceEpoch)
-                            .day ==
-                        DateTime.now().day) {
+                    Utils.formatDateWithoutHms(
+                            DateTime.fromMillisecondsSinceEpoch(sale
+                                .get('date_created')
+                                .millisecondsSinceEpoch)) ==
+                        Utils.formatDateWithoutHms(DateTime.now())) {
                   _salesList.add(SaleToReport.fromJson(sale.data()));
                 }
               });
@@ -115,6 +125,14 @@ class _SalesByUserListBuilderState extends State<SalesByUserListBuilder> {
                                       'MercadoPago: \$ ${_salesList[index].mpInstallment}'),
                                   Text('Total recibido: \$' +
                                       _total.toStringAsFixed(2)),
+                                  Text(
+                                    Utils.formatDateWithoutHms(
+                                        DateTime.fromMillisecondsSinceEpoch(
+                                            _salesList[index]
+                                                .dateCreated
+                                                .millisecondsSinceEpoch)),
+                                    style: TextStyle(fontSize: 10),
+                                  ),
                                 ],
                               ),
                             ),

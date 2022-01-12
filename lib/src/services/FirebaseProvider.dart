@@ -1,3 +1,4 @@
+import 'package:chicken_sales_control/src/util/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -15,7 +16,14 @@ class FirebaseProvider extends ChangeNotifier {
       FirebaseFirestore.instance.collection('config');
 
   final Stream<QuerySnapshot<Map<String, dynamic>>> _salesStream =
-      FirebaseFirestore.instance.collection('sales').snapshots();
+      FirebaseFirestore
+          .instance
+          .collection('sales')
+          .where(
+              'date_created',
+              isGreaterThan: DateTime.utc(DateTime.now().year,
+                  DateTime.now().month, DateTime.now().day))
+          .snapshots();
 
   FirebaseFirestore get fbInstance => this._fbInstance;
 

@@ -17,8 +17,12 @@ class SalesByUserPage extends StatelessWidget {
         centerTitle: true,
         title: Column(
           children: [
-            Text('Ventas de: ${_currentUser.userName}'),
-            Text('${Utils.formatDateWithoutHms(DateTime.now())}'),
+            Text('${Utils.formatDateWithoutHms(DateTime.now())}',
+                style: TextStyle(fontSize: 14)),
+            Text(
+              'Ventas de ${_currentUser.userName}',
+              style: TextStyle(fontSize: 14),
+            ),
           ],
         ),
       ),
