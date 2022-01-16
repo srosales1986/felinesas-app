@@ -21,8 +21,8 @@ class FirebaseProvider extends ChangeNotifier {
           .collection('sales')
           .where(
               'date_created',
-              isGreaterThan: DateTime.utc(DateTime.now().year,
-                  DateTime.now().month, DateTime.now().day))
+              isGreaterThan:
+                  DateTime.utc(DateTime.now().year, DateTime.now().month, 15))
           .snapshots();
 
   FirebaseFirestore get fbInstance => this._fbInstance;

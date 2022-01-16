@@ -21,6 +21,16 @@ class ProductForSale {
         : product.availabilityInDeposit - 1.0;
   }
 
+  ProductForSale.report({
+    required this.productId,
+    required this.productName,
+    required this.productInitials,
+    required this.price,
+    required this.amount,
+    required this.subtotal,
+    required this.finalAmount,
+  });
+
   void increaseAmout(num increment) {
     this.amount += increment;
     this.subtotal = this.price * this.amount;
@@ -53,5 +63,16 @@ class ProductForSale {
       'finalAmount': productForSale.finalAmount,
       'subtotal': productForSale.subtotal
     };
+  }
+
+  factory ProductForSale.fromJson(Map<String, dynamic> json) {
+    return ProductForSale.report(
+        productId: json['product_id'],
+        productName: json['product_name'],
+        productInitials: json['product_initials'],
+        price: json['price'],
+        amount: json['amount'],
+        subtotal: json['subtotal'],
+        finalAmount: json['finalAmount']);
   }
 }
