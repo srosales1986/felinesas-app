@@ -1,4 +1,4 @@
-import 'dart:core';
+// import 'dart:core';
 import 'package:chicken_sales_control/src/models/ProductForSale.dart';
 import 'package:chicken_sales_control/src/models/ReportSalesByUser.dart';
 import 'package:chicken_sales_control/src/models/SaleToReport.dart';
@@ -55,13 +55,12 @@ class _SalesByUserListBuilderState extends State<SalesByUserListBuilder> {
                 }
                 docs.forEach((sale) {
                   if (sale.get('user_seller')['external_id'].toString() ==
-                      widget.currentUser.externalId) {
-                    //       &&
-                    // Utils.formatDateWithoutHms(
-                    //         DateTime.fromMillisecondsSinceEpoch(sale
-                    //             .get('date_created')
-                    //             .millisecondsSinceEpoch)) ==
-                    //     Utils.formatDateWithoutHms(DateTime.now())) {
+                          widget.currentUser.externalId &&
+                      Utils.formatDateWithoutHms(
+                              DateTime.fromMillisecondsSinceEpoch(sale
+                                  .get('date_created')
+                                  .millisecondsSinceEpoch)) ==
+                          Utils.formatDateWithoutHms(DateTime.now())) {
                     _salesList.add(SaleToReport.fromJson(sale.data()));
                   }
                 });
@@ -71,6 +70,8 @@ class _SalesByUserListBuilderState extends State<SalesByUserListBuilder> {
                   'Efectivo recibido': 0,
                   'MercadoPago': 0
                 };
+                num totalCashInstallment = 0;
+                num totalMpInstallment = 0;
 
                 _salesList.forEach((element) {
                   productsMap = {'Efectivo recibido': 0, 'MercadoPago': 0};
@@ -81,6 +82,9 @@ class _SalesByUserListBuilderState extends State<SalesByUserListBuilder> {
                   num newMP = oldMP + element.mpInstallment;
                   productsMap.update('Efectivo recibido', (value) => newCash);
                   productsMap.update('MercadoPago', (value) => newMP);
+
+                  totalCashInstallment += element.cashInstallment;
+                  totalMpInstallment += element.mpInstallment;
 
                   ReportSalesByUser currentCustomer = ReportSalesByUser(
                     customerName: element.customerName,
@@ -102,96 +106,122 @@ class _SalesByUserListBuilderState extends State<SalesByUserListBuilder> {
                   salesByUserList.add(currentCustomer);
                 });
 
-                print(salesByUserList);
+                print(
+                    'Efectivo: $totalCashInstallment, MP: $totalMpInstallment');
 
                 if (_salesList.isEmpty) {
                   return Center(
                     child: Text(
-                        '${widget.currentUser.userName} no realizó ventas hoy'),
+                        '${widget.currentUser.userName} no realizó ventas hoy.'),
                   );
                 } else {
-                  // List<Widget> widgetList = [];
-                  // productsMap.entries.forEach((element) {
-                  //   widgetList.add(ListTile(
-                  //     dense: true,
-                  //     title: RichText(
-                  //       text: TextSpan(
-                  //         style: TextStyle(fontSize: 16, color: Colors.black87),
-                  //         children: [
-                  //           TextSpan(
-                  //               text: '${element.key}: ',
-                  //               style: TextStyle(fontWeight: FontWeight.bold)),
-                  //           TextSpan(text: '${element.value}'),
-                  //         ],
-                  //       ),
-                  //     ),
-                  //   ));
-                  //   if (element.key == 'MercadoPago') {
-                  //     widgetList.add(Divider());
-                  //   }
-                  // });
-
-                  // return Scrollbar(
-                  //   child: SingleChildScrollView(
-                  //     child: Container(
-                  //       margin:
-                  //           EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                  //       child: Column(
-                  //         crossAxisAlignment: CrossAxisAlignment.start,
-                  //         mainAxisSize: MainAxisSize.max,
-                  //         children: widgetList,
-                  //       ),
-                  //     ),
-                  //   ),
-                  // );
-                  // }
-
-                  return ListView.builder(
-                    physics: BouncingScrollPhysics(),
-                    itemCount: _salesList.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      num _total = salesByUserList[index]
-                              .salesReport['Efectivo recibido'] +
-                          salesByUserList[index].salesReport['MercadoPago'];
-
-                      return _salesList.isEmpty
-                          ? Center(
-                              child: Text(
-                                  '${widget.currentUser.userName} no hay realizó ventas hoy'),
-                            )
-                          : Column(
-                              children: [
-                                ListTile(
-                                  title: Center(
-                                      child: Text(
-                                          '${_salesList[index].customerName}')),
-                                  subtitle: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      listOfProducts(
-                                          _salesList[index].productsList),
-                                      Text(
-                                          'Efectivo: \$ ${salesByUserList[index].salesReport['Efectivo recibido']}'),
-                                      Text(
-                                          'MercadoPago: \$ ${salesByUserList[index].salesReport['MercadoPago']}'),
-                                      Text('Total recibido: \$' +
-                                          _total.toStringAsFixed(2)),
-                                      Text(
-                                        Utils.formatDateWithoutHms(
-                                            DateTime.fromMillisecondsSinceEpoch(
-                                                _salesList[index]
-                                                    .dateCreated
-                                                    .millisecondsSinceEpoch)),
-                                        style: TextStyle(fontSize: 10),
-                                      ),
-                                    ],
+                  return Column(
+                    children: [
+                      Container(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Card(
+                              margin: EdgeInsets.fromLTRB(13, 5, 13, 0),
+                              child: Center(
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 15),
+                                  child: Text(
+                                    'Total de ventas realizadas: ${_salesList.length}',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
                                   ),
                                 ),
-                                Divider(),
-                              ],
-                            );
-                    },
+                              ),
+                            ),
+                            Card(
+                              margin: EdgeInsets.symmetric(
+                                  horizontal: 13, vertical: 5),
+                              child: Center(
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 15),
+                                  child: Text(
+                                    'Total Efectivo recibido: \$ $totalCashInstallment',
+                                    style:
+                                        TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Card(
+                              margin: EdgeInsets.symmetric(horizontal: 13),
+                              child: Center(
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 15),
+                                  child: Text(
+                                      'Total MercadoLibre: \$ $totalMpInstallment',
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold)),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Divider(
+                        thickness: 2,
+                      ),
+                      Expanded(
+                        child: Container(
+                          child: Scrollbar(
+                            interactive: true,
+                            isAlwaysShown: true,
+                            thickness: 8,
+                            child: ListView.builder(
+                              physics: BouncingScrollPhysics(),
+                              itemCount: _salesList.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                num _total = salesByUserList[index]
+                                        .salesReport['Efectivo recibido'] +
+                                    salesByUserList[index]
+                                        .salesReport['MercadoPago'];
+
+                                return Column(
+                                  children: [
+                                    ListTile(
+                                      title: Center(
+                                          child: Text(
+                                              '${_salesList[index].customerName}')),
+                                      subtitle: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            Utils.formatDate(DateTime
+                                                .fromMillisecondsSinceEpoch(
+                                                    _salesList[index]
+                                                        .dateCreated
+                                                        .millisecondsSinceEpoch)),
+                                            style: TextStyle(fontSize: 10),
+                                          ),
+                                          listOfProducts(
+                                              _salesList[index].productsList),
+                                          Text(
+                                              'Efectivo: \$ ${salesByUserList[index].salesReport['Efectivo recibido']}'),
+                                          Text(
+                                              'MercadoPago: \$ ${salesByUserList[index].salesReport['MercadoPago']}'),
+                                          Text('Total recibido: \$ ' +
+                                              _total.toStringAsFixed(2)),
+                                        ],
+                                      ),
+                                    ),
+                                    Divider(),
+                                  ],
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   );
                 }
               }
