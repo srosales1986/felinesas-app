@@ -13,7 +13,7 @@ class PaymentProvider extends ChangeNotifier {
         dateCreated: DateTime.now(),
         newBalance: 0,
         previousBalance: currentCustomer.balance,
-        userId: currentUser.id,
+        userId: currentUser.externalId,
         userName: currentUser.userName,
         paymentAmount: 0,
         methodOfPayment: 'UNKNOWN');

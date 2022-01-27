@@ -3,6 +3,7 @@ import 'package:chicken_sales_control/src/models/ProductForSale.dart';
 import 'package:chicken_sales_control/src/models/ReportSalesByUser.dart';
 import 'package:chicken_sales_control/src/models/SaleToReport.dart';
 import 'package:chicken_sales_control/src/models/User_model.dart';
+import 'package:chicken_sales_control/src/pages/reports/salesSummaryWidget.dart';
 import 'package:chicken_sales_control/src/services/FirebaseProvider.dart';
 import 'package:chicken_sales_control/src/util/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -55,15 +56,21 @@ class _SalesByUserListBuilderState extends State<SalesByUserListBuilder> {
                 }
                 docs.forEach((sale) {
                   if (sale.get('user_seller')['external_id'].toString() ==
-                          widget.currentUser.externalId &&
-                      Utils.formatDateWithoutHms(
-                              DateTime.fromMillisecondsSinceEpoch(sale
-                                  .get('date_created')
-                                  .millisecondsSinceEpoch)) ==
-                          Utils.formatDateWithoutHms(DateTime.now())) {
+                      widget.currentUser.externalId) {
                     _salesList.add(SaleToReport.fromJson(sale.data()));
                   }
                 });
+                // docs.forEach((sale) {
+                //   if (sale.get('user_seller')['external_id'].toString() ==
+                //           widget.currentUser.externalId &&
+                //       Utils.formatDateWithoutHms(
+                //               DateTime.fromMillisecondsSinceEpoch(sale
+                //                   .get('date_created')
+                //                   .millisecondsSinceEpoch)) ==
+                //           Utils.formatDateWithoutHms(DateTime.now())) {
+                //     _salesList.add(SaleToReport.fromJson(sale.data()));
+                //   }
+                // });
 
                 List<ReportSalesByUser> salesByUserList = [];
                 Map<String, num> productsMap = {
@@ -117,54 +124,10 @@ class _SalesByUserListBuilderState extends State<SalesByUserListBuilder> {
                 } else {
                   return Column(
                     children: [
-                      Container(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Card(
-                              margin: EdgeInsets.fromLTRB(13, 5, 13, 0),
-                              child: Center(
-                                child: Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 15),
-                                  child: Text(
-                                    'Total de ventas realizadas: ${_salesList.length}',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Card(
-                              margin: EdgeInsets.symmetric(
-                                  horizontal: 13, vertical: 5),
-                              child: Center(
-                                child: Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 15),
-                                  child: Text(
-                                    'Total Efectivo recibido: \$ $totalCashInstallment',
-                                    style:
-                                        TextStyle(fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Card(
-                              margin: EdgeInsets.symmetric(horizontal: 13),
-                              child: Center(
-                                child: Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 15),
-                                  child: Text(
-                                      'Total MercadoLibre: \$ $totalMpInstallment',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold)),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                      SalesSummaryWidget(
+                        salesList: _salesList,
+                        totalCashInstallment: totalCashInstallment,
+                        totalMpInstallment: totalMpInstallment,
                       ),
                       Divider(
                         thickness: 2,
