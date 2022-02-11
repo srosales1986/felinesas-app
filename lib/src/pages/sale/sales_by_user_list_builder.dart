@@ -49,28 +49,29 @@ class _SalesByUserListBuilderState extends State<SalesByUserListBuilder> {
                 return Center(child: CircularProgressIndicator());
               } else {
                 final docs = snapshot.data!.docs;
+
                 print(docs.length);
 
                 if (_salesList.isNotEmpty) {
                   _salesList.clear();
                 }
-                docs.forEach((sale) {
-                  if (sale.get('user_seller')['external_id'].toString() ==
-                      widget.currentUser.externalId) {
-                    _salesList.add(SaleToReport.fromJson(sale.data()));
-                  }
-                });
                 // docs.forEach((sale) {
                 //   if (sale.get('user_seller')['external_id'].toString() ==
-                //           widget.currentUser.externalId &&
-                //       Utils.formatDateWithoutHms(
-                //               DateTime.fromMillisecondsSinceEpoch(sale
-                //                   .get('date_created')
-                //                   .millisecondsSinceEpoch)) ==
-                //           Utils.formatDateWithoutHms(DateTime.now())) {
+                //       widget.currentUser.externalId) {
                 //     _salesList.add(SaleToReport.fromJson(sale.data()));
                 //   }
                 // });
+                docs.forEach((sale) {
+                  if (sale.get('user_seller')['external_id'].toString() ==
+                          widget.currentUser.externalId &&
+                      Utils.formatDateWithoutHms(
+                              DateTime.fromMillisecondsSinceEpoch(sale
+                                  .get('date_created')
+                                  .millisecondsSinceEpoch)) ==
+                          Utils.formatDateWithoutHms(DateTime.now())) {
+                    _salesList.add(SaleToReport.fromJson(sale.data()));
+                  }
+                });
 
                 List<ReportSalesByUser> salesByUserList = [];
                 Map<String, num> productsMap = {

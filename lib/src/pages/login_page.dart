@@ -123,8 +123,10 @@ class _LoginFrom extends StatelessWidget {
                         final uId = authService.currentUser!.uid;
 
                         userPovider.currentUser.externalId = uId;
+
                         final indexOfCurrentUser = userPovider.userList
                             .indexWhere((user) => user.externalId == uId);
+
                         userPovider.currentUser.rol =
                             userPovider.userList[indexOfCurrentUser].rol;
                       } on Exception catch (e) {

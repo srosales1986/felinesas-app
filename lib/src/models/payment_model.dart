@@ -37,15 +37,16 @@ class Payment {
 
   factory Payment.fromJson(Map<String, dynamic> map) {
     return Payment(
-      customerId: map['customerId'],
-      customerName: map['customerName'],
-      userId: map['userId'],
-      userName: map['userName'],
-      methodOfPayment: map['methodOfPayment'],
-      dateCreated: DateTime.fromMillisecondsSinceEpoch(map['dateCreated']),
-      previousBalance: map['previousBalance'],
-      newBalance: map['newBalance'],
-      paymentAmount: map['paymentAmount'],
+      customerId: map['customer_id'],
+      customerName: map['customer_name'],
+      userId: map['user_id'],
+      userName: map['user_name'],
+      methodOfPayment: map['method_of_payment'],
+      dateCreated: DateTime.fromMillisecondsSinceEpoch(
+          map['date_created'].millisecondsSinceEpoch),
+      previousBalance: map['previous_balance'],
+      newBalance: map['new_balance'],
+      paymentAmount: map['payment_amount'],
     );
   }
 }

@@ -12,7 +12,7 @@ import 'package:chicken_sales_control/src/util/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
+// import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class PaymentPage extends StatelessWidget {
@@ -69,7 +69,7 @@ class PaymentPage extends StatelessWidget {
             '${currentCustomer.name}',
             style: TextStyle(
               fontSize: 35,
-              fontFamily: GoogleFonts.dancingScript().fontFamily,
+              // fontFamily: GoogleFonts.roboto().fontFamily,
               color: Colors.blue,
               shadows: [
                 Shadow(

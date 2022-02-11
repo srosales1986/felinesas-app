@@ -1,5 +1,11 @@
 import 'package:chicken_sales_control/src/models/SaleToReport.dart';
+import 'package:chicken_sales_control/src/models/payment_model.dart';
+import 'package:chicken_sales_control/src/services/FirebaseProvider.dart';
+import 'package:chicken_sales_control/src/services/UserProvider.dart';
+import 'package:chicken_sales_control/src/util/utils.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class SalesSummaryWidget extends StatelessWidget {
   final List<SaleToReport> salesList;
@@ -12,6 +18,95 @@ class SalesSummaryWidget extends StatelessWidget {
     required this.totalCashInstallment,
     required this.totalMpInstallment,
   }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final _dbProvider = Provider.of<FirebaseProvider>(context, listen: false);
+    final _userProvider = Provider.of<UserProvider>(context, listen: false);
+
+    Stream<QuerySnapshot<Map<String, dynamic>>> _paymentsStream =
+        _dbProvider.paymentsStream;
+
+    num _curretTotalCashInstallment = totalCashInstallment;
+    num _curretTotalMpInstallment = totalMpInstallment;
+
+    // List<Payment> _paymentList = [];
+
+    return StreamBuilder(
+      stream: _paymentsStream,
+      builder: (BuildContext context,
+          AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+        switch (snapshot.connectionState) {
+          case ConnectionState.waiting:
+            return Center(child: CircularProgressIndicator());
+
+          case ConnectionState.none:
+            return Center(child: Text('None'));
+
+          case ConnectionState.done:
+          case ConnectionState.active:
+            if (!snapshot.hasData) {
+              return Center(child: CircularProgressIndicator());
+            } else {
+              final docs = snapshot.data!.docs;
+
+              print(docs.length);
+              // print(_paymentList);
+              // _paymentList.forEach((element) {
+              //   print(element.paymentAmount.toStringAsFixed(2));
+              // });
+
+              // if (_paymentList.isNotEmpty) {
+              //   _paymentList.clear();
+              // }
+
+              docs.forEach((payment) {
+                bool _isTheCurrentUser = payment.get('user_id').toString() ==
+                    _userProvider.currentUser.externalId;
+
+                bool _isCreatedToday = Utils.formatDateWithoutHms(
+                        DateTime.fromMillisecondsSinceEpoch(payment
+                            .get('date_created')
+                            .millisecondsSinceEpoch)) ==
+                    Utils.formatDateWithoutHms(DateTime.now());
+
+                if (_isTheCurrentUser && _isCreatedToday) {
+                  if (Payment.fromJson(payment.data()).methodOfPayment ==
+                      'Efectivo') {
+                    _curretTotalCashInstallment +=
+                        Payment.fromJson(payment.data()).paymentAmount;
+                  }
+                  if (Payment.fromJson(payment.data()).methodOfPayment ==
+                      'MercadoPago') {
+                    _curretTotalMpInstallment +=
+                        Payment.fromJson(payment.data()).paymentAmount;
+                  }
+                  // _paymentList.add(Payment.fromJson(payment.data()));
+                }
+              });
+              return SummaryWidget(
+                salesList: salesList,
+                totalCashInstallment: _curretTotalCashInstallment,
+                totalMpInstallment: _curretTotalMpInstallment,
+              );
+            }
+        }
+      },
+    );
+  }
+}
+
+class SummaryWidget extends StatelessWidget {
+  const SummaryWidget({
+    Key? key,
+    required this.salesList,
+    required this.totalCashInstallment,
+    required this.totalMpInstallment,
+  }) : super(key: key);
+
+  final List<SaleToReport> salesList;
+  final num totalCashInstallment;
+  final num totalMpInstallment;
 
   @override
   Widget build(BuildContext context) {

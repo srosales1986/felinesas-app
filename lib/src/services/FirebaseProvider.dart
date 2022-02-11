@@ -20,17 +20,17 @@ class FirebaseProvider extends ChangeNotifier {
           .collection('sales')
           .where(
               'date_created',
-              isGreaterThan:
-                  DateTime.utc(DateTime.now().year, DateTime.now().month, 26))
+              isGreaterThan: DateTime.utc(DateTime.now().year,
+                  DateTime.now().month, DateTime.now().day))
           .orderBy('date_created', descending: true)
           .snapshots();
-  // final Stream<QuerySnapshot<Map<String, dynamic>>> _paymentsStream =
-  //     FirebaseFirestore.instance
-  //         .collection('payments')
-  //         .where('date_created',
-  //             isGreaterThan: DateTime.utc(DateTime.now().year,
-  //                 DateTime.now().month, DateTime.now().day))
-  //         .snapshots();
+  final Stream<QuerySnapshot<Map<String, dynamic>>> _paymentsStream =
+      FirebaseFirestore.instance
+          .collection('payments')
+          .where('date_created',
+              isGreaterThan: DateTime.utc(DateTime.now().year,
+                  DateTime.now().month, DateTime.now().day))
+          .snapshots();
 
   FirebaseFirestore get fbInstance => this._fbInstance;
 
@@ -46,4 +46,6 @@ class FirebaseProvider extends ChangeNotifier {
       this._fbConfigCollectionRef;
   Stream<QuerySnapshot<Map<String, dynamic>>> get salesStream =>
       this._salesStream;
+  Stream<QuerySnapshot<Map<String, dynamic>>> get paymentsStream =>
+      this._paymentsStream;
 }
