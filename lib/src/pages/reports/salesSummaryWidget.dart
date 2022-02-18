@@ -1,29 +1,30 @@
 import 'package:chicken_sales_control/src/models/SaleToReport.dart';
 import 'package:chicken_sales_control/src/models/payment_model.dart';
 import 'package:chicken_sales_control/src/services/FirebaseProvider.dart';
-import 'package:chicken_sales_control/src/services/UserProvider.dart';
 import 'package:chicken_sales_control/src/util/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/User_model.dart';
+
 class SalesSummaryWidget extends StatelessWidget {
   final List<SaleToReport> salesList;
   final num totalCashInstallment;
   final num totalMpInstallment;
+  final UserModel currentUser;
 
   SalesSummaryWidget({
     Key? key,
     required this.salesList,
     required this.totalCashInstallment,
     required this.totalMpInstallment,
+    required this.currentUser,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final _dbProvider = Provider.of<FirebaseProvider>(context, listen: false);
-    final _userProvider = Provider.of<UserProvider>(context, listen: false);
-
     Stream<QuerySnapshot<Map<String, dynamic>>> _paymentsStream =
         _dbProvider.paymentsStream;
 
@@ -61,8 +62,8 @@ class SalesSummaryWidget extends StatelessWidget {
               // }
 
               docs.forEach((payment) {
-                bool _isTheCurrentUser = payment.get('user_id').toString() ==
-                    _userProvider.currentUser.externalId;
+                bool _isTheCurrentUser =
+                    payment.get('user_id').toString() == currentUser.externalId;
 
                 bool _isCreatedToday = Utils.formatDateWithoutHms(
                         DateTime.fromMillisecondsSinceEpoch(payment
@@ -126,14 +127,14 @@ class SummaryWidget extends StatelessWidget {
             elevation: 2,
             child: CardText(
               text: 'Total efectivo recibido: ',
-              total: '\$$totalCashInstallment',
+              total: Utils.formatCurrency(totalCashInstallment),
             ),
           ),
           Card(
             elevation: 2,
             child: CardText(
               text: 'Total MercadoPago: ',
-              total: '\$$totalMpInstallment',
+              total: Utils.formatCurrency(totalMpInstallment),
             ),
           ),
         ],

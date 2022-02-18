@@ -55,20 +55,26 @@ class _SalesByUserListBuilderState extends State<SalesByUserListBuilder> {
                 if (_salesList.isNotEmpty) {
                   _salesList.clear();
                 }
+
                 // docs.forEach((sale) {
                 //   if (sale.get('user_seller')['external_id'].toString() ==
                 //       widget.currentUser.externalId) {
                 //     _salesList.add(SaleToReport.fromJson(sale.data()));
                 //   }
                 // });
+
                 docs.forEach((sale) {
-                  if (sale.get('user_seller')['external_id'].toString() ==
-                          widget.currentUser.externalId &&
-                      Utils.formatDateWithoutHms(
-                              DateTime.fromMillisecondsSinceEpoch(sale
-                                  .get('date_created')
-                                  .millisecondsSinceEpoch)) ==
-                          Utils.formatDateWithoutHms(DateTime.now())) {
+                  bool _isTheCurrentUser =
+                      sale.get('user_seller')['external_id'].toString() ==
+                          widget.currentUser.externalId;
+
+                  bool isCreatedToday = Utils.formatDateWithoutHms(
+                          DateTime.fromMillisecondsSinceEpoch(sale
+                              .get('date_created')
+                              .millisecondsSinceEpoch)) ==
+                      Utils.formatDateWithoutHms(DateTime.now());
+
+                  if (_isTheCurrentUser && isCreatedToday) {
                     _salesList.add(SaleToReport.fromJson(sale.data()));
                   }
                 });
@@ -126,6 +132,7 @@ class _SalesByUserListBuilderState extends State<SalesByUserListBuilder> {
                   return Column(
                     children: [
                       SalesSummaryWidget(
+                        currentUser: widget.currentUser,
                         salesList: _salesList,
                         totalCashInstallment: totalCashInstallment,
                         totalMpInstallment: totalMpInstallment,
@@ -168,12 +175,18 @@ class _SalesByUserListBuilderState extends State<SalesByUserListBuilder> {
                                           ),
                                           listOfProducts(
                                               _salesList[index].productsList),
-                                          Text(
-                                              'Efectivo: \$ ${salesByUserList[index].salesReport['Efectivo recibido']}'),
-                                          Text(
-                                              'MercadoPago: \$ ${salesByUserList[index].salesReport['MercadoPago']}'),
-                                          Text('Total recibido: \$ ' +
-                                              _total.toStringAsFixed(2)),
+                                          Text('Efectivo: ' +
+                                              Utils.formatCurrency(
+                                                  salesByUserList[index]
+                                                          .salesReport[
+                                                      'Efectivo recibido'])),
+                                          Text('MercadoPago: ' +
+                                              Utils.formatCurrency(
+                                                  salesByUserList[index]
+                                                          .salesReport[
+                                                      'MercadoPago'])),
+                                          Text('Total recibido: ' +
+                                              Utils.formatCurrency(_total)),
                                         ],
                                       ),
                                     ),

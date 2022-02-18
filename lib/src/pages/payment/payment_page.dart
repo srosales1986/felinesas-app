@@ -68,7 +68,7 @@ class PaymentPage extends StatelessWidget {
           child: Text(
             '${currentCustomer.name}',
             style: TextStyle(
-              fontSize: 35,
+              fontSize: 30,
               // fontFamily: GoogleFonts.roboto().fontFamily,
               color: Colors.blue,
               shadows: [
@@ -86,7 +86,7 @@ class PaymentPage extends StatelessWidget {
         BounceInUp(
           duration: Duration(milliseconds: 300),
           child: Text(
-            'Saldo: \$${currentCustomer.balance}',
+            'Saldo: ' + Utils.formatCurrency(currentCustomer.balance),
             style: TextStyle(
               fontSize: 16,
               color: Colors.grey,
@@ -143,8 +143,9 @@ class PaymentPage extends StatelessWidget {
                     duration: Duration(milliseconds: 200),
                     child: ConfirmationDialog(
                       title: 'Registrar Pago',
-                      contentText:
-                          '¿Descontar \$ ${currentPayment.paymentAmount.toStringAsFixed(2)} a ${currentPayment.customerName}?',
+                      contentText: '¿Descontar ' +
+                          Utils.formatCurrency(currentPayment.paymentAmount) +
+                          ' a ${currentPayment.customerName}?',
                       yesFunction: () => saveNewBalance(
                         context,
                         currentPayment,
@@ -470,7 +471,7 @@ class _AmountTextState extends State<AmountText>
           }
         },
         textAlign: TextAlign.center,
-        style: TextStyle(fontSize: 60),
+        style: TextStyle(fontSize: 50),
         autofocus: true,
         keyboardType: TextInputType.number,
         decoration: InputDecoration(

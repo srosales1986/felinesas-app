@@ -1,4 +1,5 @@
 import 'package:chicken_sales_control/src/services/SaleProvider.dart';
+import 'package:chicken_sales_control/src/util/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -20,7 +21,7 @@ class SummaryOfTotals extends StatelessWidget {
           alignment: Alignment.centerRight,
           margin: EdgeInsets.only(top: 10, right: 20.0, bottom: 1.0),
           child: Text(
-            'Subtotal: \$' + saleProvider.getSubTotal().toStringAsFixed(2),
+            'Subtotal: ' + Utils.formatCurrency(saleProvider.getSubTotal()),
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
@@ -28,7 +29,8 @@ class SummaryOfTotals extends StatelessWidget {
           alignment: Alignment.centerRight,
           margin: EdgeInsets.only(top: 10, right: 20.0, bottom: 1.0),
           child: Text(
-            'Saldo anterior: \$ ${saleProvider.currentCustomer.balance.toStringAsFixed(2)}',
+            'Saldo anterior: ' +
+                Utils.formatCurrency(saleProvider.currentCustomer.balance),
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
@@ -36,7 +38,7 @@ class SummaryOfTotals extends StatelessWidget {
           alignment: Alignment.centerRight,
           margin: EdgeInsets.only(top: 10, right: 20.0, bottom: 1.0),
           child: Text(
-            'TOTAL: \$ ${_total.toStringAsFixed(2)}',
+            'TOTAL: ' + Utils.formatCurrency(_total),
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
         ),
