@@ -20,7 +20,6 @@ class _DeliveryBoyHomePageState extends State<DeliveryBoyHomePage> {
     var userProvider = Provider.of<UserProvider>(context, listen: false);
 
     bool _isAdmin = userProvider.currentUser.rol == 'ADMIN';
-    print(Utils.formatDateMonth(DateTime.now()));
 
     // SalesSheetsApi.init(userProvider.currentUser.userName);
     return WillPopScope(

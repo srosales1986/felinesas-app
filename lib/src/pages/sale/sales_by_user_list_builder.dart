@@ -4,17 +4,21 @@ import 'package:chicken_sales_control/src/models/ReportSalesByUser.dart';
 import 'package:chicken_sales_control/src/models/SaleToReport.dart';
 import 'package:chicken_sales_control/src/models/User_model.dart';
 import 'package:chicken_sales_control/src/pages/reports/salesSummaryWidget.dart';
-import 'package:chicken_sales_control/src/services/FirebaseProvider.dart';
+import 'package:chicken_sales_control/src/pages/sale/sales_data_fetch.dart';
+import 'package:chicken_sales_control/src/pages/sale/sales_repository.dart';
+// import 'package:chicken_sales_control/src/services/FirebaseProvider.dart';
 import 'package:chicken_sales_control/src/util/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+// import 'package:provider/provider.dart';
 
 class SalesByUserListBuilder extends StatefulWidget {
   final UserModel currentUser;
+  final DateTime selectedDate;
   SalesByUserListBuilder({
     Key? key,
     required this.currentUser,
+    required this.selectedDate,
   }) : super(key: key);
 
   @override
@@ -25,10 +29,12 @@ class _SalesByUserListBuilderState extends State<SalesByUserListBuilder> {
   @override
   Widget build(BuildContext context) {
     // final reportProvider = Provider.of<ReportProvider>(context, listen: true);
-    final _dbProvider = Provider.of<FirebaseProvider>(context, listen: false);
+    // final _dbProvider = Provider.of<FirebaseProvider>(context, listen: false);
+    SalesRepository _salesRepository = SalesDataFetch();
 
     Stream<QuerySnapshot<Map<String, dynamic>>> _salesStream =
-        _dbProvider.salesStream;
+        _salesRepository.getStreamSalesListByUserAndDate(
+            widget.currentUser.externalId, widget.selectedDate);
 
     List<SaleToReport> _salesList = [];
 
@@ -64,19 +70,20 @@ class _SalesByUserListBuilderState extends State<SalesByUserListBuilder> {
                 // });
 
                 docs.forEach((sale) {
-                  bool _isTheCurrentUser =
-                      sale.get('user_seller')['external_id'].toString() ==
-                          widget.currentUser.externalId;
+                  _salesList.add(SaleToReport.fromJson(sale.data()));
+                  // bool _isTheCurrentUser =
+                  //     sale.get('user_seller')['external_id'].toString() ==
+                  //         widget.currentUser.externalId;
 
-                  bool isCreatedToday = Utils.formatDateWithoutHms(
-                          DateTime.fromMillisecondsSinceEpoch(sale
-                              .get('date_created')
-                              .millisecondsSinceEpoch)) ==
-                      Utils.formatDateWithoutHms(DateTime.now());
+                  // bool isCreatedToday = Utils.formatDateWithoutHms(
+                  //         DateTime.fromMillisecondsSinceEpoch(sale
+                  //             .get('date_created')
+                  //             .millisecondsSinceEpoch)) ==
+                  //     Utils.formatDateWithoutHms(DateTime.now());
 
-                  if (_isTheCurrentUser && isCreatedToday) {
-                    _salesList.add(SaleToReport.fromJson(sale.data()));
-                  }
+                  // if (_isTheCurrentUser && isCreatedToday) {
+                  //   _salesList.add(SaleToReport.fromJson(sale.data()));
+                  // }
                 });
 
                 List<ReportSalesByUser> salesByUserList = [];
@@ -119,6 +126,9 @@ class _SalesByUserListBuilderState extends State<SalesByUserListBuilder> {
                   });
                   salesByUserList.add(currentCustomer);
                 });
+
+                _salesList
+                    .sort(((a, b) => b.dateCreated.compareTo(a.dateCreated)));
 
                 print(
                     'Efectivo: $totalCashInstallment, MP: $totalMpInstallment');
