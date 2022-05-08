@@ -66,7 +66,18 @@ class _SalesByUserListBuilderState extends State<SalesByUserListBuilder> {
                 }
 
                 docs.forEach((sale) {
-                  _salesList.add(SaleToReport.fromJson(sale.data()));
+                  String dateFromFireBase = Utils.formatDateWithoutHms(
+                      DateTime.fromMillisecondsSinceEpoch(
+                          sale.get('date_created').millisecondsSinceEpoch));
+                  String dateTo =
+                      Utils.formatDateWithoutHms(reportProvider.selectedDate);
+
+                  print('Desde FireBase: $dateFromFireBase');
+                  print('dateTo: $dateTo');
+
+                  if (dateFromFireBase == dateTo) {
+                    _salesList.add(SaleToReport.fromJson(sale.data()));
+                  }
                 });
 
                 List<ReportSalesByUser> salesByUserList = [];
