@@ -1,18 +1,21 @@
+import 'package:chicken_sales_control/src/models/ProductForSale.dart';
 import 'package:chicken_sales_control/src/models/SaleToReport.dart';
 import 'package:chicken_sales_control/src/models/payment_model.dart';
-import 'package:chicken_sales_control/src/services/FirebaseProvider.dart';
+import 'package:chicken_sales_control/src/pages/reports/expansionPanelProductsList.dart';
+import 'package:chicken_sales_control/src/pages/sale/sales_repository.dart';
 import 'package:chicken_sales_control/src/util/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import '../../models/User_model.dart';
+import '../sale/sales_data_fetch.dart';
 
 class SalesSummaryWidget extends StatelessWidget {
   final List<SaleToReport> salesList;
   final num totalCashInstallment;
   final num totalMpInstallment;
   final UserModel currentUser;
+  final DateTime selectedDate;
 
   SalesSummaryWidget({
     Key? key,
@@ -20,18 +23,19 @@ class SalesSummaryWidget extends StatelessWidget {
     required this.totalCashInstallment,
     required this.totalMpInstallment,
     required this.currentUser,
+    required this.selectedDate,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final _dbProvider = Provider.of<FirebaseProvider>(context, listen: false);
+    SalesRepository _salesRepository = SalesDataFetch();
+
     Stream<QuerySnapshot<Map<String, dynamic>>> _paymentsStream =
-        _dbProvider.paymentsStream;
+        _salesRepository.getStreamPaymentsByUserAndDate(
+            currentUser.externalId, selectedDate);
 
     num _curretTotalCashInstallment = totalCashInstallment;
     num _curretTotalMpInstallment = totalMpInstallment;
-
-    // List<Payment> _paymentList = [];
 
     return StreamBuilder(
       stream: _paymentsStream,
@@ -51,39 +55,20 @@ class SalesSummaryWidget extends StatelessWidget {
             } else {
               final docs = snapshot.data!.docs;
 
-              print(docs.length);
-              // print(_paymentList);
-              // _paymentList.forEach((element) {
-              //   print(element.paymentAmount.toStringAsFixed(2));
-              // });
-
-              // if (_paymentList.isNotEmpty) {
-              //   _paymentList.clear();
-              // }
+              print('Cantidad de pagos recibidos: ${docs.length}');
 
               docs.forEach((payment) {
-                bool _isTheCurrentUser =
-                    payment.get('user_id').toString() == currentUser.externalId;
-
-                bool _isCreatedToday = Utils.formatDateWithoutHms(
-                        DateTime.fromMillisecondsSinceEpoch(payment
-                            .get('date_created')
-                            .millisecondsSinceEpoch)) ==
-                    Utils.formatDateWithoutHms(DateTime.now());
-
-                if (_isTheCurrentUser && _isCreatedToday) {
-                  if (Payment.fromJson(payment.data()).methodOfPayment ==
-                      'Efectivo') {
-                    _curretTotalCashInstallment +=
-                        Payment.fromJson(payment.data()).paymentAmount;
-                  }
-                  if (Payment.fromJson(payment.data()).methodOfPayment ==
-                      'MercadoPago') {
-                    _curretTotalMpInstallment +=
-                        Payment.fromJson(payment.data()).paymentAmount;
-                  }
-                  // _paymentList.add(Payment.fromJson(payment.data()));
+                if (Payment.fromJson(payment.data()).methodOfPayment ==
+                    'Efectivo') {
+                  _curretTotalCashInstallment +=
+                      Payment.fromJson(payment.data()).paymentAmount;
                 }
+                if (Payment.fromJson(payment.data()).methodOfPayment ==
+                    'MercadoPago') {
+                  _curretTotalMpInstallment +=
+                      Payment.fromJson(payment.data()).paymentAmount;
+                }
+                // _paymentList.add(Payment.fromJson(payment.data()));
               });
               return SummaryWidget(
                 salesList: salesList,
@@ -111,65 +96,121 @@ class SummaryWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Map productsMap = {};
+    List<ProductForSale> productsBySaleList = [];
+    salesList.forEach(
+      (sale) {
+        sale.productsList.forEach((product) {
+          productsBySaleList.add(product);
+        });
+      },
+    );
+    productsBySaleList.forEach(
+      (product) {
+        if (!productsMap.containsKey(product.productInitials)) {
+          productsMap.addAll({'${product.productInitials}': product.subtotal});
+        } else {
+          num oldValue = productsMap[product.productInitials];
+          num newValue = oldValue + product.subtotal;
+          productsMap.update(product.productInitials, (value) => newValue);
+        }
+      },
+    );
+    print(productsMap);
+    List<Widget> chipList = [];
+    productsMap.forEach((key, value) {
+      chipList.add(Chip(
+        backgroundColor: Colors.blue.shade200,
+        shape: ContinuousRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0), side: BorderSide.none),
+        labelPadding: EdgeInsets.symmetric(horizontal: 1),
+        // padding: EdgeInsets.symmetric(horizontal: 3, vertical: 1),
+        elevation: 2,
+        labelStyle: TextStyle(
+          fontSize: 12,
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+        ),
+        label: Text('$key:  ${Utils.formatCurrency(value)}'),
+      ));
+    });
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 13, vertical: 5),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Card(
             elevation: 2,
-            child: CardText(
-              text: 'Total de ventas realizadas: ',
-              total: salesList.length.toStringAsFixed(0),
+            child: CardContent(
+              icon: Icons.auto_awesome_motion_outlined,
+              total:
+                  'Cantidad de ventas: ${salesList.length.toStringAsFixed(0)}',
             ),
           ),
-          Card(
-            elevation: 2,
-            child: CardText(
-              text: 'Total efectivo recibido: ',
-              total: Utils.formatCurrency(totalCashInstallment),
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Card(
+                elevation: 2,
+                child: CardContent(
+                  icon: Icons.money_rounded,
+                  total: Utils.formatCurrency(totalCashInstallment),
+                ),
+              ),
+              Card(
+                elevation: 2,
+                child: CardContent(
+                  icon: Icons.monetization_on,
+                  total: Utils.formatCurrency(totalMpInstallment),
+                ),
+              ),
+            ],
           ),
-          Card(
-            elevation: 2,
-            child: CardText(
-              text: 'Total MercadoPago: ',
-              total: Utils.formatCurrency(totalMpInstallment),
-            ),
-          ),
+          SizedBox(height: 5),
+          ExpansionPanelProductsList(chipList: chipList),
+
+          // Wrap(
+          //   spacing: 5.0,
+          //   alignment: WrapAlignment.center,
+          //   children: chipList,
+          // ),
         ],
       ),
     );
   }
 }
 
-class CardText extends StatelessWidget {
-  const CardText({
+class CardContent extends StatelessWidget {
+  const CardContent({
     Key? key,
     required this.total,
-    required this.text,
+    required this.icon,
   }) : super(key: key);
 
   final String total;
-  final String text;
+  final IconData icon;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
-      child: RichText(
-        text: TextSpan(
-          style: TextStyle(color: Colors.black87),
-          children: [
-            TextSpan(
-              text: text,
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon),
+          SizedBox(width: 5),
+          RichText(
+            text: TextSpan(
+              style: TextStyle(color: Colors.black87),
+              children: [
+                TextSpan(
+                  text: total,
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ],
             ),
-            TextSpan(
-              text: total,
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

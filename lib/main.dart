@@ -1,4 +1,5 @@
 import 'package:chicken_sales_control/src/pages/home_main_page.dart';
+import 'package:chicken_sales_control/src/pages/reports/expansion_panel_provider.dart';
 import 'package:chicken_sales_control/src/services/ConfigProvider.dart';
 import 'package:chicken_sales_control/src/services/CustomersProvider.dart';
 import 'package:chicken_sales_control/src/services/FirebaseProvider.dart';
@@ -39,6 +40,9 @@ void main() async {
       ),
       ChangeNotifierProvider(
         create: (_) => ReportProvider(),
+      ),
+      ChangeNotifierProvider(
+        create: (_) => ExpansionPanelProvider(),
       ),
     ],
     child: MyApp(),

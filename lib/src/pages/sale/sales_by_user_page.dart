@@ -1,7 +1,5 @@
 import 'package:chicken_sales_control/src/models/User_model.dart';
 import 'package:chicken_sales_control/src/pages/sale/sales_by_user_list_builder.dart';
-// import 'package:chicken_sales_control/src/pages/sale/sales_data_fetch.dart';
-// import 'package:chicken_sales_control/src/pages/sale/sales_repository.dart';
 import 'package:chicken_sales_control/src/util/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -21,6 +19,7 @@ class _SalesByUserPageState extends State<SalesByUserPage> {
     UserModel _currentUser =
         ModalRoute.of(context)!.settings.arguments as UserModel;
     final reportProvider = Provider.of<ReportProvider>(context, listen: true);
+
     final String _selectedDateString =
         Utils.formatDateWithoutHms(reportProvider.selectedDate);
     final TextStyle _titleFontSize = TextStyle(fontSize: 14);
@@ -56,8 +55,7 @@ class _SalesByUserPageState extends State<SalesByUserPage> {
           ),
         ],
       ),
-      body: SalesByUserListBuilder(
-          currentUser: _currentUser, selectedDate: reportProvider.selectedDate),
+      body: SalesByUserListBuilder(currentUser: _currentUser),
     );
   }
 }

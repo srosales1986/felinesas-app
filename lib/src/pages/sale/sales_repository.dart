@@ -7,4 +7,7 @@ abstract class SalesRepository {
 
   Stream<QuerySnapshot<Map<String, dynamic>>> getStreamSalesListByUserAndDate(
       String externalUserId, DateTime date);
+
+  Stream<QuerySnapshot<Map<String, dynamic>>> getStreamPaymentsByUserAndDate(
+      String externalUserId, DateTime date);
 }
