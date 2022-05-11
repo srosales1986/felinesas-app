@@ -72,9 +72,6 @@ class _SalesByUserListBuilderState extends State<SalesByUserListBuilder> {
                   String dateTo =
                       Utils.formatDateWithoutHms(reportProvider.selectedDate);
 
-                  print('Desde FireBase: $dateFromFireBase');
-                  print('dateTo: $dateTo');
-
                   if (dateFromFireBase == dateTo) {
                     _salesList.add(SaleToReport.fromJson(sale.data()));
                   }
@@ -88,34 +85,34 @@ class _SalesByUserListBuilderState extends State<SalesByUserListBuilder> {
                 num totalCashInstallment = 0;
                 num totalMpInstallment = 0;
 
-                _salesList.forEach((element) {
+                _salesList.forEach((sale) {
                   productsMap = {'Efectivo recibido': 0, 'MercadoPago': 0};
                   num oldCash = productsMap['Efectivo recibido']!;
                   num oldMP = productsMap['MercadoPago']!;
 
-                  num newCash = oldCash + element.cashInstallment;
-                  num newMP = oldMP + element.mpInstallment;
+                  num newCash = oldCash + sale.cashInstallment;
+                  num newMP = oldMP + sale.mpInstallment;
                   productsMap.update('Efectivo recibido', (value) => newCash);
                   productsMap.update('MercadoPago', (value) => newMP);
 
-                  totalCashInstallment += element.cashInstallment;
-                  totalMpInstallment += element.mpInstallment;
+                  totalCashInstallment += sale.cashInstallment;
+                  totalMpInstallment += sale.mpInstallment;
 
                   ReportSalesByUser currentCustomer = ReportSalesByUser(
-                    customerName: element.customerName,
+                    customerName: sale.customerName,
                     salesReport: productsMap,
                   );
 
-                  element.productsList.forEach((element) {
-                    String currentProduct = element.productName;
+                  sale.productsList.forEach((product) {
+                    String currentProduct = product.productName;
 
                     if (productsMap.containsKey(currentProduct)) {
                       num oldValue = productsMap[currentProduct]!;
-                      num newValue = oldValue + element.amount;
+                      num newValue = oldValue + product.amount;
                       productsMap.update(currentProduct, (value) => newValue);
                     } else {
                       productsMap.putIfAbsent(
-                          currentProduct, () => element.amount);
+                          currentProduct, () => product.amount);
                     }
                   });
                   salesByUserList.add(currentCustomer);

@@ -52,12 +52,10 @@ class SalesDataFetch implements SalesRepository {
   Stream<QuerySnapshot<Map<String, dynamic>>> getStreamPaymentsByUserAndDate(
       String externalUserId, DateTime date) {
     return _fbPaymentsCollectionRef
-        .where('date_created',
-            isGreaterThanOrEqualTo:
-                DateTime.utc(date.year, date.month, date.day))
-        .where('date_created',
-            isLessThan: DateTime.utc(date.year, date.month, date.day + 1))
         .where('user_id', isEqualTo: externalUserId)
+        .where('date_created',
+            isGreaterThanOrEqualTo: date,
+            isLessThan: DateTime.utc(date.year, date.month, date.day + 2))
         .snapshots();
   }
 }

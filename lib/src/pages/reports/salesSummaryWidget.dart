@@ -1,7 +1,7 @@
 import 'package:chicken_sales_control/src/models/ProductForSale.dart';
 import 'package:chicken_sales_control/src/models/SaleToReport.dart';
 import 'package:chicken_sales_control/src/models/payment_model.dart';
-import 'package:chicken_sales_control/src/pages/reports/expansionPanelProductsList.dart';
+// import 'package:chicken_sales_control/src/pages/reports/expansionPanelProductsList.dart';
 import 'package:chicken_sales_control/src/pages/sale/sales_repository.dart';
 import 'package:chicken_sales_control/src/util/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -58,15 +58,22 @@ class SalesSummaryWidget extends StatelessWidget {
               print('Cantidad de pagos recibidos: ${docs.length}');
 
               docs.forEach((payment) {
-                if (Payment.fromJson(payment.data()).methodOfPayment ==
-                    'Efectivo') {
-                  _curretTotalCashInstallment +=
-                      Payment.fromJson(payment.data()).paymentAmount;
-                }
-                if (Payment.fromJson(payment.data()).methodOfPayment ==
-                    'MercadoPago') {
-                  _curretTotalMpInstallment +=
-                      Payment.fromJson(payment.data()).paymentAmount;
+                String dateFromFireBase = Utils.formatDateWithoutHms(
+                    DateTime.fromMillisecondsSinceEpoch(
+                        payment.get('date_created').millisecondsSinceEpoch));
+                String dateTo = Utils.formatDateWithoutHms(selectedDate);
+
+                if (dateFromFireBase == dateTo) {
+                  if (Payment.fromJson(payment.data()).methodOfPayment ==
+                      'Efectivo') {
+                    _curretTotalCashInstallment +=
+                        Payment.fromJson(payment.data()).paymentAmount;
+                  }
+                  if (Payment.fromJson(payment.data()).methodOfPayment ==
+                      'MercadoPago') {
+                    _curretTotalMpInstallment +=
+                        Payment.fromJson(payment.data()).paymentAmount;
+                  }
                 }
                 // _paymentList.add(Payment.fromJson(payment.data()));
               });
@@ -105,35 +112,24 @@ class SummaryWidget extends StatelessWidget {
         });
       },
     );
-    productsBySaleList.forEach(
-      (product) {
-        if (!productsMap.containsKey(product.productInitials)) {
-          productsMap.addAll({'${product.productInitials}': product.subtotal});
-        } else {
-          num oldValue = productsMap[product.productInitials];
-          num newValue = oldValue + product.subtotal;
-          productsMap.update(product.productInitials, (value) => newValue);
-        }
-      },
-    );
-    print(productsMap);
-    List<Widget> chipList = [];
-    productsMap.forEach((key, value) {
-      chipList.add(Chip(
-        backgroundColor: Colors.blue.shade200,
-        shape: ContinuousRectangleBorder(
-            borderRadius: BorderRadius.circular(10.0), side: BorderSide.none),
-        labelPadding: EdgeInsets.symmetric(horizontal: 1),
-        // padding: EdgeInsets.symmetric(horizontal: 3, vertical: 1),
-        elevation: 2,
-        labelStyle: TextStyle(
-          fontSize: 12,
-          color: Colors.white,
-          fontWeight: FontWeight.bold,
-        ),
-        label: Text('$key:  ${Utils.formatCurrency(value)}'),
-      ));
+    productsBySaleList.forEach((product) {
+      String productName = product.productName;
+      productsMap.putIfAbsent(
+          '$productName',
+          () => {
+                'initials': '${product.productInitials}',
+                'amount': num.parse('0.0'),
+                'subtotal': num.parse('0.0')
+              });
+      num oldValue = productsMap[productName]['subtotal'];
+      num newValue = oldValue + product.subtotal;
+      num oldAmount = productsMap[productName]['amount'];
+      num newAmount = oldAmount + product.amount;
+      productsMap[productName].update('subtotal', (value) => newValue);
+      productsMap[productName].update('amount', (value) => newAmount);
     });
+
+    print(productsMap);
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 13, vertical: 5),
       child: Column(
@@ -167,7 +163,7 @@ class SummaryWidget extends StatelessWidget {
             ],
           ),
           SizedBox(height: 5),
-          ExpansionPanelProductsList(chipList: chipList),
+          // ExpansionPanelProductsList(chipList: chipList),
 
           // Wrap(
           //   spacing: 5.0,
