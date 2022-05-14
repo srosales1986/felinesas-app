@@ -1,5 +1,6 @@
 import 'package:chicken_sales_control/src/pages/customer/customer_page.dart';
 import 'package:chicken_sales_control/src/pages/load_page.dart';
+import 'package:chicken_sales_control/src/pages/reports/sold_products_table_page.dart';
 import 'package:chicken_sales_control/src/pages/sale/add_products/add_products_page_v2.dart';
 import 'package:chicken_sales_control/src/pages/delivery_boy_home_page.dart';
 import 'package:chicken_sales_control/src/pages/login_page.dart';
@@ -32,5 +33,6 @@ Map<String, WidgetBuilder> getApplicationRoutes() {
     'payment_page': (BuildContext context) => PaymentPage(),
     'sales_user_list_page': (BuildContext context) => SalesUserList(),
     'sales_by_user_page': (BuildContext context) => SalesByUserPage(),
+    // 'sold_products_table_page' : (BuildContext context) => SoldProductsTablePage(),
   };
 }

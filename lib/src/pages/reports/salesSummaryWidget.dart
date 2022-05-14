@@ -1,6 +1,8 @@
 import 'package:chicken_sales_control/src/models/ProductForSale.dart';
 import 'package:chicken_sales_control/src/models/SaleToReport.dart';
 import 'package:chicken_sales_control/src/models/payment_model.dart';
+import 'package:chicken_sales_control/src/pages/reports/sold_products_table_page.dart';
+// import 'package:chicken_sales_control/src/pages/reports/expansionPanelProductsList.dart';
 // import 'package:chicken_sales_control/src/pages/reports/expansionPanelProductsList.dart';
 import 'package:chicken_sales_control/src/pages/sale/sales_repository.dart';
 import 'package:chicken_sales_control/src/util/utils.dart';
@@ -118,6 +120,7 @@ class SummaryWidget extends StatelessWidget {
           '$productName',
           () => {
                 'initials': '${product.productInitials}',
+                'price': product.price,
                 'amount': num.parse('0.0'),
                 'subtotal': num.parse('0.0')
               });
@@ -163,7 +166,22 @@ class SummaryWidget extends StatelessWidget {
             ],
           ),
           SizedBox(height: 5),
-          // ExpansionPanelProductsList(chipList: chipList),
+          TextButton(
+            style: ButtonStyle(
+              backgroundColor:
+                  MaterialStateProperty.resolveWith((states) => Colors.white),
+              padding: MaterialStateProperty.resolveWith((states) =>
+                  EdgeInsets.symmetric(horizontal: 80, vertical: 15)),
+              elevation: MaterialStateProperty.resolveWith((states) => 3),
+            ),
+            onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: ((context) =>
+                        SoldProductsTablePage(productsMap: productsMap)))),
+            child: Text('Productos vendidos'),
+          ),
+          // ExpansionPanelProductsList(productsMap: productsMap),
 
           // Wrap(
           //   spacing: 5.0,

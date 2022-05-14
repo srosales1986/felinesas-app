@@ -144,59 +144,54 @@ class _SalesByUserListBuilderState extends State<SalesByUserListBuilder> {
                       ),
                       Expanded(
                         child: Container(
-                          child: Scrollbar(
-                            interactive: true,
-                            isAlwaysShown: true,
-                            thickness: 8,
-                            child: ListView.builder(
-                              physics: BouncingScrollPhysics(),
-                              itemCount: _salesList.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                num _total = salesByUserList[index]
-                                        .salesReport['Efectivo recibido'] +
-                                    salesByUserList[index]
-                                        .salesReport['MercadoPago'];
+                          child: ListView.builder(
+                            physics: BouncingScrollPhysics(),
+                            itemCount: _salesList.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              num _total = salesByUserList[index]
+                                      .salesReport['Efectivo recibido'] +
+                                  salesByUserList[index]
+                                      .salesReport['MercadoPago'];
 
-                                return Column(
-                                  children: [
-                                    ListTile(
-                                      title: Center(
-                                          child: Text(
-                                              '${_salesList[index].customerName}')),
-                                      subtitle: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            Utils.formatDate(DateTime
-                                                .fromMillisecondsSinceEpoch(
-                                                    _salesList[index]
-                                                        .dateCreated
-                                                        .millisecondsSinceEpoch)),
-                                            style: TextStyle(fontSize: 10),
-                                          ),
-                                          listOfProducts(
-                                              _salesList[index].productsList),
-                                          Text('Efectivo: ' +
-                                              Utils.formatCurrency(
-                                                  salesByUserList[index]
-                                                          .salesReport[
-                                                      'Efectivo recibido'])),
-                                          Text('MercadoPago: ' +
-                                              Utils.formatCurrency(
-                                                  salesByUserList[index]
-                                                          .salesReport[
-                                                      'MercadoPago'])),
-                                          Text('Total recibido: ' +
-                                              Utils.formatCurrency(_total)),
-                                        ],
-                                      ),
+                              return Column(
+                                children: [
+                                  ListTile(
+                                    title: Center(
+                                        child: Text(
+                                            '${_salesList[index].customerName}')),
+                                    subtitle: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          Utils.formatDate(DateTime
+                                              .fromMillisecondsSinceEpoch(
+                                                  _salesList[index]
+                                                      .dateCreated
+                                                      .millisecondsSinceEpoch)),
+                                          style: TextStyle(fontSize: 10),
+                                        ),
+                                        listOfProducts(
+                                            _salesList[index].productsList),
+                                        Text('Efectivo: ' +
+                                            Utils.formatCurrency(
+                                                salesByUserList[index]
+                                                        .salesReport[
+                                                    'Efectivo recibido'])),
+                                        Text('MercadoPago: ' +
+                                            Utils.formatCurrency(
+                                                salesByUserList[index]
+                                                        .salesReport[
+                                                    'MercadoPago'])),
+                                        Text('Total recibido: ' +
+                                            Utils.formatCurrency(_total)),
+                                      ],
                                     ),
-                                    Divider(),
-                                  ],
-                                );
-                              },
-                            ),
+                                  ),
+                                  Divider(),
+                                ],
+                              );
+                            },
                           ),
                         ),
                       ),
