@@ -23,10 +23,8 @@ class LoginPage extends StatelessWidget {
           }
           if (!snapshot.hasData) {
             return Container(
-              color: Colors.blue,
-              child: Center(
-                child: CircularProgressIndicator.adaptive(),
-              ),
+              color: Colors.red,
+              child: Center(child: CircularProgressIndicator.adaptive()),
             );
           } else {
             if (snapshot.hasData && userProvider.userList.isEmpty) {
@@ -185,6 +183,7 @@ class _UserDropDownButtonFormFieldState
   @override
   Widget build(BuildContext context) {
     var userPovider = Provider.of<UserProvider>(context, listen: false);
+    print('Se buildea el DropDownButton');
 
     return DropdownButtonFormField(
       decoration: InputDecoration(

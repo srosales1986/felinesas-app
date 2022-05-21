@@ -12,18 +12,50 @@ class SoldProductsTablePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final reportProvider = Provider.of<ReportProvider>(context, listen: false);
+    final TextStyle _titleFontSize = TextStyle(fontSize: 14);
     return Scaffold(
       appBar: AppBar(
         title: Column(
           children: [
-            Text('Productos Vendidos'),
-            Text(Utils.formatDateWithoutHms(reportProvider.selectedDate)),
+            Text(
+              'Productos Vendidos',
+              style: _titleFontSize,
+            ),
+            Text(
+              Utils.formatDateWithoutHms(reportProvider.selectedDate),
+              style: _titleFontSize,
+            ),
           ],
         ),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
           child: TotalByProductTableSymmary(productsMap: productsMap)),
+      bottomNavigationBar: BottomAppBar(
+        notchMargin: 8.0,
+        shape: CircularNotchedRectangle(),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _bottonAction(context, Icons.home),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _bottonAction(BuildContext context, IconData icon) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: InkWell(
+        child: Icon(
+          icon,
+          size: 30.0,
+        ),
+        onTap: () {
+          Navigator.pushReplacementNamed(context, 'delivery_boy_home_page');
+        },
+      ),
     );
   }
 }

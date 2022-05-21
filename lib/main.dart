@@ -72,7 +72,7 @@ class _MyAppState extends State<MyApp> {
 
           // Otherwise, show something whilst waiting for initialization to complete
           return Container(
-            color: Colors.blue,
+            color: Colors.red,
             child: Center(
               child: CircularProgressIndicator.adaptive(),
             ),

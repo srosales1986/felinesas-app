@@ -51,11 +51,36 @@ class _SalesByUserPageState extends State<SalesByUserPage> {
                 reportProvider.setSelectedDate(newDate);
               });
             },
-            icon: Icon(Icons.filter_alt_sharp),
+            icon: Icon(Icons.date_range),
           ),
         ],
       ),
       body: SalesByUserListBuilder(currentUser: _currentUser),
+      bottomNavigationBar: BottomAppBar(
+        notchMargin: 8.0,
+        shape: CircularNotchedRectangle(),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _bottonAction(Icons.home),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _bottonAction(IconData icon) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: InkWell(
+        child: Icon(
+          icon,
+          size: 30.0,
+        ),
+        onTap: () {
+          Navigator.pushReplacementNamed(context, 'delivery_boy_home_page');
+        },
+      ),
     );
   }
 }
