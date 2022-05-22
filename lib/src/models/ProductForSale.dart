@@ -16,9 +16,10 @@ class ProductForSale {
     this.price = product.isWeighed ? product.priceByKg : product.priceByUnit;
     this.amount = amount;
     this.subtotal = this.price * this.amount;
-    this.finalAmount = product.isWeighed
-        ? product.availabilityInDeposit - amount
-        : product.availabilityInDeposit - 1.0; //TODO: Y si se vende 0.5????
+    this.finalAmount = product.availabilityInDeposit - amount;
+    // this.finalAmount = product.isWeighed
+    //     ? product.availabilityInDeposit - amount
+    // : product.availabilityInDeposit - 1.0; //TODO: Y si se vende 0.5????
   }
 
   ProductForSale.report({
