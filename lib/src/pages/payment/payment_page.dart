@@ -12,7 +12,6 @@ import 'package:chicken_sales_control/src/util/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-// import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class PaymentPage extends StatelessWidget {
@@ -259,7 +258,8 @@ Future<dynamic> saveNewBalance(
       // Map<String, dynamic> _credentials = configProvider.currentConfig.toJson();
       print(_credentials);
 
-      await SalesSheetsApi.init(currentPayment.customerName, _credentials);
+      await SalesSheetsApi.init(
+          Utils.formatDateMonth(DateTime.now()), _credentials);
       currentPayment.newBalance =
           (currentPayment.previousBalance - currentPayment.paymentAmount);
 
@@ -272,8 +272,9 @@ Future<dynamic> saveNewBalance(
 
       List<String> dataToSheet = [];
       dataToSheet.add('Pago');
-      dataToSheet.add(currentPayment.userName);
       dataToSheet.add(Utils.formatDate(currentPayment.dateCreated));
+      dataToSheet.add(currentPayment.userName);
+      dataToSheet.add(currentPayment.customerName);
       dataToSheet.add('-');
       dataToSheet.add('-');
       dataToSheet.add(currentPayment.previousBalance.toStringAsFixed(2));

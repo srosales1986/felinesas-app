@@ -1,6 +1,5 @@
-import 'dart:ffi';
-
 import 'package:chicken_sales_control/src/custom_widgets/MainCardButton.dart';
+import 'package:chicken_sales_control/src/pages/main_menu/CurrentAccountAmountWidget.dart';
 import 'package:chicken_sales_control/src/services/UserProvider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +19,7 @@ class DeliveryBoyHomePage extends StatefulWidget {
 class _DeliveryBoyHomePageState extends State<DeliveryBoyHomePage> {
   @override
   Widget build(BuildContext context) {
-    var userProvider = Provider.of<UserProvider>(context, listen: false);
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
 
     bool _isAdmin = userProvider.currentUser.rol == 'ADMIN';
 
@@ -39,30 +38,20 @@ class _DeliveryBoyHomePageState extends State<DeliveryBoyHomePage> {
         body: SafeArea(
           child: Stack(
             children: [
-              ClipRRect(
-                borderRadius:
-                    BorderRadius.vertical(bottom: Radius.elliptical(150, 30)),
-                child: Container(
-                  color: Colors.blue,
-                  height: 45,
-                ),
-              ),
-              Container(
-                alignment: AlignmentDirectional.topCenter,
-                child: Card(
-                  elevation: 5,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 70, vertical: 15),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Text('Cuenta Corriente'),
-                        Text('\$3.54810,21'),
-                      ],
-                    ),
+              Visibility(
+                visible: _isAdmin,
+                child: ClipRRect(
+                  borderRadius:
+                      BorderRadius.vertical(bottom: Radius.elliptical(150, 30)),
+                  child: Container(
+                    color: Colors.blue,
+                    height: 45,
                   ),
                 ),
+              ),
+              Visibility(
+                visible: _isAdmin,
+                child: CurrentAccountAmountWidget(),
               ),
               Center(
                 child: Wrap(
@@ -118,18 +107,10 @@ class _DeliveryBoyHomePageState extends State<DeliveryBoyHomePage> {
             ? ExpandableFab(
                 distance: 100.0,
                 children: [
-                  // ActionButton(
-                  //   onPressed: () => {},
-                  //   buttonText: 'Otro',
-                  //   icon: Icon(Icons.settings, color: Colors.white),
-                  // ),
                   ActionButton(
                     onPressed: () => Navigator.pushNamed(
                         context, 'products_price_list_page',
                         arguments: _isAdmin),
-                    // Navigator.pushNamed(
-                    //     context, 'products_price_list_page',
-                    //     arguments: _isAdmin),
                     buttonText: 'Productos',
                     icon:
                         Icon(Icons.shopping_cart_outlined, color: Colors.white),
@@ -143,14 +124,6 @@ class _DeliveryBoyHomePageState extends State<DeliveryBoyHomePage> {
                 ],
               )
             : null,
-        // floatingActionButton: FloatingActionButton(
-        //   backgroundColor: Colors.blue,
-        //   child: Icon(
-        //     Icons.menu_rounded,
-        //     color: Colors.white,
-        //   ),
-        //   onPressed: () {},
-        // ),
       ),
     );
   }
@@ -182,63 +155,4 @@ class _DeliveryBoyHomePageState extends State<DeliveryBoyHomePage> {
             }) ??
         false;
   }
-
-  // Drawer _buildDrawer() {
-  //   return Drawer(
-  //     child: ListView(
-  //       padding: EdgeInsets.zero,
-  //       children: [
-  //         DrawerHeader(
-  //           child: Container(),
-  //           decoration: BoxDecoration(
-  //             image: DecorationImage(
-  //               image: AssetImage('assets/images/menu-img.jpg'),
-  //               fit: BoxFit.cover,
-  //             ),
-  //           ),
-  //         ),
-  //         ListTile(
-  //           leading: Icon(Icons.home),
-  //           title: Text('Home'),
-  //           onTap: () {},
-  //         ),
-  //         ListTile(
-  //           leading: Icon(Icons.account_box_rounded),
-  //           title: Text('Clientes'),
-  //           onTap: () {
-  //             Navigator.pop(context);
-  //             Navigator.pushNamed(context, 'customer_page');
-  //           },
-  //         ),
-  //         ListTile(
-  //           leading: Icon(Icons.account_box_rounded),
-  //           title: Text('Productos'),
-  //           onTap: () {
-  //             Navigator.pop(context);
-  //             Navigator.pushNamed(context, 'products_price_list_page',
-  //                 arguments: true);
-  //           },
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
-
-}
-
-class MainMenuCustomPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.black
-      ..style = PaintingStyle.stroke;
-    final path = Path();
-
-    path.arcTo(Rect.zero, 45, 45, true);
-    // canvas.drawArc(Rect.zero, 45, 90, true, paint);
-    canvas.drawPath(path, paint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }

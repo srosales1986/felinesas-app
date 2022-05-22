@@ -2,15 +2,13 @@ import 'package:chicken_sales_control/src/models/ProductForSale.dart';
 import 'package:chicken_sales_control/src/models/SaleToReport.dart';
 import 'package:chicken_sales_control/src/models/payment_model.dart';
 import 'package:chicken_sales_control/src/pages/reports/sold_products_table_page.dart';
-// import 'package:chicken_sales_control/src/pages/reports/expansionPanelProductsList.dart';
-// import 'package:chicken_sales_control/src/pages/reports/expansionPanelProductsList.dart';
 import 'package:chicken_sales_control/src/pages/sale/sales_repository.dart';
 import 'package:chicken_sales_control/src/util/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import '../../models/User_model.dart';
-import '../sale/sales_data_fetch.dart';
+import '../sale/sales_repository_impl.dart';
 
 class SalesSummaryWidget extends StatelessWidget {
   final List<SaleToReport> salesList;
@@ -30,7 +28,7 @@ class SalesSummaryWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SalesRepository _salesRepository = SalesDataFetch();
+    SalesRepository _salesRepository = SalesRepositoryImpl();
 
     Stream<QuerySnapshot<Map<String, dynamic>>> _paymentsStream =
         _salesRepository.getStreamPaymentsByUserAndDate(
@@ -77,7 +75,6 @@ class SalesSummaryWidget extends StatelessWidget {
                         Payment.fromJson(payment.data()).paymentAmount;
                   }
                 }
-                // _paymentList.add(Payment.fromJson(payment.data()));
               });
               return SummaryWidget(
                 salesList: salesList,
@@ -181,13 +178,6 @@ class SummaryWidget extends StatelessWidget {
                         SoldProductsTablePage(productsMap: productsMap)))),
             child: Text('Productos vendidos'),
           ),
-          // ExpansionPanelProductsList(productsMap: productsMap),
-
-          // Wrap(
-          //   spacing: 5.0,
-          //   alignment: WrapAlignment.center,
-          //   children: chipList,
-          // ),
         ],
       ),
     );

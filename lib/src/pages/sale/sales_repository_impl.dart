@@ -2,7 +2,7 @@ import 'package:chicken_sales_control/src/models/SaleToReport.dart';
 import 'package:chicken_sales_control/src/pages/sale/sales_repository.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class SalesDataFetch implements SalesRepository {
+class SalesRepositoryImpl implements SalesRepository {
   final CollectionReference<Map<String, dynamic>> _fbSalesCollectionRef =
       FirebaseFirestore.instance.collection('sales');
   final CollectionReference<Map<String, dynamic>> _fbPaymentsCollectionRef =

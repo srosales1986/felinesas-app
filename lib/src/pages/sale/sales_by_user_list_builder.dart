@@ -3,24 +3,19 @@ import 'package:chicken_sales_control/src/models/ReportSalesByUser.dart';
 import 'package:chicken_sales_control/src/models/SaleToReport.dart';
 import 'package:chicken_sales_control/src/models/User_model.dart';
 import 'package:chicken_sales_control/src/pages/reports/salesSummaryWidget.dart';
-import 'package:chicken_sales_control/src/pages/sale/sales_data_fetch.dart';
+import 'package:chicken_sales_control/src/pages/sale/sales_repository_impl.dart';
 import 'package:chicken_sales_control/src/pages/sale/sales_repository.dart';
 import 'package:chicken_sales_control/src/services/ReportProvider.dart';
 import 'package:chicken_sales_control/src/util/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-// import 'package:provider/provider.dart';
-
-// import '../../services/ReportProvider.dart';
 
 class SalesByUserListBuilder extends StatefulWidget {
   final UserModel currentUser;
-  // final DateTime selectedDate;
   SalesByUserListBuilder({
     Key? key,
     required this.currentUser,
-    // required this.selectedDate,
   }) : super(key: key);
 
   @override
@@ -31,8 +26,7 @@ class _SalesByUserListBuilderState extends State<SalesByUserListBuilder> {
   @override
   Widget build(BuildContext context) {
     final reportProvider = Provider.of<ReportProvider>(context, listen: true);
-    // final _dbProvider = Provider.of<FirebaseProvider>(context, listen: false);
-    SalesRepository _salesRepository = SalesDataFetch();
+    SalesRepository _salesRepository = SalesRepositoryImpl();
 
     Stream<QuerySnapshot<Map<String, dynamic>>> _salesStream =
         _salesRepository.getStreamSalesListByUserAndDate(
