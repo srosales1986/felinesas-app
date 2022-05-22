@@ -72,11 +72,27 @@ class _MyAppState extends State<MyApp> {
 
           // Otherwise, show something whilst waiting for initialization to complete
           return Container(
-            color: Colors.red,
+            width: double.infinity,
+            height: double.infinity,
+            decoration: _backgroundDecoration(),
             child: Center(
-              child: CircularProgressIndicator.adaptive(),
-            ),
+                child: CircularProgressIndicator.adaptive(
+              backgroundColor: Colors.white,
+            )),
           );
         });
+  }
+
+  BoxDecoration _backgroundDecoration() {
+    return BoxDecoration(
+        gradient: LinearGradient(
+      colors: [
+        Colors.blue.shade900,
+        Colors.grey.shade300,
+      ],
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      tileMode: TileMode.repeated,
+    ));
   }
 }

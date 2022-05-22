@@ -1,3 +1,4 @@
+// import 'package:chicken_sales_control/src/custom_widgets/InitBackground.dart';
 import 'package:chicken_sales_control/src/models/Customer_model.dart';
 import 'package:chicken_sales_control/src/routes/routes.dart';
 import 'package:chicken_sales_control/src/services/ConfigProvider.dart';
@@ -60,11 +61,29 @@ class HomeMainPage extends StatelessWidget {
           return Home();
         }
         return Container(
-          color: Colors.red,
-          child: Center(child: CircularProgressIndicator.adaptive()),
+          width: double.infinity,
+          height: double.infinity,
+          decoration: _backgroundDecoration(),
+          child: Center(
+              child: CircularProgressIndicator.adaptive(
+            backgroundColor: Colors.white,
+          )),
         );
       },
     );
+  }
+
+  BoxDecoration _backgroundDecoration() {
+    return BoxDecoration(
+        gradient: LinearGradient(
+      colors: [
+        Colors.blue.shade900,
+        Colors.grey.shade300,
+      ],
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      tileMode: TileMode.repeated,
+    ));
   }
 }
 
