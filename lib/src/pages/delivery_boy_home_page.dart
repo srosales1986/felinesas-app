@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:chicken_sales_control/src/custom_widgets/MainCardButton.dart';
 import 'package:chicken_sales_control/src/services/UserProvider.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -28,56 +30,87 @@ class _DeliveryBoyHomePageState extends State<DeliveryBoyHomePage> {
       child: Scaffold(
         backgroundColor: Colors.grey.shade200,
         appBar: AppBar(
-          automaticallyImplyLeading: true,
+          centerTitle: true,
+          elevation: 0,
+          automaticallyImplyLeading: false,
           title: Text('${userProvider.currentUser.userName}'),
         ),
         // drawer: _isAdmin ? _buildDrawer() : null,
         body: SafeArea(
-          child: Center(
-            child: Wrap(
-              alignment: WrapAlignment.center,
-              runSpacing: 5,
-              spacing: 5,
-              children: [
-                ElasticInDown(
-                  child: MainCardButton(
-                    cardText: 'Nueva venta',
-                    icon: Icons.receipt,
-                    route: 'new_sale_page',
+          child: Stack(
+            children: [
+              ClipRRect(
+                borderRadius:
+                    BorderRadius.vertical(bottom: Radius.elliptical(150, 30)),
+                child: Container(
+                  color: Colors.blue,
+                  height: 45,
+                ),
+              ),
+              Container(
+                alignment: AlignmentDirectional.topCenter,
+                child: Card(
+                  elevation: 5,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 70, vertical: 15),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text('Cuenta Corriente'),
+                        Text('\$3.54810,21'),
+                      ],
+                    ),
                   ),
                 ),
-                ElasticInDown(
-                  child: MainCardButton(
-                    cardText: 'Lista de precios',
-                    route: 'products_price_list_page',
-                    icon: Icons.request_quote,
-                    isAdmin: false,
-                  ),
-                ),
-                ElasticInUp(
-                  child: MainCardButton(
-                    cardText: 'Registrar Pago',
-                    route: 'customer_payment_page',
-                    icon: Icons.paid_sharp,
-                  ),
-                ),
-                _isAdmin
-                    ? ElasticInUp(
-                        child: MainCardButton(
-                          cardText: 'Ventas del día',
-                          route: 'sales_user_list_page',
-                          icon: Icons.list,
-                        ),
-                      )
-                    : ElasticInUp(
-                        child: MainCardButton(
-                          cardText: 'Nuevo cliente',
-                          route: 'new_customer_page',
-                          icon: Icons.add_business,
-                        ),
+              ),
+              Center(
+                child: Wrap(
+                  alignment: WrapAlignment.center,
+                  runSpacing: 5,
+                  spacing: 5,
+                  children: [
+                    ElasticInDown(
+                      child: MainCardButton(
+                        cardText: 'Nueva venta',
+                        icon: Icons.receipt,
+                        route: 'new_sale_page',
                       ),
-              ],
-            ),
+                    ),
+                    ElasticInDown(
+                      child: MainCardButton(
+                        cardText: 'Lista de precios',
+                        route: 'products_price_list_page',
+                        icon: Icons.request_quote,
+                        isAdmin: false,
+                      ),
+                    ),
+                    ElasticInUp(
+                      child: MainCardButton(
+                        cardText: 'Registrar Pago',
+                        route: 'customer_payment_page',
+                        icon: Icons.paid_sharp,
+                      ),
+                    ),
+                    _isAdmin
+                        ? ElasticInUp(
+                            child: MainCardButton(
+                              cardText: 'Ventas del día',
+                              route: 'sales_user_list_page',
+                              icon: Icons.list,
+                            ),
+                          )
+                        : ElasticInUp(
+                            child: MainCardButton(
+                              cardText: 'Nuevo cliente',
+                              route: 'new_customer_page',
+                              icon: Icons.add_business,
+                            ),
+                          ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
 
@@ -121,15 +154,6 @@ class _DeliveryBoyHomePageState extends State<DeliveryBoyHomePage> {
       ),
     );
   }
-
-  // Widget _bottonAction(IconData icon) {
-  //   return Padding(
-  //     padding: const EdgeInsets.all(8.0),
-  //     child: SizedBox(
-  //       height: 12,
-  //     ),
-  //   );
-  // }
 
   Future<bool> _onWillPopAction() async {
     final authService = FirebaseAuth.instance;
@@ -199,4 +223,22 @@ class _DeliveryBoyHomePageState extends State<DeliveryBoyHomePage> {
   //     ),
   //   );
   // }
+
+}
+
+class MainMenuCustomPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..color = Colors.black
+      ..style = PaintingStyle.stroke;
+    final path = Path();
+
+    path.arcTo(Rect.zero, 45, 45, true);
+    // canvas.drawArc(Rect.zero, 45, 90, true, paint);
+    canvas.drawPath(path, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }
