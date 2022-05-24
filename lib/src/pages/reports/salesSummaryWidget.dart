@@ -156,7 +156,7 @@ class SummaryWidget extends StatelessWidget {
               Card(
                 elevation: 2,
                 child: CardContent(
-                  icon: Icons.monetization_on,
+                  imgPath: 'assets/images/mp.png',
                   total: Utils.formatCurrency(totalMpInstallment),
                 ),
               ),
@@ -188,11 +188,13 @@ class CardContent extends StatelessWidget {
   const CardContent({
     Key? key,
     required this.total,
-    required this.icon,
+    this.icon,
+    this.imgPath,
   }) : super(key: key);
 
   final String total;
-  final IconData icon;
+  final IconData? icon;
+  final String? imgPath;
 
   @override
   Widget build(BuildContext context) {
@@ -201,7 +203,13 @@ class CardContent extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon),
+          icon == null
+              ? Container(
+                  child: Image(
+                  image: AssetImage(imgPath!),
+                  width: 32,
+                ))
+              : Icon(icon, color: Colors.green.shade800),
           SizedBox(width: 5),
           RichText(
             text: TextSpan(

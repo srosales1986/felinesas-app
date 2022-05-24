@@ -142,10 +142,8 @@ class _SalesByUserListBuilderState extends State<SalesByUserListBuilder> {
                             physics: BouncingScrollPhysics(),
                             itemCount: _salesList.length,
                             itemBuilder: (BuildContext context, int index) {
-                              num _total = salesByUserList[index]
-                                      .salesReport['Efectivo recibido'] +
-                                  salesByUserList[index]
-                                      .salesReport['MercadoPago'];
+                              num _total = _salesList[index].cashInstallment +
+                                  _salesList[index].mpInstallment;
 
                               return Column(
                                 children: [
@@ -169,14 +167,12 @@ class _SalesByUserListBuilderState extends State<SalesByUserListBuilder> {
                                             _salesList[index].productsList),
                                         Text('Efectivo: ' +
                                             Utils.formatCurrency(
-                                                salesByUserList[index]
-                                                        .salesReport[
-                                                    'Efectivo recibido'])),
+                                                _salesList[index]
+                                                    .cashInstallment)),
                                         Text('MercadoPago: ' +
                                             Utils.formatCurrency(
-                                                salesByUserList[index]
-                                                        .salesReport[
-                                                    'MercadoPago'])),
+                                                _salesList[index]
+                                                    .mpInstallment)),
                                         Text('Total recibido: ' +
                                             Utils.formatCurrency(_total)),
                                       ],
