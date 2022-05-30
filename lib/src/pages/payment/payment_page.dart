@@ -258,8 +258,7 @@ Future<dynamic> saveNewBalance(
       // Map<String, dynamic> _credentials = configProvider.currentConfig.toJson();
       print(_credentials);
 
-      await SalesSheetsApi.init(
-          Utils.formatDateMonth(DateTime.now()), _credentials);
+      await SalesSheetsApi.init(currentPayment.customerName, _credentials);
       currentPayment.newBalance =
           (currentPayment.previousBalance - currentPayment.paymentAmount);
 
@@ -274,7 +273,7 @@ Future<dynamic> saveNewBalance(
       dataToSheet.add('Pago');
       dataToSheet.add(Utils.formatDate(currentPayment.dateCreated));
       dataToSheet.add(currentPayment.userName);
-      dataToSheet.add(currentPayment.customerName);
+      // dataToSheet.add(currentPayment.customerName);
       dataToSheet.add('-');
       dataToSheet.add('-');
       dataToSheet.add(currentPayment.previousBalance.toStringAsFixed(2));

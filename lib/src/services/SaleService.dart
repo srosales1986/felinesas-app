@@ -197,7 +197,7 @@ class SaleService {
       print(_credentials);
 
       await SalesSheetsApi.init(
-          Utils.formatDateMonth(DateTime.now()), _credentials);
+          saleProvider.currentCustomer.name, _credentials);
 
       saleProvider.currentSale.dateCreated = DateTime.now();
 
@@ -205,7 +205,7 @@ class SaleService {
       dataToSheet.add('Venta');
       dataToSheet.add(Utils.formatDate(saleProvider.currentSale.dateCreated));
       dataToSheet.add(saleProvider.currentSale.userSeller.userName);
-      dataToSheet.add(saleProvider.currentSale.customerName);
+      // dataToSheet.add(saleProvider.currentSale.customerName);
       // String products = '';
 
       StringBuffer products = StringBuffer();

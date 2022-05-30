@@ -1,7 +1,6 @@
 class SaleFields {
   static final String type = 'Tipo de transacción';
   static final String date = 'Fecha';
-  static final String customerName = 'Cliente';
   static final String seller = 'Vendedor';
   static final String product = 'Productos';
   static final String subTotal = 'Subtotal';
@@ -16,7 +15,6 @@ class SaleFields {
         type,
         date,
         seller,
-        customerName,
         product,
         subTotal,
         previousBalance,
