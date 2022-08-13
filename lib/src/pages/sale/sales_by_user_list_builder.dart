@@ -143,7 +143,8 @@ class _SalesByUserListBuilderState extends State<SalesByUserListBuilder> {
                             itemCount: _salesList.length,
                             itemBuilder: (BuildContext context, int index) {
                               num _total = _salesList[index].cashInstallment +
-                                  _salesList[index].mpInstallment;
+                                  _salesList[index].mpInstallment -
+                                  num.parse(_salesList[index].discount);
 
                               return Column(
                                 children: [
@@ -173,6 +174,9 @@ class _SalesByUserListBuilderState extends State<SalesByUserListBuilder> {
                                             Utils.formatCurrency(
                                                 _salesList[index]
                                                     .mpInstallment)),
+                                        Text('Descuento: ' +
+                                            Utils.formatCurrency(num.parse(
+                                                _salesList[index].discount))),
                                         Text('Total recibido: ' +
                                             Utils.formatCurrency(_total)),
                                       ],
