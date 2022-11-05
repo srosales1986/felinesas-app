@@ -143,15 +143,15 @@ class _SalesByUserListBuilderState extends State<SalesByUserListBuilder> {
                             itemCount: _salesList.length,
                             itemBuilder: (BuildContext context, int index) {
                               num _total = _salesList[index].cashInstallment +
-                                  _salesList[index].mpInstallment -
-                                  num.parse(_salesList[index].discount);
+                                  _salesList[index].mpInstallment;
 
                               return Column(
                                 children: [
                                   ListTile(
                                     title: Center(
-                                        child: Text(
-                                            '${_salesList[index].customerName}')),
+                                      child: Text(
+                                          '${_salesList[index].customerName}'),
+                                    ),
                                     subtitle: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,

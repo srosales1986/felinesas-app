@@ -8,6 +8,9 @@ class Utils {
   static formatDateWithoutHms(DateTime date) =>
       DateFormat.yMd('es_ES').format(date);
 
+  static formatDateWithHms(DateTime date) =>
+      DateFormat.Hms('es_ES').format(date);
+
   static formatDateMonth(DateTime date) =>
       DateFormat.MMMM('es_ES').format(date).toUpperCase();
 
