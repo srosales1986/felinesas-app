@@ -1,6 +1,8 @@
 import 'package:chicken_sales_control/src/models/ProductForSale.dart';
 import 'package:chicken_sales_control/src/models/SaleToReport.dart';
 import 'package:chicken_sales_control/src/models/payment_model.dart';
+import 'package:chicken_sales_control/src/pages/reports/reports_uses_cases.dart';
+import 'package:chicken_sales_control/src/pages/reports/reports_uses_cases_imp.dart';
 import 'package:chicken_sales_control/src/pages/reports/sold_products_table_page.dart';
 import 'package:chicken_sales_control/src/pages/sale/sales_repository.dart';
 import 'package:chicken_sales_control/src/util/utils.dart';
@@ -8,6 +10,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import '../../models/User_model.dart';
+import '../../pdf/pdf_api.dart';
 import '../sale/sales_repository_impl.dart';
 
 class SalesSummaryWidget extends StatelessWidget {
@@ -78,6 +81,8 @@ class SalesSummaryWidget extends StatelessWidget {
               });
               return SummaryWidget(
                 salesList: salesList,
+                currentUser: currentUser,
+                selectedDate: selectedDate,
                 totalCashInstallment: _curretTotalCashInstallment,
                 totalMpInstallment: _curretTotalMpInstallment,
               );
@@ -92,11 +97,15 @@ class SummaryWidget extends StatelessWidget {
   const SummaryWidget({
     Key? key,
     required this.salesList,
+    required this.currentUser,
+    required this.selectedDate,
     required this.totalCashInstallment,
     required this.totalMpInstallment,
   }) : super(key: key);
 
   final List<SaleToReport> salesList;
+  final UserModel currentUser;
+  final DateTime selectedDate;
   final num totalCashInstallment;
   final num totalMpInstallment;
 
@@ -128,6 +137,7 @@ class SummaryWidget extends StatelessWidget {
       productsMap[productName].update('subtotal', (value) => newValue);
       productsMap[productName].update('amount', (value) => newAmount);
     });
+    ReportsUsesCases reportsUsesCases = ReportsUsesCasesImp();
 
     print(productsMap);
     return Container(
@@ -163,21 +173,44 @@ class SummaryWidget extends StatelessWidget {
             ],
           ),
           SizedBox(height: 5),
-          TextButton(
-            style: ButtonStyle(
-              backgroundColor:
-                  MaterialStateProperty.resolveWith((states) => Colors.white),
-              padding: MaterialStateProperty.resolveWith((states) =>
-                  EdgeInsets.symmetric(horizontal: 80, vertical: 15)),
-              elevation: MaterialStateProperty.resolveWith((states) => 3),
-            ),
-            onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: ((context) =>
-                        SoldProductsTablePage(productsMap: productsMap)))),
-            child: Text('Productos vendidos'),
-          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              TextButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.resolveWith(
+                      (states) => Colors.white),
+                  // padding: MaterialStateProperty.resolveWith((states) =>
+                  //     EdgeInsets.symmetric(horizontal: 80, vertical: 15)),
+                  elevation: MaterialStateProperty.resolveWith((states) => 3),
+                ),
+                onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: ((context) =>
+                            SoldProductsTablePage(productsMap: productsMap)))),
+                child: Text('Productos vendidos'),
+              ),
+              TextButton(
+                style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.resolveWith(
+                      (states) => Colors.white),
+                  // padding: MaterialStateProperty.resolveWith((states) =>
+                  //     EdgeInsets.symmetric(horizontal: 80, vertical: 15)),
+                  elevation: MaterialStateProperty.resolveWith((states) => 3),
+                ),
+                onPressed: () {
+                  reportsUsesCases.generateSalesByUserReportPdf(
+                      salesList,
+                      totalCashInstallment,
+                      totalMpInstallment,
+                      currentUser,
+                      selectedDate);
+                },
+                child: Text('Generar PDF'),
+              )
+            ],
+          )
         ],
       ),
     );
