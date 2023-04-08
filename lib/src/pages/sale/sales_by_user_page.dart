@@ -41,7 +41,7 @@ class _SalesByUserPageState extends State<SalesByUserPage> {
               DateTime? newDate = await showDatePicker(
                 context: context,
                 initialDate: DateTime.now(),
-                firstDate: DateTime.utc(DateTime.now().year, 1, 1),
+                firstDate: DateTime.utc(2022, 1, 1),
                 lastDate: DateTime.now(),
                 locale: Locale('es', 'ES'),
               );
