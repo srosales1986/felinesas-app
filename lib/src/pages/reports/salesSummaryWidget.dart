@@ -173,43 +173,47 @@ class SummaryWidget extends StatelessWidget {
             ],
           ),
           SizedBox(height: 5),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              TextButton(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.resolveWith(
-                      (states) => Colors.white),
-                  // padding: MaterialStateProperty.resolveWith((states) =>
-                  //     EdgeInsets.symmetric(horizontal: 80, vertical: 15)),
-                  elevation: MaterialStateProperty.resolveWith((states) => 3),
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 4),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                TextButton(
+                  style: ButtonStyle(
+                    fixedSize: MaterialStateProperty.all(Size(145, 40)),
+                    backgroundColor: MaterialStateProperty.resolveWith(
+                        (states) => Colors.white),
+                    // padding: MaterialStateProperty.resolveWith((states) =>
+                    //     EdgeInsets.symmetric(horizontal: 80, vertical: 15)),
+                    elevation: MaterialStateProperty.resolveWith((states) => 3),
+                  ),
+                  onPressed: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: ((context) => SoldProductsTablePage(
+                              productsMap: productsMap)))),
+                  child: Text('Productos vendidos'),
                 ),
-                onPressed: () => Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: ((context) =>
-                            SoldProductsTablePage(productsMap: productsMap)))),
-                child: Text('Productos vendidos'),
-              ),
-              TextButton(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.resolveWith(
-                      (states) => Colors.white),
-                  // padding: MaterialStateProperty.resolveWith((states) =>
-                  //     EdgeInsets.symmetric(horizontal: 80, vertical: 15)),
-                  elevation: MaterialStateProperty.resolveWith((states) => 3),
-                ),
-                onPressed: () {
-                  reportsUsesCases.generateSalesByUserReportPdf(
-                      salesList,
-                      totalCashInstallment,
-                      totalMpInstallment,
-                      currentUser,
-                      selectedDate);
-                },
-                child: Text('Generar PDF'),
-              )
-            ],
+                TextButton(
+                  style: ButtonStyle(
+                    fixedSize: MaterialStateProperty.all(Size(153, 40)),
+                    backgroundColor: MaterialStateProperty.resolveWith(
+                        (states) => Colors.white),
+                    // padding: MaterialStateProperty.resolveWith((states) =>
+                    //     EdgeInsets.symmetric(horizontal: 80, vertical: 15)),
+                    elevation: MaterialStateProperty.resolveWith((states) => 3),
+                  ),
+                  onPressed: () =>
+                      reportsUsesCases.generateSalesByUserReportPdf(
+                          salesList,
+                          totalCashInstallment,
+                          totalMpInstallment,
+                          currentUser,
+                          selectedDate),
+                  child: Text('Generar PDF'),
+                )
+              ],
+            ),
           )
         ],
       ),

@@ -19,12 +19,15 @@ class PdfReportApi {
 
     pdf.addPage(MultiPage(
       pageFormat: PdfPageFormat.a4,
+      margin: EdgeInsets.symmetric(vertical: 30, horizontal: 30),
       build: (context) => [
         // buildHeader(invoice),
         buildTitle(currentUser, selectedDate),
         // buildInvoice(invoice),
         Divider(),
         buildBody(salesList),
+        Divider(),
+        buildTotal(totalCashInstallment, totalMpInstallment)
       ],
       // footer: (context) => buildFooter(invoice),
     ));
@@ -32,15 +35,13 @@ class PdfReportApi {
     return PdfApi.saveDocument(name: 'Reporte_de_ventas.pdf', pdf: pdf);
   }
 
-  static Widget buildTitle(UserModel currentUser, DateTime selectedDate) =>
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+  static Widget buildTitle(UserModel currentUser, DateTime selectedDate) => Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           Text(
             '${currentUser.userName}',
             style: TextStyle(fontSize: 24),
           ),
-          SizedBox(height: 0.8 * PdfPageFormat.cm),
           Text(
             'Fecha: ${Utils.formatDateWithoutHms(selectedDate)}',
             style: TextStyle(fontSize: 18),
@@ -50,6 +51,7 @@ class PdfReportApi {
 
   static Widget buildBody(List<SaleToReport> salesList) {
     final headers = [
+      'Hora',
       'Cliente',
       'Efectivo',
       'MercadoPago',
@@ -59,10 +61,11 @@ class PdfReportApi {
       // final total = item.unitPrice * item.quantity * (1 + item.vat);
 
       return [
+        Utils.formatDateOnlyHms(item.dateCreated),
         item.customerName,
-        '\$ ${item.cashInstallment.toStringAsFixed(2)}',
-        '${item.mpInstallment.toStringAsFixed(2)}',
-        '\$ ${(item.cashInstallment + item.mpInstallment).toStringAsFixed(2)}',
+        '${Utils.formatCurrency(item.cashInstallment)}',
+        '${Utils.formatCurrency(item.mpInstallment)}',
+        '${Utils.formatCurrency((item.cashInstallment + item.mpInstallment))}',
       ];
     }).toList();
 
@@ -72,13 +75,76 @@ class PdfReportApi {
       border: null,
       headerStyle: TextStyle(fontWeight: FontWeight.bold),
       headerDecoration: BoxDecoration(color: PdfColors.grey300),
-      cellHeight: 30,
+      cellHeight: 20,
+      oddRowDecoration: BoxDecoration(color: PdfColors.grey200),
       cellAlignments: {
-        0: Alignment.centerLeft,
-        1: Alignment.center,
-        2: Alignment.center,
-        3: Alignment.centerRight,
+        0: Alignment.center,
+        1: Alignment.centerLeft,
+        2: Alignment.centerLeft,
+        3: Alignment.centerLeft,
+        4: Alignment.centerLeft,
       },
+    );
+  }
+
+  static Widget buildTotal(num totalCashInstallment, num totalMpInstallment) {
+    return Container(
+      alignment: Alignment.centerRight,
+      child: Row(
+        children: [
+          Spacer(flex: 6),
+          Expanded(
+            flex: 4,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                buildText(
+                  title: 'Total efectivo:',
+                  titleStyle: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  value: '${Utils.formatCurrency(totalCashInstallment)}',
+                  unite: true,
+                ),
+                buildText(
+                  title: 'Total MercadoPago:',
+                  titleStyle: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  value: '${Utils.formatCurrency(totalMpInstallment)}',
+                  unite: true,
+                ),
+                SizedBox(height: 2 * PdfPageFormat.mm),
+                Container(height: 1, color: PdfColors.grey400),
+                SizedBox(height: 0.5 * PdfPageFormat.mm),
+                Container(height: 1, color: PdfColors.grey400),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  static buildText({
+    required String title,
+    required String value,
+    double width = double.infinity,
+    TextStyle? titleStyle,
+    bool unite = false,
+  }) {
+    final style = titleStyle ?? TextStyle(fontWeight: FontWeight.bold);
+
+    return Container(
+      width: width,
+      child: Row(
+        children: [
+          Expanded(child: Text(title, style: style)),
+          Text(value, style: unite ? style : null),
+        ],
+      ),
     );
   }
 }

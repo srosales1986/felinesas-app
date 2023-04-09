@@ -1,3 +1,4 @@
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 
 class Utils {
@@ -10,6 +11,9 @@ class Utils {
 
   static formatDateWithHms(DateTime date) =>
       DateFormat.Hms('es_ES').format(date);
+
+  static formatDateOnlyHms(DateTime date) =>
+      DateFormat('HH:mm', 'es_ES').format(date);
 
   static formatDateMonth(DateTime date) =>
       DateFormat.MMMM('es_ES').format(date).toUpperCase();
