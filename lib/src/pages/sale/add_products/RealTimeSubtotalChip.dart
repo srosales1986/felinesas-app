@@ -1,4 +1,5 @@
 import 'package:chicken_sales_control/src/services/SaleProvider.dart';
+import 'package:chicken_sales_control/src/util/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -12,7 +13,8 @@ class RealTimeSubtotalChip extends StatelessWidget {
     var saleProvider = Provider.of<SaleProvider>(context, listen: true);
 
     return Text(
-      'TOTAL: \$' + saleProvider.getSubTotal().toStringAsFixed(2),
+      'TOTAL: ' + Utils.formatCurrency(saleProvider.getSubTotal()),
+      //'TOTAL: \$' + saleProvider.getSubTotal().toStringAsFixed(2),
       style: TextStyle(color: Colors.black54, fontSize: 18, shadows: [
         Shadow(
           blurRadius: 10,

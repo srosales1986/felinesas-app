@@ -2,6 +2,7 @@ import 'package:animate_do/animate_do.dart';
 import 'package:chicken_sales_control/src/models/Customer_model.dart';
 import 'package:chicken_sales_control/src/services/CustomersProvider.dart';
 import 'package:chicken_sales_control/src/services/SaleProvider.dart';
+import 'package:chicken_sales_control/src/util/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -114,8 +115,8 @@ class _CustomerListViewBuilderState extends State<CustomerListViewBuilder> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   // mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
-                        'Saldo: \$${customerList[index].balance.toStringAsFixed(2)}'),
+                    Text('Saldo: ' +
+                        Utils.formatCurrency(customerList[index].balance)),
                   ],
                 ),
                 trailing: widget.isToManagment == true
@@ -240,7 +241,7 @@ Card buildCardCustomerInfo(TextStyle cardTextStyle, TextStyle cardSubTitleStyle,
           RichText(
             text: TextSpan(style: cardTextStyle, children: [
               TextSpan(style: cardSubTitleStyle, text: 'Saldo: '),
-              TextSpan(text: '\$${customerList[index].balance}'),
+              TextSpan(text: Utils.formatCurrency(customerList[index].balance)),
             ]),
           ),
         ],

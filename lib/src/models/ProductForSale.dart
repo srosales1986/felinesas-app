@@ -16,10 +16,21 @@ class ProductForSale {
     this.price = product.isWeighed ? product.priceByKg : product.priceByUnit;
     this.amount = amount;
     this.subtotal = this.price * this.amount;
-    this.finalAmount = product.isWeighed
-        ? product.availabilityInDeposit - amount
-        : product.availabilityInDeposit - 1.0;
+    this.finalAmount = product.availabilityInDeposit - amount;
+    // this.finalAmount = product.isWeighed
+    //     ? product.availabilityInDeposit - amount
+    // : product.availabilityInDeposit - 1.0; //TODO: Y si se vende 0.5????
   }
+
+  ProductForSale.report({
+    required this.productId,
+    required this.productName,
+    required this.productInitials,
+    required this.price,
+    required this.amount,
+    required this.subtotal,
+    required this.finalAmount,
+  });
 
   void increaseAmout(num increment) {
     this.amount += increment;
@@ -53,5 +64,16 @@ class ProductForSale {
       'finalAmount': productForSale.finalAmount,
       'subtotal': productForSale.subtotal
     };
+  }
+
+  factory ProductForSale.fromJson(Map<String, dynamic> json) {
+    return ProductForSale.report(
+        productId: json['product_id'],
+        productName: json['product_name'],
+        productInitials: json['product_initials'],
+        price: json['price'],
+        amount: json['amount'],
+        subtotal: json['subtotal'],
+        finalAmount: json['finalAmount']);
   }
 }

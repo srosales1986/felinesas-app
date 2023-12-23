@@ -1,3 +1,4 @@
+// import 'package:chicken_sales_control/src/custom_widgets/InitBackground.dart';
 import 'package:chicken_sales_control/src/models/Customer_model.dart';
 import 'package:chicken_sales_control/src/routes/routes.dart';
 import 'package:chicken_sales_control/src/services/ConfigProvider.dart';
@@ -32,25 +33,8 @@ class HomeMainPage extends StatelessWidget {
         });
       });
 
-      // var productsProvider =
-      //     Provider.of<ProductsProvider>(context, listen: false);
-
       var customerProvider =
           Provider.of<CustomerProvider>(context, listen: false);
-
-      // Future<QuerySnapshot<Map<String, dynamic>>> getAllProducts =
-      //     firebaseProvider.fbProductsCollectionRef.get();
-
-      // getAllProducts.then((value) => productsProvider.fillProductList(
-      //     value.docs.map((e) => Product.fromJson(e.id, e.data())).toList()));
-
-      // List<Product> productList = [];
-
-      // getAllProducts.then((value) {
-      //   productList =
-      //       value.docs.map((e) => Product.fromJson(e.id, e.data())).toList();
-      //   productsProvider.productList = productList;
-      // });
 
       Future<QuerySnapshot<Map<String, dynamic>>> getAllCustomers =
           firebaseProvider.fbCustomersCollectionRef.get();
@@ -77,13 +61,29 @@ class HomeMainPage extends StatelessWidget {
           return Home();
         }
         return Container(
-          color: Colors.blue,
+          width: double.infinity,
+          height: double.infinity,
+          decoration: _backgroundDecoration(),
           child: Center(
-            child: CircularProgressIndicator.adaptive(),
-          ),
+              child: CircularProgressIndicator.adaptive(
+            backgroundColor: Colors.white,
+          )),
         );
       },
     );
+  }
+
+  BoxDecoration _backgroundDecoration() {
+    return BoxDecoration(
+        gradient: LinearGradient(
+      colors: [
+        Colors.blue.shade900,
+        Colors.grey.shade300,
+      ],
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      tileMode: TileMode.repeated,
+    ));
   }
 }
 

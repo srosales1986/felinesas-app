@@ -1,3 +1,5 @@
+import 'package:chicken_sales_control/src/models/ProductForSale.dart';
+import 'package:chicken_sales_control/src/models/ProductForSaleList.dart';
 import 'package:chicken_sales_control/src/models/User_model.dart';
 
 class SaleToReport {
@@ -5,10 +7,11 @@ class SaleToReport {
   late String customerName;
   late DateTime dateCreated;
   late String discount;
-  late String cashInstallment;
-  late String mpInstallment;
+  late num cashInstallment;
+  late num mpInstallment;
   late String subtotal;
   late UserModel userSeller;
+  late List<ProductForSale> productsList;
   // late String balanceBeforeSale;
   // late String balanceAfterSale;
 
@@ -21,6 +24,7 @@ class SaleToReport {
     required this.mpInstallment,
     required this.subtotal,
     required this.userSeller,
+    required this.productsList,
     // required this.balanceBeforeSale,
     // required this.balanceAfterSale,
   });
@@ -29,16 +33,16 @@ class SaleToReport {
     return SaleToReport(
       customerId: map['customer_id'],
       customerName: map['customer_name'],
-      // dateCreated: Utils.formatDate(DateTime.fromMillisecondsSinceEpoch(
-      //     map['date_created'].millisecondsSinceEpoch)),
       dateCreated: DateTime.fromMillisecondsSinceEpoch(
           map['date_created'].millisecondsSinceEpoch),
       discount: map['discount'].toString(),
-      cashInstallment: map['cash_installment'].toString(),
-      mpInstallment: map['mp_installment'].toString(),
+      cashInstallment: map['cash_installment'],
+      mpInstallment: map['mp_installment'],
       subtotal: map['subtotal'].toString(),
       userSeller: UserModel.fromJson(
           map['user_seller']['external_id'], map['user_seller']),
+      productsList:
+          ProductForSaleList.fromJson(map['products_list'] as List).productList,
     );
   }
 }

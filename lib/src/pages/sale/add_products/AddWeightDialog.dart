@@ -1,5 +1,6 @@
 import 'package:chicken_sales_control/src/models/Product_model.dart';
 import 'package:chicken_sales_control/src/services/SaleProvider.dart';
+import 'package:chicken_sales_control/src/util/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -151,6 +152,6 @@ class _SubtotalState extends State<Subtotal> {
 
     setState(() {});
     return Text(
-        'Total: ${saleProvider.weightProductSubtotal.toStringAsFixed(2)}');
+        'Total: ${Utils.formatCurrency(saleProvider.weightProductSubtotal)}');
   }
 }

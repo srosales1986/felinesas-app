@@ -3,6 +3,8 @@ import 'package:chicken_sales_control/src/services/UserProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../services/ReportProvider.dart';
+
 class SalesUserList extends StatelessWidget {
   const SalesUserList({Key? key}) : super(key: key);
 
@@ -14,6 +16,7 @@ class SalesUserList extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.grey.shade200,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text('Seleccione un usuario'),
       ),
       body: userList.isEmpty
@@ -32,8 +35,33 @@ class SalesUserList extends StatelessWidget {
               ],
             ))
           : UserListViewBuilder(userList: userList),
+      bottomNavigationBar: BottomAppBar(
+        notchMargin: 8.0,
+        shape: CircularNotchedRectangle(),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _bottonAction(context, Icons.home),
+          ],
+        ),
+      ),
     );
   }
+}
+
+Widget _bottonAction(BuildContext context, IconData icon) {
+  return Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: InkWell(
+      child: Icon(
+        icon,
+        size: 30.0,
+      ),
+      onTap: () {
+        Navigator.pushReplacementNamed(context, 'delivery_boy_home_page');
+      },
+    ),
+  );
 }
 
 class UserListViewBuilder extends StatelessWidget {
@@ -46,6 +74,8 @@ class UserListViewBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final reportProvider = Provider.of<ReportProvider>(context, listen: false);
+
     return ListView.builder(
         physics: BouncingScrollPhysics(),
         itemCount: userList.length,
@@ -61,6 +91,10 @@ class UserListViewBuilder extends StatelessWidget {
                   contentPadding: EdgeInsets.symmetric(horizontal: 10),
                   minVerticalPadding: 1,
                   onTap: () {
+                    reportProvider.setSelectedDate(DateTime.utc(
+                        DateTime.now().year,
+                        DateTime.now().month,
+                        DateTime.now().day));
                     Navigator.pushNamed(context, 'sales_by_user_page',
                         arguments: userList[index]);
                   },

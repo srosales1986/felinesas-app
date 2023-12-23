@@ -2,6 +2,7 @@ import 'package:chicken_sales_control/src/models/Product_model.dart';
 import 'package:chicken_sales_control/src/pages/sale/add_products/BuildTrailing.dart';
 import 'package:chicken_sales_control/src/services/FirebaseProvider.dart';
 import 'package:chicken_sales_control/src/services/SaleProvider.dart';
+import 'package:chicken_sales_control/src/util/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'ProductsProvider.dart';
@@ -94,58 +95,17 @@ class _ProductListViewState extends State<ProductListView> {
                     ? BuildTrailing(product: productList[index])
                     : null,
                 subtitle: productList[index].isWeighed
-                    ? Text(
-                        '\$/Kg: ${productList[index].priceByKg.toStringAsFixed(2)} - Stock: ${productList[index].availabilityInDeposit.toStringAsFixed(2)}Kg')
-                    : Text(
-                        '\$${productList[index].priceByUnit.toStringAsFixed(2)} - Stock: ${productList[index].availabilityInDeposit.toStringAsFixed(0)}')),
+                    ? Text(Utils.formatCurrency(productList[index].priceByKg) +
+                        ' - Stock: ${productList[index].availabilityInDeposit.toStringAsFixed(2)}Kg')
+                    : Text(Utils.formatCurrency(
+                            productList[index].priceByUnit) +
+                        ' - Stock: ${productList[index].availabilityInDeposit.toStringAsFixed(0)}')),
             Divider(),
           ],
         );
       },
     );
   }
-
-  // Widget builTrailing(Product product) {
-  //   if (!product.isWeighed) {
-  //     return Amount(
-  //       productId: product.id,
-  //       product: product,
-  //     );
-  //   }
-  //   return Container(
-  //     decoration: BoxDecoration(
-  //       color: Colors.grey.shade300,
-  //       shape: BoxShape.rectangle,
-  //       borderRadius: BorderRadius.circular(30),
-  //     ),
-  //     child: Row(
-  //       mainAxisSize: MainAxisSize.min,
-  //       mainAxisAlignment: MainAxisAlignment.center,
-  //       children: [
-  //         Container(
-  //           padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-  //           child: TextField(
-  //             controller: _controller,
-  //             textAlign: TextAlign.end,
-  //             keyboardType: TextInputType.number,
-  //             inputFormatters: [
-  //               FilteringTextInputFormatter.allow(RegExp(r'^(\d+)?\.?\d{0,2}')),
-  //               LengthLimitingTextInputFormatter(11),
-  //             ],
-  //             decoration: InputDecoration(
-  //               constraints: BoxConstraints(maxHeight: 40, maxWidth: 90),
-  //               border: InputBorder.none,
-  //             ),
-  //           ),
-  //         ),
-  //         Container(
-  //           padding: EdgeInsets.symmetric(horizontal: 10),
-  //           child: Center(child: Text('Kg')),
-  //         )
-  //       ],
-  //     ),
-  //   );
-  // }
 }
 
 class Amount extends StatelessWidget {

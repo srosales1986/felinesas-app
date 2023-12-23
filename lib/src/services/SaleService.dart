@@ -196,32 +196,16 @@ class SaleService {
       // Map<String, dynamic> _credentials = configProvider.currentConfig.toJson();
       print(_credentials);
 
-      await SalesSheetsApi.init(currentCustomer.name, _credentials);
-
-      // saleProvider.currentSale.customerId = currentCustomer.id;
-
-      // saleProvider.currentSale.customerName = currentCustomer.name;
-
-      // saleProvider.currentSale.productsList = productList;
-
-      // saleProvider.currentSale.discount = saleProvider.discount;
-
-      // saleProvider.currentSale.cashInstallment = saleProvider.cashInstallment;
-
-      // saleProvider.currentSale.mpInstallment = saleProvider.mpInstallment;
-
-      // saleProvider.currentSale.total = saleProvider.finalTotal;
-
-      // saleProvider.currentSale.balanceBeforeSale = currentCustomer.balance;
-
-      // saleProvider.currentSale.balanceAfterSale = saleProvider.newBalance;
+      await SalesSheetsApi.init(
+          saleProvider.currentCustomer.name, _credentials);
 
       saleProvider.currentSale.dateCreated = DateTime.now();
 
       // saleProvider.currentSale.total = saleProvider.calculatedTotal;
       dataToSheet.add('Venta');
-      dataToSheet.add(saleProvider.currentSale.userSeller.userName);
       dataToSheet.add(Utils.formatDate(saleProvider.currentSale.dateCreated));
+      dataToSheet.add(saleProvider.currentSale.userSeller.userName);
+      // dataToSheet.add(saleProvider.currentSale.customerName);
       // String products = '';
 
       StringBuffer products = StringBuffer();

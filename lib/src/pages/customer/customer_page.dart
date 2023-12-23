@@ -21,7 +21,7 @@ class CustomerPage extends StatelessWidget {
             size: 30.0,
           ),
           onTap: () {
-            Navigator.pop(context);
+            Navigator.pushReplacementNamed(context, 'delivery_boy_home_page');
           },
         ),
       );

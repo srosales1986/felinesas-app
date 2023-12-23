@@ -23,10 +23,13 @@ class LoginPage extends StatelessWidget {
           }
           if (!snapshot.hasData) {
             return Container(
-              color: Colors.blue,
+              width: double.infinity,
+              height: double.infinity,
+              decoration: _backgroundDecoration(),
               child: Center(
-                child: CircularProgressIndicator.adaptive(),
-              ),
+                  child: CircularProgressIndicator.adaptive(
+                backgroundColor: Colors.white,
+              )),
             );
           } else {
             if (snapshot.hasData && userProvider.userList.isEmpty) {
@@ -40,14 +43,30 @@ class LoginPage extends StatelessWidget {
                 return _LoginScreen();
               }
               return Container(
-                color: Colors.blue,
+                width: double.infinity,
+                height: double.infinity,
+                decoration: _backgroundDecoration(),
                 child: Center(
-                  child: CircularProgressIndicator.adaptive(),
-                ),
+                    child: CircularProgressIndicator.adaptive(
+                  backgroundColor: Colors.white,
+                )),
               );
             }
           }
         });
+  }
+
+  BoxDecoration _backgroundDecoration() {
+    return BoxDecoration(
+        gradient: LinearGradient(
+      colors: [
+        Colors.blue.shade900,
+        Colors.grey.shade300,
+      ],
+      begin: Alignment.topCenter,
+      end: Alignment.bottomCenter,
+      tileMode: TileMode.repeated,
+    ));
   }
 }
 
@@ -123,8 +142,10 @@ class _LoginFrom extends StatelessWidget {
                         final uId = authService.currentUser!.uid;
 
                         userPovider.currentUser.externalId = uId;
+
                         final indexOfCurrentUser = userPovider.userList
                             .indexWhere((user) => user.externalId == uId);
+
                         userPovider.currentUser.rol =
                             userPovider.userList[indexOfCurrentUser].rol;
                       } on Exception catch (e) {
@@ -183,6 +204,7 @@ class _UserDropDownButtonFormFieldState
   @override
   Widget build(BuildContext context) {
     var userPovider = Provider.of<UserProvider>(context, listen: false);
+    print('Se buildea el DropDownButton');
 
     return DropdownButtonFormField(
       decoration: InputDecoration(

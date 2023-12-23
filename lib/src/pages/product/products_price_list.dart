@@ -1,5 +1,6 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:chicken_sales_control/src/services/FirebaseProvider.dart';
+import 'package:chicken_sales_control/src/util/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -147,7 +148,8 @@ class _ProductsListViewBuilderState extends State<ProductsListViewBuilder> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
-                                '\$${docs[index].get('price_by_unit').toStringAsFixed(2)}',
+                                Utils.formatCurrency(
+                                    docs[index].get('price_by_unit')),
                                 style: TextStyle(
                                   fontSize: 18,
                                   color: Colors.lightGreen,
@@ -270,7 +272,8 @@ class _ProductsListViewBuilderState extends State<ProductsListViewBuilder> {
                           ),
                         )
                       : Text(
-                          '\$${docs[index].get('price_by_unit').toStringAsFixed(2)}',
+                          Utils.formatCurrency(
+                              docs[index].get('price_by_unit')),
                           style: TextStyle(
                             fontSize: 18,
                             color: Colors.lightGreen,
@@ -302,14 +305,17 @@ class _ProductsListViewBuilderState extends State<ProductsListViewBuilder> {
             RichText(
               text: TextSpan(style: cardTextStyle, children: [
                 TextSpan(style: cardSubTitleStyle, text: 'Precio por Kg: '),
-                TextSpan(text: '${docs[index].get('price_by_kg')}'),
+                TextSpan(
+                    text: Utils.formatCurrency(docs[index].get('price_by_kg'))),
               ]),
             ),
             Divider(),
             RichText(
               text: TextSpan(style: cardTextStyle, children: [
                 TextSpan(style: cardSubTitleStyle, text: 'Precio por unidad: '),
-                TextSpan(text: '${docs[index].get('price_by_unit')}'),
+                TextSpan(
+                    text:
+                        Utils.formatCurrency(docs[index].get('price_by_unit'))),
               ]),
             ),
             Divider(),

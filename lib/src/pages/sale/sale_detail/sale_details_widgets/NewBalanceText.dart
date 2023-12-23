@@ -1,4 +1,5 @@
 import 'package:chicken_sales_control/src/services/SaleProvider.dart';
+import 'package:chicken_sales_control/src/util/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -16,7 +17,7 @@ class NewBalanceText extends StatelessWidget {
       padding: EdgeInsets.symmetric(vertical: 5.0),
       margin: EdgeInsets.symmetric(vertical: 10.0),
       child: Text(
-        'SALDO ACTUAL: \$ ${saleProvider.newBalance.toStringAsFixed(2)}',
+        'SALDO ACTUAL: ' + Utils.formatCurrency(saleProvider.newBalance),
         style: TextStyle(fontSize: 20.0),
       ),
     );

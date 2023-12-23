@@ -1,6 +1,12 @@
+import 'package:chicken_sales_control/src/models/ProductForSale.dart';
+import 'package:chicken_sales_control/src/models/ReportSalesByUser.dart';
 import 'package:chicken_sales_control/src/models/SaleToReport.dart';
 import 'package:chicken_sales_control/src/models/User_model.dart';
-import 'package:chicken_sales_control/src/services/FirebaseProvider.dart';
+import 'package:chicken_sales_control/src/pages/reports/salesSummaryWidget.dart';
+import 'package:chicken_sales_control/src/pages/sale/sales_repository_impl.dart';
+import 'package:chicken_sales_control/src/pages/sale/sales_repository.dart';
+import 'package:chicken_sales_control/src/services/ReportProvider.dart';
+import 'package:chicken_sales_control/src/util/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -17,212 +23,190 @@ class SalesByUserListBuilder extends StatefulWidget {
 }
 
 class _SalesByUserListBuilderState extends State<SalesByUserListBuilder> {
-  // @override
-  // void initState() {
-  //   final reportProvider = Provider.of<ReportProvider>(context, listen: false);
-
-  //   final _dbProvider = Provider.of<FirebaseProvider>(context, listen: false);
-
-  //   Stream<QuerySnapshot<Map<String, dynamic>>> _salesStream =
-  //       _dbProvider.salesStream;
-
-  //   reportProvider.salesList = _salesStream.listen((event) {
-  //     event.docs.map((element) {
-  //       _list = [];
-  //       if (element.data()['user_seller'].external_id ==
-  //           widget.currentUser.externalId) {
-  //         return element.data();
-  //       }
-  //     }).toList();
-  //   });
-  //   super.initState();
-  // }
-
   @override
   Widget build(BuildContext context) {
-    // final reportProvider = Provider.of<ReportProvider>(context, listen: true);
-    final _dbProvider = Provider.of<FirebaseProvider>(context, listen: false);
+    final reportProvider = Provider.of<ReportProvider>(context, listen: true);
+    SalesRepository _salesRepository = SalesRepositoryImpl();
 
     Stream<QuerySnapshot<Map<String, dynamic>>> _salesStream =
-        _dbProvider.salesStream;
-
-    // Map<String, String> _selectedUser =
-    //     ModalRoute.of(context)!.settings.arguments as Map<String, String>;
+        _salesRepository.getStreamSalesListByUserAndDate(
+            widget.currentUser.externalId, reportProvider.selectedDate);
+    print('Hora que se pasa al stream: ${reportProvider.selectedDate}');
 
     List<SaleToReport> _salesList = [];
 
-    // _salesStream.listen((event) {
-    //   event.docs.map((element) {
-    //     if (element.data()['user_seller']['external_id'] ==
-    //         widget.currentUser.externalId) {
-    //       _salesList.add(SaleToReport.fromJson(element.data()));
-    //     }
-    //   });
-    // });
     return StreamBuilder(
-      stream: _salesStream,
-      builder: (BuildContext context,
-          AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
-        switch (snapshot.connectionState) {
-          case ConnectionState.waiting:
-            return Center(child: CircularProgressIndicator());
-          case ConnectionState.none:
-            return Center(child: Text('None'));
-          case ConnectionState.done:
-          case ConnectionState.active:
-            if (!snapshot.hasData) {
+        stream: _salesStream,
+        builder: (BuildContext context,
+            AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.waiting:
               return Center(child: CircularProgressIndicator());
-            } else {
-              final docs = snapshot.data!.docs;
-              if (_salesList.isNotEmpty) {
-                _salesList.clear();
-              }
-              docs.forEach((sale) {
-                if (sale.get('user_seller')['external_id'].toString() ==
-                        widget.currentUser.externalId &&
-                    DateTime.fromMillisecondsSinceEpoch(
-                                sale.get('date_created').millisecondsSinceEpoch)
-                            .day ==
-                        DateTime.now().day) {
-                  _salesList.add(SaleToReport.fromJson(sale.data()));
+
+            case ConnectionState.none:
+              return Center(child: Text('None'));
+
+            case ConnectionState.done:
+            case ConnectionState.active:
+              if (!snapshot.hasData) {
+                return Center(child: CircularProgressIndicator());
+              } else {
+                final docs = snapshot.data!.docs;
+
+                print('Cantidad de ventas: ${docs.length}');
+
+                if (_salesList.isNotEmpty) {
+                  _salesList.clear();
                 }
-              });
 
-              return ListView.builder(
-                physics: BouncingScrollPhysics(),
-                itemCount: _salesList.length,
-                itemBuilder: (BuildContext context, int index) {
-                  num _total = double.parse(_salesList[index].cashInstallment) +
-                      double.parse(_salesList[index].mpInstallment);
+                docs.forEach((sale) {
+                  String dateFromFireBase = Utils.formatDateWithoutHms(
+                      DateTime.fromMillisecondsSinceEpoch(
+                          sale.get('date_created').millisecondsSinceEpoch));
+                  String dateTo =
+                      Utils.formatDateWithoutHms(reportProvider.selectedDate);
 
-                  return _salesList.isEmpty
-                      ? Center(
-                          child: Text(
-                              '${widget.currentUser.userName} no hay realizó ventas hoy'),
-                        )
-                      : Column(
-                          children: [
-                            ListTile(
-                              title: Center(
-                                  child: Text(
-                                      '${_salesList[index].customerName}')),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                  if (dateFromFireBase == dateTo) {
+                    _salesList.add(SaleToReport.fromJson(sale.data()));
+                  }
+                });
+
+                List<ReportSalesByUser> salesByUserList = [];
+                Map<String, num> productsMap = {
+                  'Efectivo recibido': 0,
+                  'MercadoPago': 0
+                };
+                num totalCashInstallment = 0;
+                num totalMpInstallment = 0;
+
+                _salesList.forEach((sale) {
+                  productsMap = {'Efectivo recibido': 0, 'MercadoPago': 0};
+                  num oldCash = productsMap['Efectivo recibido']!;
+                  num oldMP = productsMap['MercadoPago']!;
+
+                  num newCash = oldCash + sale.cashInstallment;
+                  num newMP = oldMP + sale.mpInstallment;
+                  productsMap.update('Efectivo recibido', (value) => newCash);
+                  productsMap.update('MercadoPago', (value) => newMP);
+
+                  totalCashInstallment += sale.cashInstallment;
+                  totalMpInstallment += sale.mpInstallment;
+
+                  ReportSalesByUser currentCustomer = ReportSalesByUser(
+                    customerName: sale.customerName,
+                    salesReport: productsMap,
+                  );
+
+                  sale.productsList.forEach((product) {
+                    String currentProduct = product.productName;
+
+                    if (productsMap.containsKey(currentProduct)) {
+                      num oldValue = productsMap[currentProduct]!;
+                      num newValue = oldValue + product.amount;
+                      productsMap.update(currentProduct, (value) => newValue);
+                    } else {
+                      productsMap.putIfAbsent(
+                          currentProduct, () => product.amount);
+                    }
+                  });
+                  salesByUserList.add(currentCustomer);
+                });
+
+                _salesList
+                    .sort(((a, b) => b.dateCreated.compareTo(a.dateCreated)));
+
+                print(
+                    'Efectivo: $totalCashInstallment, MP: $totalMpInstallment');
+
+                if (_salesList.isEmpty) {
+                  return Center(
+                    child: Text(
+                        '${widget.currentUser.userName} no realizó ventas hoy.'),
+                  );
+                } else {
+                  return Column(
+                    children: [
+                      SalesSummaryWidget(
+                        currentUser: widget.currentUser,
+                        salesList: _salesList,
+                        totalCashInstallment: totalCashInstallment,
+                        totalMpInstallment: totalMpInstallment,
+                        selectedDate: reportProvider.selectedDate,
+                      ),
+                      Divider(
+                        thickness: 2,
+                      ),
+                      Expanded(
+                        child: Container(
+                          child: ListView.builder(
+                            physics: BouncingScrollPhysics(),
+                            itemCount: _salesList.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              num _total = _salesList[index].cashInstallment +
+                                  _salesList[index].mpInstallment;
+
+                              return Column(
                                 children: [
-                                  Text(
-                                      'Efectivo: \$ ${_salesList[index].cashInstallment}'),
-                                  Text(
-                                      'MercadoPago: \$ ${_salesList[index].mpInstallment}'),
-                                  Text('Total recibido: \$' +
-                                      _total.toStringAsFixed(2)),
+                                  ListTile(
+                                    title: Center(
+                                      child: Text(
+                                          '${_salesList[index].customerName}'),
+                                    ),
+                                    subtitle: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          Utils.formatDate(DateTime
+                                              .fromMillisecondsSinceEpoch(
+                                                  _salesList[index]
+                                                      .dateCreated
+                                                      .millisecondsSinceEpoch)),
+                                          style: TextStyle(fontSize: 10),
+                                        ),
+                                        listOfProducts(
+                                            _salesList[index].productsList),
+                                        Text('Efectivo: ' +
+                                            Utils.formatCurrency(
+                                                _salesList[index]
+                                                    .cashInstallment)),
+                                        Text('MercadoPago: ' +
+                                            Utils.formatCurrency(
+                                                _salesList[index]
+                                                    .mpInstallment)),
+                                        Text('Descuento: ' +
+                                            Utils.formatCurrency(num.parse(
+                                                _salesList[index].discount))),
+                                        Text('Total recibido: ' +
+                                            Utils.formatCurrency(_total)),
+                                      ],
+                                    ),
+                                  ),
+                                  Divider(),
                                 ],
-                              ),
-                            ),
-                            Divider(),
-                          ],
-                        );
-                },
-              );
-            }
-          // case ConnectionState.active:
-          //   return Center(child: Text('active'));
-          // default:
-          //   return Center(child: Text('No hay datos'));
-        }
-        // if (!snapshot.hasData) {
-        //   return Center(child: CircularProgressIndicator());
-        // }
-        // if (snapshot.hasError) {
-        //   return Center(
-        //     child: Text('ERROR'),
-        //   );
-        // }
-        // final docs = snapshot.data!.docs;
-        // if (_salesList.isNotEmpty) {
-        //   _salesList.clear();
-        // }
-        // docs.forEach((sale) {
-        //   if (sale.get('user_seller')['external_id'].toString() ==
-        //           widget.currentUser.externalId &&
-        //       DateTime.fromMillisecondsSinceEpoch(
-        //                   sale.get('date_created').millisecondsSinceEpoch)
-        //               .day ==
-        //           DateTime.now().day) {
-        //     _salesList.add(SaleToReport.fromJson(sale.data()));
-        //   }
-        // });
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                }
+              }
+          }
+        });
+  }
 
-        // return ListView.builder(
-        //   physics: BouncingScrollPhysics(),
-        //   itemCount: _salesList.length,
-        //   itemBuilder: (BuildContext context, int index) {
-        //     num _total = double.parse(_salesList[index].cashInstallment) +
-        //         double.parse(_salesList[index].mpInstallment);
-
-        //     return _salesList.isEmpty
-        //         ? Center(
-        //             child: Text(
-        //                 '${widget.currentUser.userName} no hay realizó ventas hoy'),
-        //           )
-        //         : Column(
-        //             children: [
-        //               ListTile(
-        //                 title: Center(
-        //                     child: Text('${_salesList[index].customerName}')),
-        //                 subtitle: Column(
-        //                   crossAxisAlignment: CrossAxisAlignment.start,
-        //                   children: [
-        //                     Text(
-        //                         'Efectivo: \$ ${_salesList[index].cashInstallment}'),
-        //                     Text(
-        //                         'MercadoPago: \$ ${_salesList[index].mpInstallment}'),
-        //                     Text('Total recibido: \$' +
-        //                         _total.toStringAsFixed(2)),
-        //                   ],
-        //                 ),
-        //               ),
-        //               Divider(),
-        //             ],
-        //           );
-        //   },
-        // );
-      },
-    );
-    // reportProvider.salesList.forEach((sale) {
-    //   if (sale.userSeller.externalId == _selectedUser['userId'] &&
-    //       sale.dateCreated.day == DateTime.now().day) {
-    //     _salesList.add(sale);
-    //   }
-    // });
-    // return Scaffold(
-    //   appBar: AppBar(
-    //     title: Text('Ventas de: ${_selectedUser['userName']}'),
-    //   ),
-    //   body: _salesList.isEmpty
-    //       ? Center(
-    //           child: Text('No hay ventas hoy'),
-    //         )
-    //       : ListView.builder(
-    //           physics: BouncingScrollPhysics(),
-    //           itemCount: _salesList.length,
-    //           itemBuilder: (context, index) {
-    //             if (_salesList.isEmpty) {
-    //               return Center(
-    //                 child: CircularProgressIndicator(),
-    //               );
-    //             }
-    //             return Column(
-    //               children: [
-    //                 ListTile(
-    //                   title: Text('Cliente: ${_salesList[index].customerName}'),
-    //                   subtitle: Text('Fecha: ' +
-    //                       Utils.formatDate(_salesList[index].dateCreated)),
-    //                 ),
-    //                 Divider(),
-    //               ],
-    //             );
-    //           },
-    //         ),
-    // );
+  Widget listOfProducts(List<ProductForSale> productsList) {
+    String text = 'Productos: ';
+    productsList.forEach((product) {
+      text = text +
+          product.productInitials +
+          '(' +
+          product.amount.toStringAsPrecision(2) +
+          ')' +
+          ' ';
+    });
+    return Text(text);
   }
 }

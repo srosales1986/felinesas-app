@@ -12,7 +12,6 @@ import 'package:chicken_sales_control/src/util/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
 class PaymentPage extends StatelessWidget {
@@ -68,8 +67,8 @@ class PaymentPage extends StatelessWidget {
           child: Text(
             '${currentCustomer.name}',
             style: TextStyle(
-              fontSize: 35,
-              fontFamily: GoogleFonts.dancingScript().fontFamily,
+              fontSize: 30,
+              // fontFamily: GoogleFonts.roboto().fontFamily,
               color: Colors.blue,
               shadows: [
                 Shadow(
@@ -86,7 +85,7 @@ class PaymentPage extends StatelessWidget {
         BounceInUp(
           duration: Duration(milliseconds: 300),
           child: Text(
-            'Saldo: \$${currentCustomer.balance}',
+            'Saldo: ' + Utils.formatCurrency(currentCustomer.balance),
             style: TextStyle(
               fontSize: 16,
               color: Colors.grey,
@@ -143,8 +142,9 @@ class PaymentPage extends StatelessWidget {
                     duration: Duration(milliseconds: 200),
                     child: ConfirmationDialog(
                       title: 'Registrar Pago',
-                      contentText:
-                          '¿Descontar \$ ${currentPayment.paymentAmount.toStringAsFixed(2)} a ${currentPayment.customerName}?',
+                      contentText: '¿Descontar ' +
+                          Utils.formatCurrency(currentPayment.paymentAmount) +
+                          ' a ${currentPayment.customerName}?',
                       yesFunction: () => saveNewBalance(
                         context,
                         currentPayment,
@@ -271,8 +271,9 @@ Future<dynamic> saveNewBalance(
 
       List<String> dataToSheet = [];
       dataToSheet.add('Pago');
-      dataToSheet.add(currentPayment.userName);
       dataToSheet.add(Utils.formatDate(currentPayment.dateCreated));
+      dataToSheet.add(currentPayment.userName);
+      // dataToSheet.add(currentPayment.customerName);
       dataToSheet.add('-');
       dataToSheet.add('-');
       dataToSheet.add(currentPayment.previousBalance.toStringAsFixed(2));
@@ -470,7 +471,7 @@ class _AmountTextState extends State<AmountText>
           }
         },
         textAlign: TextAlign.center,
-        style: TextStyle(fontSize: 60),
+        style: TextStyle(fontSize: 50),
         autofocus: true,
         keyboardType: TextInputType.number,
         decoration: InputDecoration(

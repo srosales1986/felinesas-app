@@ -7,17 +7,17 @@ class SalesSheetsApi {
   static set spreadsheetId(String spreadsheetId) =>
       _spreadsheetId = spreadsheetId;
 
-  static Worksheet? _customerSheet;
+  static Worksheet? _monthSheet;
 
   static Future init(
-      String customerName, Map<String, dynamic> credentials) async {
+      String sheetTitle, Map<String, dynamic> credentials) async {
     final _gsheets = GSheets(credentials);
     try {
       final spreadsheet = await _gsheets.spreadsheet(_spreadsheetId);
-      _customerSheet = await _getWorkSheet(spreadsheet, title: customerName);
+      _monthSheet = await _getWorkSheet(spreadsheet, title: sheetTitle);
 
       final firstRow = SaleFields.getFields();
-      _customerSheet!.values.insertRow(1, firstRow);
+      _monthSheet!.values.insertRow(1, firstRow);
     } on Exception catch (e) {
       print('Error al iniciar GSheet: $e');
     }
@@ -25,7 +25,7 @@ class SalesSheetsApi {
 
   static newRow(List<String> data) {
     try {
-      _customerSheet!.values.appendRow(data);
+      _monthSheet!.values.appendRow(data);
     } on Exception catch (e) {
       print(e.toString());
     }
